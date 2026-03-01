@@ -1,0 +1,11 @@
+[package]
+name = "unit_conversion"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+mockall = "0.13.1"
+
+[lib]
+name = "unit_conversion"
+path = "src/unit_conversion.rs"
