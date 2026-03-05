@@ -33,4 +33,25 @@ public:
     double toMs() const { return m_ms; }
 };
 
+
+class Temperature {
+private:
+    double m_celsius;
+    static constexpr double F_OFFSET = 32.0;
+    static constexpr double F_FACTOR = 1.8;
+    static constexpr double K_OFFSET = 273.15;
+
+    explicit Temperature(double c) : m_celsius(c) {}
+
+public:
+    static Temperature fromCelsius(double v) { return Temperature(v); }
+    static Temperature fromFahrenheit(double v) { return Temperature((v - F_OFFSET) / F_FACTOR); }
+    static Temperature fromKelvin(double v) { return Temperature(v - K_OFFSET); }
+
+    double toCelsius() const { return m_celsius; }
+    double toFahrenheit() const { return m_celsius * F_FACTOR + F_OFFSET; }
+    double toKelvin() const { return m_celsius + K_OFFSET; }
+};
+
+
 #endif // __UNIT_CONVERSION_HPP__
