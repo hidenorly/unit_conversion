@@ -37,4 +37,26 @@ impl Speed {
     pub fn to_mph(&self) -> f64 {
         self.ms / Self::MPH_TO_MS
     }
+
+    pub fn to_ms(&self) -> f64 {
+        self.ms
+    }
+}
+
+pub struct Temperature {
+    celsius: f64,
+}
+
+impl Temperature {
+    const F_OFFSET: f64 = 32.0;
+    const F_FACTOR: f64 = 1.8;
+    const K_OFFSET: f64 = 273.15;
+
+    pub fn from_celsius(v: f64) -> Self { Self { celsius: v } }
+    pub fn from_fahrenheit(v: f64) -> Self { Self { celsius: (v - Self::F_OFFSET) / Self::F_FACTOR } }
+    pub fn from_kelvin(v: f64) -> Self { Self { celsius: v - Self::K_OFFSET } }
+
+    pub fn to_celsius(&self) -> f64 { self.celsius }
+    pub fn to_fahrenheit(&self) -> f64 { self.celsius * Self::F_FACTOR + Self::F_OFFSET }
+    pub fn to_kelvin(&self) -> f64 { self.celsius + Self::K_OFFSET }
 }
