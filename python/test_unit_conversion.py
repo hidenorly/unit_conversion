@@ -15,7 +15,7 @@
 #   limitations under the License.
 
 import unittest
-from unit_conversion import Speed
+from unit_conversion import Speed,Temperature
 
 class TestSpeed(unittest.TestCase):
     def test_conversion(self):
@@ -35,6 +35,22 @@ class TestSpeed(unittest.TestCase):
         original = 120.5
         s4 = Speed.from_kmh(original);
         self.assertAlmostEqual(s4.to_kmh, original, places = 3)
+
+
+class TestTemperature(unittest.TestCase):
+    def test_conversion(self):
+        # 32 F -> 0 C
+        t1 = Temperature.from_fahrenheit(32.0)
+        self.assertAlmostEqual(t1.to_celsius, 0.0, places=3)
+
+        # 100 C -> 212 F
+        t2 = Temperature.from_celsius(100.0)
+        self.assertAlmostEqual(t2.to_fahrenheit, 212.0, places=3)
+
+        # 0 C -> 273.15 K
+        t3 = Temperature.from_celsius(0.0)
+        self.assertEqual(t3.to_kelvin, 273.15)
+
 
 if __name__ == '__main__':
     unittest.main()
