@@ -28,3 +28,20 @@ class Speed {
   double get toMph => _ms / convert_mph_ms;
   double get toMs => _ms;
 }
+
+class Temperature {
+  final double _celsius;
+  static const double _fOffset = 32.0;
+  static const double _fFactor = 1.8;
+  static const double _kOffset = 273.15;
+
+  Temperature._(this._celsius);
+
+  Temperature.fromCelsius(double v) : _celsius = v;
+  Temperature.fromFahrenheit(double v) : _celsius = (v - _fOffset) / _fFactor;
+  Temperature.fromKelvin(double v) : _celsius = v - _kOffset;
+
+  double get toCelsius => _celsius;
+  double get toFahrenheit => _celsius * _fFactor + _fOffset;
+  double get toKelvin => _celsius + _kOffset;
+}

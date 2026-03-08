@@ -45,4 +45,21 @@ void main() {
       expect(speed.toKmH, closeTo(original, 0.000001));
     });
   });
+
+  group('Temperature Tests', () {
+    test('Fahrenheit to Celsius', () {
+      final t = Temperature.fromFahrenheit(32.0);
+      expect(t.toCelsius, closeTo(0.0, 0.001));
+    });
+
+    test('Celsius to Fahrenheit', () {
+      final t = Temperature.fromCelsius(100.0);
+      expect(t.toFahrenheit, closeTo(212.0, 0.001));
+    });
+
+    test('Celsius to Kelvin', () {
+      final t = Temperature.fromCelsius(0.0);
+      expect(t.toKelvin, equals(273.15));
+    });
+  });
 }
