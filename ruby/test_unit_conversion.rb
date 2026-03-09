@@ -45,3 +45,24 @@ class TestSpeed < Minitest::Test
     assert_in_delta original, speed.to_kmh, 0.000001
   end
 end
+
+
+class TestTemperature < Minitest::Test
+  def test_farenheiit_to_celsius
+    # 32 F -> 0 C
+    t1 = Temperature.from_fahrenheit(32.0)
+    assert_in_delta 0.0, t1.to_celsius, 0.001
+  end
+
+  def test_celsius_to_farenheiit
+    # 100 C -> 212 F
+    t2 = Temperature.from_celsius(100.0)
+    assert_in_delta 212.0, t2.to_fahrenheit, 0.001
+  end
+
+  def test_celsius_to_kelvin
+    # 0 C -> 273.15 K
+    t3 = Temperature.from_celsius(0.0)
+    assert_equal 273.15, t3.to_kelvin
+  end
+end
