@@ -14,6 +14,9 @@
    limitations under the License.
 */
 
+
+// --- Speed
+
 pub struct Speed {
     ms: f64,
 }
@@ -43,6 +46,9 @@ impl Speed {
     }
 }
 
+
+// --- Temperature
+
 pub struct Temperature {
     celsius: f64,
 }
@@ -59,4 +65,27 @@ impl Temperature {
     pub fn to_celsius(&self) -> f64 { self.celsius }
     pub fn to_fahrenheit(&self) -> f64 { self.celsius * Self::F_FACTOR + Self::F_OFFSET }
     pub fn to_kelvin(&self) -> f64 { self.celsius + Self::K_OFFSET }
+}
+
+
+// --- Weight
+
+pub struct Mass {
+    kg: f64,
+}
+
+impl Mass {
+    const G_TO_KG: f64 = 0.001;
+    const LB_TO_KG: f64 = 0.45359237;
+    const OZ_TO_KG: f64 = 0.0283495231;
+
+    pub fn from_kg(v: f64) -> Self { Self { kg: v } }
+    pub fn from_gram(v: f64) -> Self { Self { kg: v * Self::G_TO_KG } }
+    pub fn from_lb(v: f64) -> Self { Self { kg: v * Self::LB_TO_KG } }
+    pub fn from_oz(v: f64) -> Self { Self { kg: v * Self::OZ_TO_KG } }
+
+    pub fn to_kg(&self) -> f64 { self.kg }
+    pub fn to_gram(&self) -> f64 { self.kg / Self::G_TO_KG }
+    pub fn to_lb(&self) -> f64 { self.kg / Self::LB_TO_KG }
+    pub fn to_oz(&self) -> f64 { self.kg / Self::OZ_TO_KG }
 }

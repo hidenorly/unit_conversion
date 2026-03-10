@@ -63,4 +63,24 @@ mod tests {
         assert_eq!(t3.to_kelvin(), 273.15);
     }
 
+
+    use unit_conversion::Mass;
+
+    #[test]
+    fn test_mass_conversion() {
+        let eps = 0.00001;
+
+        // 1000g -> 1kg
+        assert_eq!(Mass::from_gram(1000.0).to_kg(), 1.0);
+
+        // 1lb -> 0.45359kg
+        assert!((Mass::from_lb(1.0).to_kg() - 0.453592).abs() < eps);
+
+        // 1kg -> 2.20462lb
+        assert!((Mass::from_kg(1.0).to_lb() - 2.20462).abs() < eps);
+
+        // 1lb -> 16oz
+        assert!((Mass::from_lb(1.0).to_oz() - 16.0).abs() < eps);
+    }
+
 }
