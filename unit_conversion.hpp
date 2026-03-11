@@ -54,4 +54,25 @@ public:
 };
 
 
+class Mass {
+private:
+    double mWeightKg;
+    static constexpr double G_TO_KG = 0.001;
+    static constexpr double LB_TO_KG = 0.45359237;
+    static constexpr double OZ_TO_KG = 0.0283495231;
+
+    explicit Mass(double kg) : mWeightKg(kg) {}
+
+public:
+    static Mass fromKg(double v) { return Mass(v); }
+    static Mass fromGram(double v) { return Mass(v * G_TO_KG); }
+    static Mass fromLb(double v) { return Mass(v * LB_TO_KG); }
+    static Mass fromOz(double v) { return Mass(v * OZ_TO_KG); }
+
+    double toKg() const { return mWeightKg; }
+    double toGram() const { return mWeightKg / G_TO_KG; }
+    double toLb() const { return mWeightKg / LB_TO_KG; }
+    double toOz() const { return mWeightKg / OZ_TO_KG; }
+};
+
 #endif // __UNIT_CONVERSION_HPP__

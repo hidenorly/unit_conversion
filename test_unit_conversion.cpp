@@ -27,6 +27,9 @@ int main(int argc, char **argv)
   return RUN_ALL_TESTS();
 }
 
+
+// --- test case for Speed
+
 // test for conversion from Km/h to Mph
 TEST(SpeedTest, ConvertKmHToMph) {
     auto speed = Speed::fromKmH(60.0);
@@ -85,4 +88,27 @@ TEST(TemperatureTest, CelsiusToKelvin) {
 TEST(TemperatureTest, KelvinToCelsius) {
     auto t = Temperature::fromKelvin(373.15);
     EXPECT_NEAR(t.toCelsius(), 100.0, 0.001);
+}
+
+
+// --- test case for Weight
+
+TEST(MassTest, GramToKg) {
+    auto m = Mass::fromGram(1000.0);
+    EXPECT_DOUBLE_EQ(m.toKg(), 1.0);
+}
+
+TEST(MassTest, LbToKg) {
+    auto m = Mass::fromLb(1.0);
+    EXPECT_NEAR(m.toKg(), 0.453592, 0.000001);
+}
+
+TEST(MassTest, KgToLb) {
+    auto m = Mass::fromKg(1.0);
+    EXPECT_NEAR(m.toLb(), 2.20462, 0.00001);
+}
+
+TEST(MassTest, LbToOz) {
+    auto m = Mass::fromLb(1.0);
+    EXPECT_NEAR(m.toOz(), 16.0, 0.000001);
 }
