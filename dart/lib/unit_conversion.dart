@@ -45,3 +45,24 @@ class Temperature {
   double get toFahrenheit => _celsius * _fFactor + _fOffset;
   double get toKelvin => _celsius + _kOffset;
 }
+
+class Mass {
+  final double _kg;
+  static const double _gToKg = 0.001;
+  static const double _lbToKg = 0.45359237;
+  static const double _ozToKg = 0.0283495231;
+
+  Mass._(this._kg);
+
+  Mass.fromKg(double v) : _kg = v;
+  Mass.fromGram(double v) : _kg = v * _gToKg;
+  Mass.fromLb(double v) : _kg = v * _lbToKg;
+  Mass.fromOz(double v) : _kg = v * _ozToKg;
+
+  double get toKg => _kg;
+  double get toGram => _kg / _gToKg;
+  double get toLb => _kg / _lbToKg;
+  double get toOz => _kg / _ozToKg;
+}
+
+
