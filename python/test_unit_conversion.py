@@ -15,7 +15,7 @@
 #   limitations under the License.
 
 import unittest
-from unit_conversion import Speed,Temperature
+from unit_conversion import Speed,Temperature,Mass
 
 class TestSpeed(unittest.TestCase):
     def test_conversion(self):
@@ -50,6 +50,21 @@ class TestTemperature(unittest.TestCase):
         # 0 C -> 273.15 K
         t3 = Temperature.from_celsius(0.0)
         self.assertEqual(t3.to_kelvin, 273.15)
+
+
+class TestMass(unittest.TestCase):
+    def test_conversion(self):
+        # 1000g -> 1kg
+        self.assertEqual(Mass.from_gram(1000.0).to_kg, 1.0)
+
+        # 1lb -> 0.45359kg
+        self.assertAlmostEqual(Mass.from_lb(1.0).to_kg, 0.453592, places=6)
+
+        # 1kg -> 2.20462lb
+        self.assertAlmostEqual(Mass.from_kg(1.0).to_lb, 2.20462, places=5)
+
+        # 1lb -> 16oz
+        self.assertAlmostEqual(Mass.from_lb(1.0).to_oz, 16.0, places=6)
 
 
 if __name__ == '__main__':

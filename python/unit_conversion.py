@@ -63,3 +63,44 @@ class Temperature:
     def to_fahrenheit(self): return self._celsius * self._F_FACTOR + self._F_OFFSET
     @property
     def to_kelvin(self): return self._celsius + self._K_OFFSET
+
+
+class Mass:
+    _G_TO_KG = 0.001
+    _LB_TO_KG = 0.45359237
+    _OZ_TO_KG = 0.0283495231
+
+    def __init__(self, kg: float):
+        self._kg = kg
+
+    @classmethod
+    def from_kg(cls, v: float):
+        return cls(v)
+
+    @classmethod
+    def from_gram(cls, v: float):
+        return cls(v * cls._G_TO_KG)
+
+    @classmethod
+    def from_lb(cls, v: float):
+        return cls(v * cls._LB_TO_KG)
+
+    @classmethod
+    def from_oz(cls, v: float):
+        return cls(v * cls._OZ_TO_KG)
+
+    @property
+    def to_kg(self):
+        return self._kg
+
+    @property
+    def to_gram(self):
+        return self._kg / self._G_TO_KG
+
+    @property
+    def to_lb(self):
+        return self._kg / self._LB_TO_KG
+
+    @property
+    def to_oz(self):
+        return self._kg / self._OZ_TO_KG
