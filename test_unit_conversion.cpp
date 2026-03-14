@@ -112,3 +112,22 @@ TEST(MassTest, LbToOz) {
     auto m = Mass::fromLb(1.0);
     EXPECT_NEAR(m.toOz(), 16.0, 0.000001);
 }
+
+
+// --- test case for distance
+
+TEST(DistanceTest, KmToMeters) {
+    auto d = Distance::fromKm(1.0);
+    EXPECT_DOUBLE_EQ(d.toMeters(), 1000.0);
+}
+
+TEST(DistanceTest, MileToKm) {
+    auto d = Distance::fromMile(1.0);
+    EXPECT_NEAR(d.toKm(), 1.609344, 0.000001);
+}
+
+TEST(DistanceTest, FootToInch) {
+    auto d = Distance::fromFeet(1.0);
+    EXPECT_NEAR(d.toInch(), 12.0, 0.000001);
+}
+

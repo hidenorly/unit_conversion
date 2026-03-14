@@ -75,4 +75,30 @@ public:
     double toOz() const { return mWeightKg / OZ_TO_KG; }
 };
 
+
+class Distance {
+private:
+    double m_meters;
+    static constexpr double KM_TO_M = 1000.0;
+    static constexpr double MILE_TO_M = 1609.344;
+    static constexpr double FT_TO_M = 0.3048;
+    static constexpr double IN_TO_M = 0.0254;
+
+    explicit Distance(double meters) : m_meters(meters) {}
+
+public:
+    static Distance fromMeters(double v) { return Distance(v); }
+    static Distance fromKm(double v) { return Distance(v * KM_TO_M); }
+    static Distance fromMile(double v) { return Distance(v * MILE_TO_M); }
+    static Distance fromFeet(double v) { return Distance(v * FT_TO_M); }
+    static Distance fromInch(double v) { return Distance(v * IN_TO_M); }
+
+    double toMeters() const { return m_meters; }
+    double toKm() const { return m_meters / KM_TO_M; }
+    double toMile() const { return m_meters / MILE_TO_M; }
+    double toFeet() const { return m_meters / FT_TO_M; }
+    double toInch() const { return m_meters / IN_TO_M; }
+};
+
+
 #endif // __UNIT_CONVERSION_HPP__
