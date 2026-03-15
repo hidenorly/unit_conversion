@@ -29,6 +29,7 @@ class Speed {
   double get toMs => _ms;
 }
 
+
 class Temperature {
   final double _celsius;
   static const double _fOffset = 32.0;
@@ -45,6 +46,7 @@ class Temperature {
   double get toFahrenheit => _celsius * _fFactor + _fOffset;
   double get toKelvin => _celsius + _kOffset;
 }
+
 
 class Mass {
   final double _kg;
@@ -65,4 +67,26 @@ class Mass {
   double get toOz => _kg / _ozToKg;
 }
 
+
+class Distance {
+  final double _meters;
+  static const double _kmToM = 1000.0;
+  static const double _mileToM = 1609.344;
+  static const double _ftToM = 0.3048;
+  static const double _inToM = 0.0254;
+
+  Distance._(this._meters);
+
+  Distance.fromMeters(double v) : _meters = v;
+  Distance.fromKm(double v) : _meters = v * _kmToM;
+  Distance.fromMile(double v) : _meters = v * _mileToM;
+  Distance.fromFeet(double v) : _meters = v * _ftToM;
+  Distance.fromInch(double v) : _meters = v * _inToM;
+
+  double get toMeters => _meters;
+  double get toKm => _meters / _kmToM;
+  double get toMile => _meters / _mileToM;
+  double get toFeet => _meters / _ftToM;
+  double get toInch => _meters / _inToM;
+}
 

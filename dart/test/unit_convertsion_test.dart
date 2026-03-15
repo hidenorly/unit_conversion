@@ -84,4 +84,14 @@ void main() {
       expect(m.toOz, closeTo(16.0, 0.000001));
     });
   });
+
+  test('Mile to Km', () {
+    final d = Distance.fromMile(1.0);
+    expect(d.toKm, closeTo(1.609344, 0.000001));
+  });
+
+  test('Foot to Inch', () {
+    final d = Distance.fromFeet(1.0);
+    expect(d.toInch, closeTo(12.0, 0.000001));
+  });
 }
