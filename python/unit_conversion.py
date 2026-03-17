@@ -59,8 +59,10 @@ class Temperature:
 
     @property
     def to_celsius(self): return self._celsius
+
     @property
     def to_fahrenheit(self): return self._celsius * self._F_FACTOR + self._F_OFFSET
+
     @property
     def to_kelvin(self): return self._celsius + self._K_OFFSET
 
@@ -104,3 +106,54 @@ class Mass:
     @property
     def to_oz(self):
         return self._kg / self._OZ_TO_KG
+
+
+class Distance:
+    _kmToM = 1000.0;
+    _mileToM = 1609.344;
+    _ftToM = 0.3048;
+    _inToM = 0.0254;
+
+    def __init__(self, meter: float):
+        self._meters = meter;
+
+    @classmethod
+    def from_meters(v: float):
+        return cls(v)
+
+    @classmethod
+    def from_km(cls, v: float):
+        return cls(v * cls._kmToM)
+
+    @classmethod
+    def from_mile(cls, v: float):
+        return cls(v * cls._mileToM)
+
+    @classmethod
+    def from_feet(cls, v: float):
+        return cls(v * cls._ftToM)
+
+    @classmethod
+    def from_inch(cls, v: float):
+        return cls(v * cls._inToM)
+
+    @property
+    def to_meters(self):
+        return self._meters;
+
+    @property
+    def to_km(self):
+        return self._meters/ self._kmToM;
+
+    @property
+    def to_mile(self):
+        return self._meters/ self._mileToM;
+
+    @property
+    def to_feet(self):
+        return self._meters/ self._ftToM;
+
+    @property
+    def to_inch(self):
+        return self._meters/ self._inToM;
+

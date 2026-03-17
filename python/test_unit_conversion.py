@@ -15,7 +15,7 @@
 #   limitations under the License.
 
 import unittest
-from unit_conversion import Speed,Temperature,Mass
+from unit_conversion import Speed,Temperature,Mass,Distance
 
 class TestSpeed(unittest.TestCase):
     def test_conversion(self):
@@ -66,6 +66,23 @@ class TestMass(unittest.TestCase):
         # 1lb -> 16oz
         self.assertAlmostEqual(Mass.from_lb(1.0).to_oz, 16.0, places=6)
 
+
+class TestDistance(unittest.TestCase):
+    def test_conversion(self):
+        # 1.0 km -> 1000.0 m
+        self.assertEqual(Distance.from_km(1.0).to_meters, 1000.0)
+
+        # 1.0 mile -> 1.609344 km
+        d_mile = Distance.from_mile(1.0)
+        self.assertAlmostEqual(d_mile.to_km, 1.609344, places=6)
+
+        # 1.0 ft -> 12.0 inch
+        d_ft = Distance.from_feet(1.0)
+        self.assertAlmostEqual(d_ft.to_inch, 12.0, places=6)
+
+        # 100.0 inch -> 2.54 m
+        d_in = Distance.from_inch(100.0)
+        self.assertAlmostEqual(d_in.to_meters, 2.54, places=6)
 
 if __name__ == '__main__':
     unittest.main()
