@@ -83,4 +83,26 @@ mod tests {
         assert!((Mass::from_lb(1.0).to_oz() - 16.0).abs() < eps);
     }
 
+
+    use unit_conversion::Distance;
+
+    #[test]
+    fn test_distance_conversion() {
+        let eps = 1e-9;
+
+        // 1.0 km -> 1000.0 m
+        assert_eq!(Distance::from_km(1.0).to_meters(), 1000.0);
+
+        // 1.0 mile -> 1.609344 km
+        let d_mile = Distance::from_mile(1.0);
+        assert!((d_mile.to_km() - 1.609344).abs() < eps);
+
+        // 1.0 ft -> 12.0 inch
+        let d_ft = Distance::from_feet(1.0);
+        assert!((d_ft.to_inch() - 12.0).abs() < eps);
+
+        // 100.0 inch -> 2.54 m
+        let d_in = Distance::from_inch(100.0);
+        assert!((d_in.to_meters() - 2.54).abs() < eps);
+    }
 }
