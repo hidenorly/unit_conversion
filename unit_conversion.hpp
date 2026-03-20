@@ -101,4 +101,22 @@ public:
 };
 
 
+class Pressure {
+private:
+    double m_kpa;
+    static constexpr double BAR_TO_KPA = 100.0;
+    static constexpr double PSI_TO_KPA = 6.89476;
+
+    explicit Pressure(double kpa) : m_kpa(kpa) {}
+
+public:
+    static Pressure fromKpa(double v) { return Pressure(v); }
+    static Pressure fromBar(double v) { return Pressure(v * BAR_TO_KPA); }
+    static Pressure fromPsi(double v) { return Pressure(v * PSI_TO_KPA); }
+
+    double toKpa() const { return m_kpa; }
+    double toBar() const { return m_kpa / BAR_TO_KPA; }
+    double toPsi() const { return m_kpa / PSI_TO_KPA; }
+};
+
 #endif // __UNIT_CONVERSION_HPP__

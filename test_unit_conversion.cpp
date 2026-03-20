@@ -131,3 +131,15 @@ TEST(DistanceTest, FootToInch) {
     EXPECT_NEAR(d.toInch(), 12.0, 0.000001);
 }
 
+
+// --- test case for pressure
+
+TEST(PressureTest, BarToKpa) {
+    auto p = Pressure::fromBar(2.5);
+    EXPECT_NEAR(p.toKpa(), 250.0, 0.001);
+}
+
+TEST(PressureTest, KpaToPsi) {
+    auto p = Pressure::fromKpa(250.0);
+    EXPECT_NEAR(p.toPsi(), 36.2594, 0.001);
+}
