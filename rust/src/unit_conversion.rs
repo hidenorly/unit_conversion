@@ -115,3 +115,23 @@ impl Distance {
     pub fn to_feet(&self) -> f64 { self.meters / Self::FT_TO_M }
     pub fn to_inch(&self) -> f64 { self.meters / Self::IN_TO_M }
 }
+
+
+// --- Pressure
+
+pub struct Pressure {
+    kpa: f64
+}
+
+impl Pressure {
+    const BAR_TO_KPA: f64 = 100.0;
+    const PSI_TO_KPA: f64 = 6.89476;
+
+    pub fn from_kpa(v: f64) -> Self { Self { kpa: v } }
+    pub fn from_bar(v: f64) -> Self { Self { kpa: v * Self::BAR_TO_KPA } }
+    pub fn from_psi(v: f64) -> Self { Self { kpa: v * Self::PSI_TO_KPA } }
+
+    pub fn to_kpa(&self) -> f64 { self.kpa }
+    pub fn to_bar(&self) -> f64 { self.kpa / Self::BAR_TO_KPA }
+    pub fn to_psi(&self) -> f64 { self.kpa / Self::PSI_TO_KPA }
+}

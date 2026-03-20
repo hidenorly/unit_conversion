@@ -105,4 +105,14 @@ mod tests {
         let d_in = Distance::from_inch(100.0);
         assert!((d_in.to_meters() - 2.54).abs() < eps);
     }
+
+
+    use unit_conversion::Pressure;
+
+    #[test]
+    fn test_pressure_conversion() {
+        let p = Pressure::from_bar(2.5);
+        assert!((p.to_kpa() - 250.0).abs() < 0.001);
+        assert!((p.to_psi() - 36.2594).abs() < 0.001);
+    }
 }

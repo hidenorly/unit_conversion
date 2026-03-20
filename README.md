@@ -98,6 +98,6 @@ puts speed.to_mph + " MPH"
 ### test
 
 ```
-cd python
-python test_unit_conversion.py
+cd ruby
+ruby test_unit_conversion.rb
 ```
