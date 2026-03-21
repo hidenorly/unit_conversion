@@ -90,3 +90,19 @@ class Distance {
   double get toInch => _meters / _inToM;
 }
 
+
+class Pressure {
+  final double _kpa;
+  static const double _barToKpa = 100.0;
+  static const double _psiToKpa = 6.89476;
+
+  Pressure._(this._kpa);
+
+  Pressure.fromKpa(double v) : _kpa = v;
+  Pressure.fromBar(double v) : _kpa = v * _barToKpa;
+  Pressure.fromPsi(double v) : _kpa = v * _psiToKpa;
+
+  double get toKpa => _kpa;
+  double get toBar => _kpa / _barToKpa;
+  double get toPsi => _kpa / _psiToKpa;
+}

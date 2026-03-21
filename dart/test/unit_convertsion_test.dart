@@ -85,13 +85,26 @@ void main() {
     });
   });
 
-  test('Mile to Km', () {
-    final d = Distance.fromMile(1.0);
-    expect(d.toKm, closeTo(1.609344, 0.000001));
+  group('Distance Tests', () {
+    test('Mile to Km', () {
+      final d = Distance.fromMile(1.0);
+      expect(d.toKm, closeTo(1.609344, 0.000001));
+    });
+
+    test('Foot to Inch', () {
+      final d = Distance.fromFeet(1.0);
+      expect(d.toInch, closeTo(12.0, 0.000001));
+    });
   });
 
-  test('Foot to Inch', () {
-    final d = Distance.fromFeet(1.0);
-    expect(d.toInch, closeTo(12.0, 0.000001));
+  group('Pressure Tests', () {
+    test('Bar to Kpa', () {
+      final p = Pressure.fromBar(2.5);
+      expect(p.toKpa, closeTo(250.0, 0.001));
+    });
+    test('Kpa To Psi', () {
+      final p = Pressure.fromKpa(250.0);
+      expect(p.toPsi, closeTo(36.2594, 0.001));
+    });
   });
 }
