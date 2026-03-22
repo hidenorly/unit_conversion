@@ -157,3 +157,34 @@ class Distance:
     def to_inch(self):
         return self._meters/ self._inToM;
 
+
+class Pressure:
+    _BAR_TO_KPA = 100.0
+    _PSI_TO_KPA = 6.89476
+
+    def __init__(self, kpa: float):
+        self._kpa = kpa
+
+    @classmethod
+    def from_kpa(cls, v: float):
+        return cls(v)
+
+    @classmethod
+    def from_bar(cls, v: float):
+        return cls(v * cls._BAR_TO_KPA)
+
+    @classmethod
+    def from_psi(cls, v: float):
+        return cls(v * cls._PSI_TO_KPA)
+
+    @property
+    def to_kpa(self):
+        return self._kpa
+
+    @property
+    def to_bar(self):
+        return self._kpa / self._BAR_TO_KPA
+
+    @property
+    def to_psi(self):
+        return self._kpa / self._PSI_TO_KPA

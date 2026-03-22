@@ -15,7 +15,7 @@
 #   limitations under the License.
 
 import unittest
-from unit_conversion import Speed,Temperature,Mass,Distance
+from unit_conversion import Speed,Temperature,Mass,Distance,Pressure
 
 class TestSpeed(unittest.TestCase):
     def test_conversion(self):
@@ -83,6 +83,16 @@ class TestDistance(unittest.TestCase):
         # 100.0 inch -> 2.54 m
         d_in = Distance.from_inch(100.0)
         self.assertAlmostEqual(d_in.to_meters, 2.54, places=6)
+
+
+class TestPressure(unittest.TestCase):
+    def test_conversion(self):
+        p_bar = Pressure.from_bar(2.5)
+        self.assertAlmostEqual(p_bar.to_kpa, 250.0, places=3)
+
+        p_kpa = Pressure.from_kpa(250.0)
+        self.assertAlmostEqual(p_kpa.to_psi, 36.2594, places=3)
+
 
 if __name__ == '__main__':
     unittest.main()
