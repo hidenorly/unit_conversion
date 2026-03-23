@@ -44,6 +44,7 @@ class Speed
   end
 end
 
+
 class Temperature
   F_OFFSET = 32.0
   F_FACTOR = 1.8
@@ -77,6 +78,138 @@ class Temperature
 
   def to_kelvin()
     return @celsius + K_OFFSET
+  end
+end
+
+
+class Mass
+  G_TO_KG = 0.001
+  LB_TO_KG = 0.45359237
+  OZ_TO_KG = 0.0283495231
+
+  private_class_method :new
+  def initialize(kg); @kg = kg; end
+
+  def self.from_kg(v)
+    return new(v)
+  end
+
+  def self.from_gram(v)
+    return new(v * G_TO_KG)
+  end
+
+  def self.from_lb(v)
+    return new(v * LB_TO_KG)
+  end
+
+  def self.from_oz(v)
+    return new(v * OZ_TO_KG)
+  end
+
+  def to_kg
+    return @kg
+  end
+
+  def to_gram
+    return @kg / G_TO_KG
+  end
+
+  def to_lb
+    return @kg / LB_TO_KG
+  end
+
+  def to_oz
+    return @kg / OZ_TO_KG
+  end
+end
+
+
+class Distance
+  KM_TO_M   = 1000.0
+  MILE_TO_M = 1609.344
+  FT_TO_M   = 0.3048
+  IN_TO_M   = 0.0254
+
+  private_class_method :new
+
+  def initialize(meters)
+    @meters = meters
+  end
+
+  def self.from_meters(v)
+    return new(v)
+  end
+
+  def self.from_km(v)
+    return new(v * KM_TO_M)
+  end
+
+  def self.from_mile(v)
+    return new(v * MILE_TO_M)
+  end
+
+  def self.from_feet(v)
+    return new(v * FT_TO_M)
+  end
+
+  def self.from_inch(v)
+    return new(v * IN_TO_M)
+  end
+
+  def to_meters
+    return @meters
+  end
+
+  def to_km
+    return @meters / KM_TO_M
+  end
+
+  def to_mile
+    return @meters / MILE_TO_M
+  end
+
+  def to_feet
+    return @meters / FT_TO_M
+  end
+
+  def to_inch
+    return @meters / IN_TO_M
+  end
+end
+
+
+class Pressure
+  BAR_TO_KPA = 100.0
+  PSI_TO_KPA = 6.89476
+
+  private_class_method :new
+
+  def initialize(kpa)
+    @kpa = kpa
+  end
+
+  def self.from_kpa(v)
+    return new(v)
+  end
+
+  def self.from_bar(v)
+    return new(v * BAR_TO_KPA)
+  end
+
+  def self.from_psi(v)
+    return new(v * PSI_TO_KPA)
+  end
+
+  def to_kpa
+    return @kpa
+  end
+
+  def to_bar
+    return @kpa / BAR_TO_KPA
+  end
+
+  def to_psi
+    return @kpa / PSI_TO_KPA
   end
 end
 
