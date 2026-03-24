@@ -119,4 +119,24 @@ public:
     double toPsi() const { return m_kpa / PSI_TO_KPA; }
 };
 
+
+class Torque {
+private:
+    double m_nm;
+    static constexpr double KGFM_TO_NM = 9.80665;
+    static constexpr double LBFT_TO_NM = 1.355817948;
+
+    explicit Torque(double nm) : m_nm(nm) {}
+
+public:
+    static Torque fromNm(double v) { return Torque(v); }
+    static Torque fromKgfm(double v) { return Torque(v * KGFM_TO_NM); }
+    static Torque fromLbft(double v) { return Torque(v * LBFT_TO_NM); }
+
+    double toNm() const { return m_nm; }
+    double toKgfm() const { return m_nm / KGFM_TO_NM; }
+    double toLbft() const { return m_nm / LBFT_TO_NM; }
+};
+
+
 #endif // __UNIT_CONVERSION_HPP__

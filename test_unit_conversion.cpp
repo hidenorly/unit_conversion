@@ -143,3 +143,11 @@ TEST(PressureTest, KpaToPsi) {
     auto p = Pressure::fromKpa(250.0);
     EXPECT_NEAR(p.toPsi(), 36.2594, 0.001);
 }
+
+
+// --- test case for torque
+
+TEST(TorqueTest, KgfmToNm) {
+    auto t = Torque::fromKgfm(10.0);
+    EXPECT_NEAR(t.toNm(), 98.0665, 0.0001);
+}
