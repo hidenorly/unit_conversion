@@ -107,4 +107,9 @@ void main() {
       expect(p.toPsi, closeTo(36.2594, 0.001));
     });
   });
+
+  test('Torque conversion', () {
+    final t = Torque.fromNm(100.0);
+    expect(t.toLbft, closeTo(73.7562, 0.0001));
+  });
 }

@@ -106,3 +106,20 @@ class Pressure {
   double get toBar => _kpa / _barToKpa;
   double get toPsi => _kpa / _psiToKpa;
 }
+
+
+class Torque {
+  final double _nm;
+  static const double _kgfmToNm = 9.80665;
+  static const double _lbftToNm = 1.355817948;
+
+  Torque._(this._nm);
+
+  Torque.fromNm(double v) : _nm = v;
+  Torque.fromKgfm(double v) : _nm = v * _kgfmToNm;
+  Torque.fromLbft(double v) : _nm = v * _lbftToNm;
+
+  double get toNm => _nm;
+  double get toKgfm => _nm / _kgfmToNm;
+  double get toLbft => _nm / _lbftToNm;
+}
