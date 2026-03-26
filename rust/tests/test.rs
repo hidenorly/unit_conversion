@@ -115,4 +115,13 @@ mod tests {
         assert!((p.to_kpa() - 250.0).abs() < 0.001);
         assert!((p.to_psi() - 36.2594).abs() < 0.001);
     }
+
+
+    use unit_conversion::Torque;
+
+    #[test]
+    fn test_torque() {
+        let t = Torque::from_lbft(1.0);
+        assert!((t.to_nm() - 1.355818).abs() < 0.00001);
+    }
 }

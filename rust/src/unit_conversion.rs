@@ -135,3 +135,21 @@ impl Pressure {
     pub fn to_bar(&self) -> f64 { self.kpa / Self::BAR_TO_KPA }
     pub fn to_psi(&self) -> f64 { self.kpa / Self::PSI_TO_KPA }
 }
+
+
+// --- Torque
+
+pub struct Torque { nm: f64 }
+
+impl Torque {
+    const KGFM_TO_NM: f64 = 9.80665;
+    const LBFT_TO_NM: f64 = 1.355817948;
+
+    pub fn from_nm(v: f64) -> Self { Self { nm: v } }
+    pub fn from_kgfm(v: f64) -> Self { Self { nm: v * Self::KGFM_TO_NM } }
+    pub fn from_lbft(v: f64) -> Self { Self { nm: v * Self::LBFT_TO_NM } }
+
+    pub fn to_nm(&self) -> f64 { self.nm }
+    pub fn to_kgfm(&self) -> f64 { self.nm / Self::KGFM_TO_NM }
+    pub fn to_lbft(&self) -> f64 { self.nm / Self::LBFT_TO_NM }
+}
