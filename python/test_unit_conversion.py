@@ -15,7 +15,7 @@
 #   limitations under the License.
 
 import unittest
-from unit_conversion import Speed,Temperature,Mass,Distance,Pressure
+from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Torque
 
 class TestSpeed(unittest.TestCase):
     def test_conversion(self):
@@ -93,6 +93,11 @@ class TestPressure(unittest.TestCase):
         p_kpa = Pressure.from_kpa(250.0)
         self.assertAlmostEqual(p_kpa.to_psi, 36.2594, places=3)
 
+
+class TestTorque(unittest.TestCase):
+    def test_conversion(self):
+        t = Torque.from_kgfm(1.0)
+        self.assertAlmostEqual(t.to_nm, 9.80665, places=5)
 
 if __name__ == '__main__':
     unittest.main()

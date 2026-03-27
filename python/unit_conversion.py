@@ -188,3 +188,37 @@ class Pressure:
     @property
     def to_psi(self):
         return self._kpa / self._PSI_TO_KPA
+
+
+class Torque:
+    _KGFM_TO_NM = 9.80665
+    _LBFT_TO_NM = 1.355817948
+
+    def __init__(self, nm: float):
+        self._nm = nm
+
+    @classmethod
+    def from_nm(cls, v: float):
+        return cls(v)
+
+    @classmethod
+    def from_kgfm(cls, v: float):
+        return cls(v * cls._KGFM_TO_NM)
+
+    @classmethod
+    def from_lbft(cls, v: float):
+        return cls(v * cls._LBFT_TO_NM)
+
+    @property
+    def to_nm(self):
+        return self._nm
+
+    @property
+    def to_kgfm(self):
+        return self._nm / self._KGFM_TO_NM
+
+    @property
+    def to_lbft(self):
+        return self._nm / self._LBFT_TO_NM
+
+
