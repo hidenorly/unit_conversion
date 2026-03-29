@@ -213,3 +213,40 @@ class Pressure
   end
 end
 
+
+class Torque
+  KGFM_TO_NM = 9.80665
+  LBFT_TO_NM = 1.355817948
+
+  private_class_method :new
+
+  def initialize(nm)
+    @nm = nm
+  end
+
+  def self.from_nm(v)
+    return new(v)
+  end
+
+  def self.from_kgfm(v)
+    return new(v * KGFM_TO_NM)
+  end
+
+  def self.from_lbft(v)
+    return new(v * LBFT_TO_NM)
+  end
+
+  def to_nm
+    return @nm
+  end
+
+  def to_kgfm
+    return @nm / KGFM_TO_NM
+  end
+
+  def to_lbft
+    return @nm / LBFT_TO_NM
+  end
+end
+
+

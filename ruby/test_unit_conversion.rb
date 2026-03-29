@@ -122,3 +122,11 @@ class TestPressure < Minitest::Test
     assert_in_delta(36.2594, p.to_psi, 0.001)
   end
 end
+
+
+class TestTorque < Minitest::Test
+  def test_conversion
+    t = Torque.from_lbft(100.0)
+    assert_in_delta(135.5818, t.to_nm, 0.001)
+  end
+end
