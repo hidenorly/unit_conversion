@@ -151,3 +151,17 @@ TEST(TorqueTest, KgfmToNm) {
     auto t = Torque::fromKgfm(10.0);
     EXPECT_NEAR(t.toNm(), 98.0665, 0.0001);
 }
+
+
+// -- test case for Angle
+
+TEST(AngleTest, DegreesToRadians) {
+    auto a = Angle::fromDegrees(180.0);
+    EXPECT_NEAR(a.toRadians(), 3.1415926535, 0.000001);
+}
+
+TEST(AngleTest, RadiansToDegrees) {
+    auto a = Angle::fromRadians(1.5707963268); // π/2
+    EXPECT_NEAR(a.toDegrees(), 90.0, 0.0001);
+}
+

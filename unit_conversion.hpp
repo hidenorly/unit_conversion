@@ -139,4 +139,21 @@ public:
 };
 
 
+class Angle {
+private:
+    double m_rad;
+    // π / 180
+    static constexpr double DEG_TO_RAD = 3.14159265358979323846 / 180.0;
+
+    explicit Angle(double rad) : m_rad(rad) {}
+
+public:
+    static Angle fromRadians(double v) { return Angle(v); }
+    static Angle fromDegrees(double v) { return Angle(v * DEG_TO_RAD); }
+
+    double toRadians() const { return m_rad; }
+    double toDegrees() const { return m_rad / DEG_TO_RAD; }
+};
+
+
 #endif // __UNIT_CONVERSION_HPP__
