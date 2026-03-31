@@ -153,3 +153,18 @@ impl Torque {
     pub fn to_kgfm(&self) -> f64 { self.nm / Self::KGFM_TO_NM }
     pub fn to_lbft(&self) -> f64 { self.nm / Self::LBFT_TO_NM }
 }
+
+
+// --- Angle
+
+pub struct Angle { rad: f64 }
+
+impl Angle {
+    const DEG_TO_RAD: f64 = std::f64::consts::PI / 180.0;
+
+    pub fn from_radians(v: f64) -> Self { Self { rad: v } }
+    pub fn from_degrees(v: f64) -> Self { Self { rad: v * Self::DEG_TO_RAD } }
+
+    pub fn to_radians(&self) -> f64 { self.rad }
+    pub fn to_degrees(&self) -> f64 { self.rad / Self::DEG_TO_RAD }
+}

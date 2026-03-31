@@ -124,4 +124,17 @@ mod tests {
         let t = Torque::from_lbft(1.0);
         assert!((t.to_nm() - 1.355818).abs() < 0.00001);
     }
+
+
+    use unit_conversion::Angle;
+    use std::f64::consts::PI;
+    #[test]
+    fn test_angle() {
+        let a = Angle::from_degrees(180.0);
+        assert!((a.to_radians() - PI).abs() < 1e-9);
+
+        let a2 = Angle::from_radians(PI / 2.0);
+        assert!((a2.to_degrees() - 90.0).abs() < 1e-9);
+    }
+
 }
