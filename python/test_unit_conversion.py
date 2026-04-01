@@ -15,7 +15,8 @@
 #   limitations under the License.
 
 import unittest
-from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Torque
+import math
+from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Torque,Angle
 
 class TestSpeed(unittest.TestCase):
     def test_conversion(self):
@@ -98,6 +99,16 @@ class TestTorque(unittest.TestCase):
     def test_conversion(self):
         t = Torque.from_kgfm(1.0)
         self.assertAlmostEqual(t.to_nm, 9.80665, places=5)
+
+
+class TestAngle(unittest.TestCase):
+    def test_conversion(self):
+        a = Angle.from_degrees(180.0)
+        self.assertAlmostEqual(a.to_radians, math.pi, places=6)
+
+        a2 = Angle.from_radians(math.pi / 2)
+        self.assertAlmostEqual(a2.to_degrees, 90.0, places=6)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -14,6 +14,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import math
+
 class Speed:
     KMH_TO_MS = 3.6
     MPH_TO_MS = 0.44704
@@ -222,3 +224,25 @@ class Torque:
         return self._nm / self._LBFT_TO_NM
 
 
+
+class Angle:
+    _DEG_TO_RAD = math.pi / 180.0
+
+    def __init__(self, rad: float):
+        self._rad = rad
+
+    @classmethod
+    def from_radians(cls, v: float):
+        return cls(v)
+
+    @classmethod
+    def from_degrees(cls, v: float):
+        return cls(v * cls._DEG_TO_RAD)
+
+    @property
+    def to_radians(self):
+        return self._rad
+
+    @property
+    def to_degrees(self):
+        return self._rad / self._DEG_TO_RAD
