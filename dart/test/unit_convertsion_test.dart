@@ -16,6 +16,7 @@
 
 import 'package:test/test.dart';
 import '../lib/unit_conversion.dart';
+import 'dart:math' as math;
 
 void main() {
   group('Speed Conversion Tests', () {
@@ -46,7 +47,7 @@ void main() {
     });
   });
 
-  group('Temperature Tests', () {
+  group('Temperature Conversion Tests', () {
     test('Fahrenheit to Celsius', () {
       final t = Temperature.fromFahrenheit(32.0);
       expect(t.toCelsius, closeTo(0.0, 0.001));
@@ -63,7 +64,7 @@ void main() {
     });
   });
 
- group('Mass Tests', () {
+ group('Mass Conversion Tests', () {
     test('Gram to Kg', () {
       final m = Mass.fromGram(1000.0);
       expect(m.toKg, equals(1.0));
@@ -85,7 +86,7 @@ void main() {
     });
   });
 
-  group('Distance Tests', () {
+  group('Distance Conversion Tests', () {
     test('Mile to Km', () {
       final d = Distance.fromMile(1.0);
       expect(d.toKm, closeTo(1.609344, 0.000001));
@@ -97,7 +98,7 @@ void main() {
     });
   });
 
-  group('Pressure Tests', () {
+  group('Pressure Conversion Tests', () {
     test('Bar to Kpa', () {
       final p = Pressure.fromBar(2.5);
       expect(p.toKpa, closeTo(250.0, 0.001));
@@ -108,8 +109,17 @@ void main() {
     });
   });
 
-  test('Torque conversion', () {
+  test('Torque Conversion test', () {
     final t = Torque.fromNm(100.0);
     expect(t.toLbft, closeTo(73.7562, 0.0001));
   });
+
+  test('Angle Conversion test', () {
+    final a = Angle.fromDegrees(180.0);
+    expect(a.toRadians, closeTo(math.pi, 0.000001));
+
+    final a2 = Angle.fromRadians(math.pi / 2);
+    expect(a2.toDegrees, closeTo(90.0, 0.000001));
+  });
+
 }

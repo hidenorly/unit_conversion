@@ -14,6 +14,8 @@
    limitations under the License.
 */
 
+import 'dart:math' as math;
+
 class Speed {
   final double _ms;
   static const double convert_kmh_ms = 3.6;
@@ -122,4 +124,18 @@ class Torque {
   double get toNm => _nm;
   double get toKgfm => _nm / _kgfmToNm;
   double get toLbft => _nm / _lbftToNm;
+}
+
+
+class Angle {
+  final double _rad;
+  static const double _degToRad = math.pi / 180.0;
+
+  Angle._(this._rad);
+
+  Angle.fromRadians(double v) : _rad = v;
+  Angle.fromDegrees(double v) : _rad = v * _degToRad;
+
+  double get toRadians => _rad;
+  double get toDegrees => _rad / _degToRad;
 }
