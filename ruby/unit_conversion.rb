@@ -250,3 +250,28 @@ class Torque
 end
 
 
+class Angle
+  DEG_TO_RAD = Math::PI / 180.0
+
+  private_class_method :new
+
+  def initialize(rad)
+    @rad = rad
+  end
+
+  def self.from_radians(v)
+    return new(v)
+  end
+
+  def self.from_degrees(v)
+    return new(v * DEG_TO_RAD)
+  end
+
+  def to_radians
+    return @rad
+  end
+
+  def to_degrees
+    return @rad / DEG_TO_RAD
+  end
+end

@@ -130,3 +130,14 @@ class TestTorque < Minitest::Test
     assert_in_delta(135.5818, t.to_nm, 0.001)
   end
 end
+
+
+class TestAngle < Minitest::Test
+  def test_conversion
+    a = Angle.from_degrees(180.0)
+    assert_in_delta Math::PI, a.to_radians, 0.000001
+
+    a2 = Angle.from_radians(Math::PI / 2)
+    assert_in_delta 90.0, a2.to_degrees, 0.000001
+  end
+end
