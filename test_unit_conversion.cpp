@@ -165,3 +165,23 @@ TEST(AngleTest, RadiansToDegrees) {
     EXPECT_NEAR(a.toDegrees(), 90.0, 0.0001);
 }
 
+
+// -- test case for Efficiency
+
+TEST(EfficiencyTest, L100kmToKml) {
+    auto e = Efficiency::fromL100km(10.0);
+    EXPECT_DOUBLE_EQ(e.toKml(), 10.0); // 10L/100km = 10km/L
+}
+
+TEST(EfficiencyTest, MpgToKml) {
+    auto e = Efficiency::fromMpg(23.5215);
+    EXPECT_NEAR(e.toKml(), 10.0, 0.001);
+}
+
+TEST(EfficiencyTest, KmlToL100andMPG) {
+    auto e = Efficiency::fromKml(10.0);
+    EXPECT_DOUBLE_EQ(e.toKml(), 10.0);
+    EXPECT_DOUBLE_EQ(e.toL100km(), 10.0);     // 100 / 10 = 10
+    EXPECT_NEAR(e.toMpg(), 23.5215, 0.001);   // 10 / 0.42514...
+}
+

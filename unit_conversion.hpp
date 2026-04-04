@@ -156,4 +156,25 @@ public:
 };
 
 
+class Efficiency {
+private:
+    double m_kml;
+    static constexpr double MPG_TO_KML = 0.425143707;
+
+    explicit Efficiency(double kml) : m_kml(kml) {
+        if (m_kml <= 0.0){
+            throw std::invalid_argument("Must be positive");
+        }
+    }
+
+public:
+    static Efficiency fromKml(double v) { return Efficiency(v); }
+    static Efficiency fromL100km(double v) { return Efficiency(100.0 / v); }
+    static Efficiency fromMpg(double v) { return Efficiency(v * MPG_TO_KML); }
+
+    double toKml() const { return m_kml; }
+    double toL100km() const { return 100.0 / m_kml; }
+    double toMpg() const { return m_kml / MPG_TO_KML; }
+};
+
 #endif // __UNIT_CONVERSION_HPP__
