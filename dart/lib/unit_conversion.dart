@@ -139,3 +139,21 @@ class Angle {
   double get toRadians => _rad;
   double get toDegrees => _rad / _degToRad;
 }
+
+
+class Efficiency {
+  final double _kml;
+  static const double _mpgToKml = 0.425143707;
+
+  Efficiency._(this._kml) {
+    if (_kml <= 0) throw ArgumentError('Must be positive');
+  }
+
+  Efficiency.fromKml(double v) : _kml = v;
+  Efficiency.fromL100km(double v) : _kml = 100.0 / v;
+  Efficiency.fromMpg(double v) : _kml = v * _mpgToKml;
+
+  double get toKml => _kml;
+  double get toL100km => 100.0 / _kml;
+  double get toMpg => _kml / _mpgToKml;
+}

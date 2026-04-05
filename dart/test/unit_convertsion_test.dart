@@ -47,6 +47,7 @@ void main() {
     });
   });
 
+
   group('Temperature Conversion Tests', () {
     test('Fahrenheit to Celsius', () {
       final t = Temperature.fromFahrenheit(32.0);
@@ -63,6 +64,7 @@ void main() {
       expect(t.toKelvin, equals(273.15));
     });
   });
+
 
  group('Mass Conversion Tests', () {
     test('Gram to Kg', () {
@@ -86,6 +88,7 @@ void main() {
     });
   });
 
+
   group('Distance Conversion Tests', () {
     test('Mile to Km', () {
       final d = Distance.fromMile(1.0);
@@ -98,6 +101,7 @@ void main() {
     });
   });
 
+
   group('Pressure Conversion Tests', () {
     test('Bar to Kpa', () {
       final p = Pressure.fromBar(2.5);
@@ -108,6 +112,7 @@ void main() {
       expect(p.toPsi, closeTo(36.2594, 0.001));
     });
   });
+
 
   test('Torque Conversion test', () {
     final t = Torque.fromNm(100.0);
@@ -122,4 +127,22 @@ void main() {
     expect(a2.toDegrees, closeTo(90.0, 0.000001));
   });
 
-}
+
+  test('Efficiency conversion', () {
+    final e = Efficiency.fromL100km(10.0);
+    expect(e.toKml, closeTo(10.0, 0.001));
+    expect(e.toMpg, closeTo(23.5215, 0.001));
+  });
+
+  test('Efficiency MpgToKml', () {
+    final e = Efficiency.fromMpg(23.5215);
+
+    expect(e.toKml, closeTo(10.0, 0.001));
+  });
+
+  test('Efficiency KmlToL100andMPG', () {
+    final e = Efficiency.fromKml(10.0);
+    expect(e.toKml, closeTo(10.0, 0.001));
+    expect(e.toL100km, closeTo(10.0, 0.001));
+    expect(e.toMpg, closeTo(23.5215, 0.001));
+  });}
