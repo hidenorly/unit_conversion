@@ -137,4 +137,19 @@ mod tests {
         assert!((a2.to_degrees() - 90.0).abs() < 1e-9);
     }
 
+
+    use unit_conversion::Efficiency;
+    #[test]
+    fn test_efficiency() {
+        let e = Efficiency::from_l100km(10.0);
+        assert_eq!(e.to_l100km(), 10.0);
+        assert_eq!(e.to_kml(), 10.0);
+        assert!((e.to_mpg() - 23.5215).abs() < 0.001);
+
+        let e_mpg = Efficiency::from_mpg(23.5215);
+        assert!((e_mpg.to_kml() - 10.0).abs() < 0.001);
+
+        let e2 = Efficiency::from_mpg(23.5215);
+        assert!((e2.to_kml() - 10.0).abs() < 0.001);
+    }
 }

@@ -168,3 +168,20 @@ impl Angle {
     pub fn to_radians(&self) -> f64 { self.rad }
     pub fn to_degrees(&self) -> f64 { self.rad / Self::DEG_TO_RAD }
 }
+
+
+// -- Efficiency
+
+pub struct Efficiency { kml: f64 }
+
+impl Efficiency {
+    const MPG_TO_KML: f64 = 0.425143707;
+
+    pub fn from_kml(v: f64) -> Self { Self { kml: v } }
+    pub fn from_l100km(v: f64) -> Self { Self { kml: 100.0 / v } }
+    pub fn from_mpg(v: f64) -> Self { Self { kml: v * Self::MPG_TO_KML } }
+
+    pub fn to_kml(&self) -> f64 { self.kml }
+    pub fn to_l100km(&self) -> f64 { 100.0 / self.kml }
+    pub fn to_mpg(&self) -> f64 { self.kml / Self::MPG_TO_KML }
+}
