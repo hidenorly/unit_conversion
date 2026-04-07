@@ -141,3 +141,21 @@ class TestAngle < Minitest::Test
     assert_in_delta 90.0, a2.to_degrees, 0.000001
   end
 end
+
+
+class TestEfficiency < Minitest::Test
+  def test_conversion
+    e = Efficiency.from_l100km(10.0)
+    assert_equal 10.0, e.to_l100km
+    assert_equal 10.0, e.to_kml
+
+    e2 = Efficiency.from_mpg(23.5215)
+    assert_in_delta 10.0, e2.to_kml, 0.001
+
+
+    e3 = Efficiency.from_kml(10.0)
+    assert_in_delta 23.5215, e3.to_mpg, 0.001
+    
+    assert_raises(ArgumentError) { Efficiency.from_kml(0) }
+  end
+end

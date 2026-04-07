@@ -275,3 +275,49 @@ class Angle
     return @rad / DEG_TO_RAD
   end
 end
+
+
+class Efficiency
+  MPG_TO_KML = 0.425143707
+
+  private_class_method :new
+
+  def initialize(kml)
+    raise ArgumentError, "Must be positive" if kml <= 0
+    @kml = kml
+  end
+
+  def self.from_kml(v)
+    return new(v)
+  end
+
+  def self.from_l100km(v)
+    return new(100.0 / v)
+  end
+
+  def self.from_mpg(v)
+    return new(v * MPG_TO_KML)
+  end
+
+  def to_kml
+    return @kml
+  end
+
+  def to_l100km
+    return 100.0 / @kml
+  end
+
+  def to_mpg
+    return @kml / MPG_TO_KML
+  end
+end
+
+class TestEfficiency < Minitest::Test
+  def test_conversion
+    e = Efficiency.from_l100km(10.0)
+    assert_equal 10.0, e.to_kml
+
+    e2 = Efficiency.from_mpg(23.5215)
+    assert_in_delta 10.0, e2.to_kml, 0.001
+  end
+end
