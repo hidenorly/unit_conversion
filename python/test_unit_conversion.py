@@ -16,7 +16,7 @@
 
 import unittest
 import math
-from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Torque,Angle
+from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Torque,Angle,Efficiency
 
 class TestSpeed(unittest.TestCase):
     def test_conversion(self):
@@ -108,6 +108,17 @@ class TestAngle(unittest.TestCase):
 
         a2 = Angle.from_radians(math.pi / 2)
         self.assertAlmostEqual(a2.to_degrees, 90.0, places=6)
+
+
+class TestEfficiency(unittest.TestCase):
+    def test_conversion(self):
+        e = Efficiency.from_l100km(10.0)
+        self.assertEqual(e.to_kml, 10.0)
+        self.assertEqual(e.to_l100km, 10.0)
+        self.assertAlmostEqual(e.to_mpg, 23.5215, places=3)
+
+        e2 = Efficiency.from_mpg(23.5215)
+        self.assertAlmostEqual(e2.to_kml, 10.0, places=3)
 
 
 if __name__ == '__main__':

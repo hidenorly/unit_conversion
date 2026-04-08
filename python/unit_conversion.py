@@ -224,7 +224,6 @@ class Torque:
         return self._nm / self._LBFT_TO_NM
 
 
-
 class Angle:
     _DEG_TO_RAD = math.pi / 180.0
 
@@ -246,3 +245,36 @@ class Angle:
     @property
     def to_degrees(self):
         return self._rad / self._DEG_TO_RAD
+
+
+class Efficiency:
+    _MPG_TO_KML = 0.425143707
+
+    def __init__(self, kml: float):
+        if kml <= 0:
+            raise ValueError("Must be positive")
+        self._kml = kml
+
+    @classmethod
+    def from_kml(cls, v: float):
+        return cls(v)
+
+    @classmethod
+    def from_l100km(cls, v: float):
+        return cls(100.0 / v)
+
+    @classmethod
+    def from_mpg(cls, v: float):
+        return cls(v * cls._MPG_TO_KML)
+
+    @property
+    def to_kml(self):
+        return self._kml
+
+    @property
+    def to_l100km(self):
+        return 100.0 / self._kml
+
+    @property
+    def to_mpg(self):
+        return self._kml / self._MPG_TO_KML
