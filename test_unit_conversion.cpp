@@ -34,6 +34,7 @@ int main(int argc, char **argv)
 TEST(SpeedTest, ConvertKmHToMph) {
     auto speed = Speed::fromKmH(60.0);
     // 60 km/h is approx. 37.2823 mph
+    EXPECT_NEAR(speed.toKmH(), 60.0, 0.001);
     EXPECT_NEAR(speed.toMph(), 37.2823, 0.001);
     EXPECT_NEAR(speed.toMs(), 60.0/3.6, 0.001);
 }
@@ -41,6 +42,7 @@ TEST(SpeedTest, ConvertKmHToMph) {
 // test for conversion from Mph to Km/h
 TEST(SpeedTest, ConvertMphToKmH) {
     auto speed = Speed::fromMph(60.0);
+    EXPECT_NEAR(speed.toMph(), 60.0, 0.001);
     // 60 mph is approx. 96.5606 km/h
     EXPECT_NEAR(speed.toKmH(), 96.5606, 0.001);
     EXPECT_NEAR(speed.toMs(), 60.0*0.44704, 0.001);
@@ -72,6 +74,7 @@ TEST(SpeedTest, Identity) {
 
 TEST(TemperatureTest, FahrenheitToCelsius) {
     auto t = Temperature::fromFahrenheit(32.0);
+    EXPECT_NEAR(t.toFahrenheit(), 32.0, 0.001);
     EXPECT_NEAR(t.toCelsius(), 0.0, 0.001);
 }
 
@@ -82,11 +85,13 @@ TEST(TemperatureTest, CelsiusToFahrenheit) {
 
 TEST(TemperatureTest, CelsiusToKelvin) {
     auto t = Temperature::fromCelsius(0.0);
+    EXPECT_DOUBLE_EQ(t.toCelsius(), 0.0);
     EXPECT_DOUBLE_EQ(t.toKelvin(), 273.15);
 }
 
 TEST(TemperatureTest, KelvinToCelsius) {
     auto t = Temperature::fromKelvin(373.15);
+    EXPECT_DOUBLE_EQ(t.toKelvin(), 373.15);
     EXPECT_NEAR(t.toCelsius(), 100.0, 0.001);
 }
 
@@ -95,16 +100,19 @@ TEST(TemperatureTest, KelvinToCelsius) {
 
 TEST(MassTest, GramToKg) {
     auto m = Mass::fromGram(1000.0);
+    EXPECT_NEAR(m.toGram(), 1000.0, 0.000001);
     EXPECT_DOUBLE_EQ(m.toKg(), 1.0);
 }
 
 TEST(MassTest, LbToKg) {
     auto m = Mass::fromLb(1.0);
+    EXPECT_NEAR(m.toLb(), 1.0, 0.000001);
     EXPECT_NEAR(m.toKg(), 0.453592, 0.000001);
 }
 
 TEST(MassTest, KgToLb) {
     auto m = Mass::fromKg(1.0);
+    EXPECT_DOUBLE_EQ(m.toKg(), 1.0);
     EXPECT_NEAR(m.toLb(), 2.20462, 0.00001);
 }
 
@@ -113,21 +121,41 @@ TEST(MassTest, LbToOz) {
     EXPECT_NEAR(m.toOz(), 16.0, 0.000001);
 }
 
+TEST(MassTest, OzToOz) {
+    auto m4 = Mass::fromOz(16.0);
+    EXPECT_NEAR(m4.toOz(), 16.0, 0.000001);
+    EXPECT_NEAR(m4.toKg(), 0.453592, 0.000001);
+}
+
 
 // --- test case for distance
 
+TEST(DistanceTest, MetersToMeters) {
+    auto d = Distance::fromMeters(1.0);
+    EXPECT_DOUBLE_EQ(d.toMeters(), 1.0);
+}
+
 TEST(DistanceTest, KmToMeters) {
     auto d = Distance::fromKm(1.0);
+    EXPECT_DOUBLE_EQ(d.toKm(), 1.0);
     EXPECT_DOUBLE_EQ(d.toMeters(), 1000.0);
 }
 
 TEST(DistanceTest, MileToKm) {
     auto d = Distance::fromMile(1.0);
+    EXPECT_DOUBLE_EQ(d.toMile(), 1.0);
     EXPECT_NEAR(d.toKm(), 1.609344, 0.000001);
 }
 
 TEST(DistanceTest, FootToInch) {
     auto d = Distance::fromFeet(1.0);
+    EXPECT_NEAR(d.toFeet(), 1.0, 0.000001);
+    EXPECT_NEAR(d.toInch(), 12.0, 0.000001);
+}
+
+
+TEST(DistanceTest, InchToInch) {
+    auto d = Distance::fromInch(12.0);
     EXPECT_NEAR(d.toInch(), 12.0, 0.000001);
 }
 
@@ -136,20 +164,39 @@ TEST(DistanceTest, FootToInch) {
 
 TEST(PressureTest, BarToKpa) {
     auto p = Pressure::fromBar(2.5);
+    EXPECT_DOUBLE_EQ(p.toBar(), 2.5);
     EXPECT_NEAR(p.toKpa(), 250.0, 0.001);
 }
 
 TEST(PressureTest, KpaToPsi) {
     auto p = Pressure::fromKpa(250.0);
+    EXPECT_DOUBLE_EQ(p.toKpa(), 250.0);
     EXPECT_NEAR(p.toPsi(), 36.2594, 0.001);
+}
+
+TEST(PressureTest, PsiToPsi) {
+    auto p = Pressure::fromPsi(36.2594);
+    EXPECT_NEAR(p.toPsi(), 36.2594, 0.001);
+    EXPECT_NEAR(p.toKpa(), 250.0, 0.001);
 }
 
 
 // --- test case for torque
 
+TEST(TorqueTest, NmToNm) {
+    auto t = Torque::fromNm(10.0);
+    EXPECT_DOUBLE_EQ(t.toNm(), 10.0);
+}
+
 TEST(TorqueTest, KgfmToNm) {
     auto t = Torque::fromKgfm(10.0);
+    EXPECT_NEAR(t.toKgfm(), 10.0, 0.0001);
     EXPECT_NEAR(t.toNm(), 98.0665, 0.0001);
+}
+
+TEST(TorqueTest, LbftToLbft) {
+    auto t = Torque::fromLbft(1.0);
+    EXPECT_NEAR(t.toLbft(), 1.0, 0.0001);
 }
 
 
@@ -157,12 +204,14 @@ TEST(TorqueTest, KgfmToNm) {
 
 TEST(AngleTest, DegreesToRadians) {
     auto a = Angle::fromDegrees(180.0);
+    EXPECT_NEAR(a.toDegrees(), 180.0, 0.000001);
     EXPECT_NEAR(a.toRadians(), 3.1415926535, 0.000001);
 }
 
 TEST(AngleTest, RadiansToDegrees) {
     auto a = Angle::fromRadians(1.5707963268); // π/2
-    EXPECT_NEAR(a.toDegrees(), 90.0, 0.0001);
+    EXPECT_NEAR(a.toRadians(), 1.5707963268, 0.000001);
+    EXPECT_NEAR(a.toDegrees(), 90.0, 0.000001);
 }
 
 
@@ -170,11 +219,13 @@ TEST(AngleTest, RadiansToDegrees) {
 
 TEST(EfficiencyTest, L100kmToKml) {
     auto e = Efficiency::fromL100km(10.0);
+    EXPECT_DOUBLE_EQ(e.toL100km(), 10.0);
     EXPECT_DOUBLE_EQ(e.toKml(), 10.0); // 10L/100km = 10km/L
 }
 
 TEST(EfficiencyTest, MpgToKml) {
     auto e = Efficiency::fromMpg(23.5215);
+    EXPECT_NEAR(e.toMpg(), 23.5215, 0.001);
     EXPECT_NEAR(e.toKml(), 10.0, 0.001);
 }
 
@@ -185,3 +236,8 @@ TEST(EfficiencyTest, KmlToL100andMPG) {
     EXPECT_NEAR(e.toMpg(), 23.5215, 0.001);   // 10 / 0.42514...
 }
 
+TEST(EfficiencyTest, EfficiencyFactoryException) {
+    EXPECT_THROW(Efficiency::fromKml(0.0), std::invalid_argument);
+    EXPECT_THROW(Efficiency::fromKml(-1.0), std::invalid_argument);
+    EXPECT_THROW(Efficiency::fromL100km(-5.0), std::invalid_argument);
+}
