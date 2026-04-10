@@ -23,6 +23,7 @@ class Speed {
 
   Speed._(this._ms);
 
+  Speed.fromMs(double value) : _ms = value;
   Speed.fromKmH(double value) : _ms = value / convert_kmh_ms;
   Speed.fromMph(double value) : _ms = value * convert_mph_ms;
 

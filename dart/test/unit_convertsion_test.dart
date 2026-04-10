@@ -19,19 +19,30 @@ import '../lib/unit_conversion.dart';
 import 'dart:math' as math;
 
 void main() {
-  group('Speed Conversion Tests', () {
-    const double epsilon = 0.001;
+  const double epsilon = 0.0001;
 
+  group('Speed Conversion Tests', () {
     test('test Km/h to Mph conversion', () {
       final speed = Speed.fromKmH(60.0);
+      expect(speed.toKmH, closeTo(60.0, epsilon));
       // 60 km/h -> 37.2823 mph
       expect(speed.toMph, closeTo(37.2823, epsilon));
+      // km/h -> m/s
+      expect(speed.toMs, closeTo(60.0*1000/3600, epsilon));
     });
 
     test('test Mph to Km/h conversion', () {
       final speed = Speed.fromMph(60.0);
+      expect(speed.toMph, closeTo(60.0, epsilon));
       // 60 mph -> 96.5606 km/h
       expect(speed.toKmH, closeTo(96.5606, epsilon));
+    });
+
+    test('test m/s to Km/h conversion', () {
+      final speed = Speed.fromMs(60.0*1000/3600);
+      expect(speed.toKmH, closeTo(60.0, epsilon));
+      // 60 km/h -> 37.2823 mph
+      expect(speed.toMph, closeTo(37.2823, epsilon));
     });
 
     test('test zero value', () {
@@ -43,7 +54,7 @@ void main() {
     test('test identicality', () {
       const double original = 120.5;
       final speed = Speed.fromKmH(original);
-      expect(speed.toKmH, closeTo(original, 0.000001));
+      expect(speed.toKmH, closeTo(original, epsilon));
     });
   });
 
@@ -51,17 +62,26 @@ void main() {
   group('Temperature Conversion Tests', () {
     test('Fahrenheit to Celsius', () {
       final t = Temperature.fromFahrenheit(32.0);
-      expect(t.toCelsius, closeTo(0.0, 0.001));
+      expect(t.toFahrenheit, closeTo(32.0, epsilon));
+      expect(t.toCelsius, closeTo(0.0, epsilon));
     });
 
     test('Celsius to Fahrenheit', () {
       final t = Temperature.fromCelsius(100.0);
-      expect(t.toFahrenheit, closeTo(212.0, 0.001));
+      expect(t.toCelsius, equals(100.0));
+      expect(t.toFahrenheit, closeTo(212.0, epsilon));
     });
 
     test('Celsius to Kelvin', () {
       final t = Temperature.fromCelsius(0.0);
+      expect(t.toCelsius, closeTo(0.0, epsilon));
       expect(t.toKelvin, equals(273.15));
+    });
+
+    test('Kelvin to Celsius', () {
+      final t = Temperature.fromKelvin(0.0);
+      expect(t.toKelvin, equals(0.0));
+      expect(t.toCelsius, equals(-273.15));
     });
   });
 
@@ -69,80 +89,135 @@ void main() {
  group('Mass Conversion Tests', () {
     test('Gram to Kg', () {
       final m = Mass.fromGram(1000.0);
+      expect(m.toGram, equals(1000.0));
       expect(m.toKg, equals(1.0));
     });
 
     test('Lb to Kg', () {
       final m = Mass.fromLb(1.0);
-      expect(m.toKg, closeTo(0.453592, 0.000001));
+      expect(m.toLb, closeTo(1.0, epsilon));
+      expect(m.toKg, closeTo(0.453592, epsilon));
     });
 
     test('Kg to Lb', () {
       final m = Mass.fromKg(1.0);
-      expect(m.toLb, closeTo(2.20462, 0.00001));
+      expect(m.toKg, closeTo(1.0, epsilon));
+      expect(m.toLb, closeTo(2.20462, epsilon));
     });
 
     test('Lb to Oz', () {
       final m = Mass.fromLb(1.0);
-      expect(m.toOz, closeTo(16.0, 0.000001));
+      expect(m.toLb, closeTo(1.0, epsilon));
+      expect(m.toOz, closeTo(16.0, epsilon));
     });
+
+    test('Oz to Kg', () {
+      final m = Mass.fromOz(16.0);
+      expect(m.toOz, closeTo(16.0, epsilon));
+      expect(m.toKg, closeTo(0.453592, epsilon));
+    });
+
   });
 
 
   group('Distance Conversion Tests', () {
-    test('Mile to Km', () {
-      final d = Distance.fromMile(1.0);
-      expect(d.toKm, closeTo(1.609344, 0.000001));
+    test('Meter to km', () {
+      final d = Distance.fromMeters(100.0);
+      expect(d.toMeters, closeTo(100.0, epsilon));
+      expect(d.toKm, closeTo(0.1, epsilon));
     });
 
-    test('Foot to Inch', () {
+    test('Km to mile', () {
+      final d = Distance.fromKm(1.0);
+      expect(d.toKm, closeTo(1.0, epsilon));
+      expect(d.toMile, closeTo(0.621371, epsilon));
+    });
+
+    test('Mile to Km', () {
+      final d = Distance.fromMile(1.0);
+      expect(d.toMile, closeTo(1.0, epsilon));
+      expect(d.toKm, closeTo(1.609344, epsilon));
+    });
+
+    test('Feet to Inch', () {
       final d = Distance.fromFeet(1.0);
-      expect(d.toInch, closeTo(12.0, 0.000001));
+      expect(d.toFeet, closeTo(1.0, epsilon));
+      expect(d.toInch, closeTo(12.0, epsilon));
     });
   });
 
 
   group('Pressure Conversion Tests', () {
-    test('Bar to Kpa', () {
-      final p = Pressure.fromBar(2.5);
+    test('Psi to Kpa', () {
+      final p = Pressure.fromPsi(36.2594);
+      expect(p.toPsi, closeTo(36.2594, epsilon));
       expect(p.toKpa, closeTo(250.0, 0.001));
     });
-    test('Kpa To Psi', () {
+
+    test('Bar to Kpa', () {
+      final p = Pressure.fromBar(2.5);
+      expect(p.toBar, closeTo(2.5, epsilon));
+      expect(p.toKpa, closeTo(250.0, epsilon));
+    });
+
+    test('Kpa To Psi/Bar', () {
       final p = Pressure.fromKpa(250.0);
-      expect(p.toPsi, closeTo(36.2594, 0.001));
+      expect(p.toKpa, closeTo(250.0, epsilon));
+      expect(p.toPsi, closeTo(36.2594, epsilon));
+      expect(p.toBar, closeTo(2.5, epsilon));
     });
   });
 
 
-  test('Torque Conversion test', () {
-    final t = Torque.fromNm(100.0);
-    expect(t.toLbft, closeTo(73.7562, 0.0001));
+  group('Torque Conversion tests', () {
+    test('Nm to Kgfm/Lbft,', () {
+      final t = Torque.fromNm(100.0);
+      expect(t.toNm, closeTo(100.0, epsilon));
+      expect(t.toKgfm, closeTo(10.1971, epsilon));
+      expect(t.toLbft, closeTo(73.7562, epsilon));
+    });
+
+    test('Kgfm to Nm/Lbft,', () {
+      final t = Torque.fromKgfm(10.19716);
+      expect(t.toKgfm, closeTo(10.19716, epsilon));
+      expect(t.toNm, closeTo(100.0, epsilon));
+      expect(t.toLbft, closeTo(73.7562, epsilon));
+    });
+
+    test('Lbft to Nm/Kgfm,', () {
+      final t = Torque.fromLbft(73.7562);
+      expect(t.toLbft, closeTo(73.7562, epsilon));
+      expect(t.toNm, closeTo(100.0, epsilon));
+      expect(t.toKgfm, closeTo(10.1971, epsilon));
+    });
   });
 
   test('Angle Conversion test', () {
     final a = Angle.fromDegrees(180.0);
-    expect(a.toRadians, closeTo(math.pi, 0.000001));
+    expect(a.toDegrees, closeTo(180.0, epsilon));
+    expect(a.toRadians, closeTo(math.pi, epsilon));
 
     final a2 = Angle.fromRadians(math.pi / 2);
-    expect(a2.toDegrees, closeTo(90.0, 0.000001));
+    expect(a2.toRadians, closeTo(math.pi / 2, epsilon));
+    expect(a2.toDegrees, closeTo(90.0, epsilon));
   });
 
 
   test('Efficiency conversion', () {
     final e = Efficiency.fromL100km(10.0);
-    expect(e.toKml, closeTo(10.0, 0.001));
-    expect(e.toMpg, closeTo(23.5215, 0.001));
+    expect(e.toKml, closeTo(10.0, epsilon));
+    expect(e.toMpg, closeTo(23.5215, epsilon));
   });
 
   test('Efficiency MpgToKml', () {
     final e = Efficiency.fromMpg(23.5215);
 
-    expect(e.toKml, closeTo(10.0, 0.001));
+    expect(e.toKml, closeTo(10.0, epsilon));
   });
 
   test('Efficiency KmlToL100andMPG', () {
     final e = Efficiency.fromKml(10.0);
-    expect(e.toKml, closeTo(10.0, 0.001));
-    expect(e.toL100km, closeTo(10.0, 0.001));
-    expect(e.toMpg, closeTo(23.5215, 0.001));
+    expect(e.toKml, closeTo(10.0, epsilon));
+    expect(e.toL100km, closeTo(10.0, epsilon));
+    expect(e.toMpg, closeTo(23.5215, epsilon));
   });}
