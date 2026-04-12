@@ -25,6 +25,10 @@ impl Speed {
     const KMH_TO_MS: f64 = 3.6;
     const MPH_TO_MS: f64 = 0.44704;
 
+    pub fn from_ms(value: f64) -> Self {
+        Self { ms: value }
+    }
+
     pub fn from_kmh(value: f64) -> Self {
         Self { ms: value / Self::KMH_TO_MS }
     }
