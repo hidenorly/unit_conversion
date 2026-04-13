@@ -120,7 +120,7 @@ class Distance:
         self._meters = meter;
 
     @classmethod
-    def from_meters(v: float):
+    def from_meters(cls, v: float):
         return cls(v)
 
     @classmethod
