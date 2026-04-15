@@ -241,3 +241,39 @@ TEST(EfficiencyTest, EfficiencyFactoryException) {
     EXPECT_THROW(Efficiency::fromKml(-1.0), std::invalid_argument);
     EXPECT_THROW(Efficiency::fromL100km(-5.0), std::invalid_argument);
 }
+
+
+// --- test case for Volume
+
+// Test
+TEST(VolumeTest, VolumeFromLiters) {
+    auto v = Volume::fromLiters(1.0);
+    EXPECT_DOUBLE_EQ(v.toLiters(), 1.0);
+    EXPECT_DOUBLE_EQ(v.toMl(), 1000.0);
+    EXPECT_NEAR(v.toUsGallons(), 0.264172, 0.000001);
+    EXPECT_NEAR(v.toImpGallons(), 0.219969, 0.000001);
+}
+
+TEST(VolumeTest, VolumeFromMl) {
+    auto v = Volume::fromMl(500.0);
+    EXPECT_DOUBLE_EQ(v.toMl(), 500.0);
+    EXPECT_DOUBLE_EQ(v.toLiters(), 0.5);
+    EXPECT_NEAR(v.toUsGallons(), 0.132086, 0.000001);
+    EXPECT_NEAR(v.toImpGallons(), 0.1099845, 0.000001);
+}
+
+TEST(VolumeTest, VolumeFromUsGallons) {
+    auto v = Volume::fromUsGallons(10.0);
+    EXPECT_NEAR(v.toUsGallons(), 10.0, 0.0001);
+    EXPECT_NEAR(v.toLiters(), 37.8541, 0.0001);
+    EXPECT_NEAR(v.toMl(), 37854.1, 0.1);
+    EXPECT_NEAR(v.toImpGallons(), 8.32674, 0.00001);
+}
+
+TEST(VolumeTest, VolumeFromImpGallons) {
+    auto v = Volume::fromImpGallons(10.0);
+    EXPECT_NEAR(v.toImpGallons(), 10.0, 1e-9);
+    EXPECT_NEAR(v.toUsGallons(), 12.0095, 0.0001);
+    EXPECT_NEAR(v.toLiters(), 45.4609, 0.0001);
+    EXPECT_NEAR(v.toMl(), 45460.9, 0.1);
+}

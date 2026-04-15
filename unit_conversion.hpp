@@ -177,4 +177,24 @@ public:
     double toMpg() const { return m_kml / MPG_TO_KML; }
 };
 
+
+class Volume {
+private:
+    double m_liters;
+    static constexpr double US_GAL_TO_L = 3.785411784;
+    static constexpr double IMP_GAL_TO_L = 4.54609;
+    explicit Volume(double l) : m_liters(l) {}
+
+public:
+    static Volume fromLiters(double v) { return Volume(v); }
+    static Volume fromMl(double v) { return Volume(v / 1000.0); }
+    static Volume fromUsGallons(double v) { return Volume(v * US_GAL_TO_L); }
+    static Volume fromImpGallons(double v) { return Volume(v * IMP_GAL_TO_L); }
+
+    double toLiters() const { return m_liters; }
+    double toMl() const { return m_liters * 1000.0; }
+    double toUsGallons() const { return m_liters / US_GAL_TO_L; }
+    double toImpGallons() const { return m_liters / IMP_GAL_TO_L; }
+};
+
 #endif // __UNIT_CONVERSION_HPP__
