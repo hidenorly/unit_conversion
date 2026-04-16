@@ -189,3 +189,23 @@ impl Efficiency {
     pub fn to_l100km(&self) -> f64 { 100.0 / self.kml }
     pub fn to_mpg(&self) -> f64 { self.kml / Self::MPG_TO_KML }
 }
+
+
+// --- Volume
+
+pub struct Volume { liters: f64 }
+
+impl Volume {
+    const US_GAL: f64 = 3.785411784;
+    const IMP_GAL: f64 = 4.54609;
+
+    pub fn from_liters(v: f64) -> Self { Self { liters: v } }
+    pub fn from_ml(v: f64) -> Self { Self { liters: v / 1000.0 } }
+    pub fn from_us_gallons(v: f64) -> Self { Self { liters: v * Self::US_GAL } }
+    pub fn from_imp_gallons(v: f64) -> Self { Self { liters: v * Self::IMP_GAL } }
+
+    pub fn to_liters(&self) -> f64 { self.liters }
+    pub fn to_ml(&self) -> f64 { self.liters * 1000.0 }
+    pub fn to_us_gallons(&self) -> f64 { self.liters / Self::US_GAL }
+    pub fn to_imp_gallons(&self) -> f64 { self.liters / Self::IMP_GAL }
+}

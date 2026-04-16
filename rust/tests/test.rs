@@ -156,7 +156,7 @@ mod tests {
     use unit_conversion::Torque;
 
     #[test]
-    fn test_torque() {
+    fn test_torque_conversion() {
         let t = Torque::from_lbft(1.0);
         assert!((t.to_lbft() - 1.0).abs() < EPSILON);
         assert!((t.to_nm() - 1.355818).abs() < EPSILON);
@@ -177,7 +177,7 @@ mod tests {
     use unit_conversion::Angle;
     use std::f64::consts::PI;
     #[test]
-    fn test_angle() {
+    fn test_angle_conversion() {
         let a = Angle::from_degrees(180.0);
         assert!((a.to_degrees() - 180.0).abs() < EPSILON);
         assert!((a.to_radians() - PI).abs() < EPSILON);
@@ -190,7 +190,7 @@ mod tests {
 
     use unit_conversion::Efficiency;
     #[test]
-    fn test_efficiency() {
+    fn test_efficiency_conversion() {
         let e_l100km = Efficiency::from_l100km(10.0);
         assert_eq!(e_l100km.to_l100km(), 10.0);
         assert_eq!(e_l100km.to_kml(), 10.0);
@@ -206,4 +206,35 @@ mod tests {
         assert!((e_kml.to_mpg() - 23.5215).abs() < EPSILON);
         assert!((e_kml.to_l100km() - 10.0).abs() < EPSILON);
     }
+
+
+    use unit_conversion::Volume;
+    #[test]
+    fn test_volume_conversion() {
+        let v_l = Volume::from_liters(1.0);
+        assert!((v_l.to_liters() - 1.0).abs() < EPSILON);
+        assert!((v_l.to_ml() - 1000.0).abs() < EPSILON);
+        assert!((v_l.to_us_gallons() - 0.264172).abs() < EPSILON);
+        assert!((v_l.to_imp_gallons() - 0.219969).abs() < EPSILON);
+
+        let v_ml = Volume::from_ml(100.0);
+        assert!((v_ml.to_liters() - 0.1).abs() < EPSILON);
+        assert!((v_ml.to_ml() - 100.0).abs() < EPSILON);
+        assert!((v_ml.to_us_gallons() - 0.026417).abs() < EPSILON);
+        assert!((v_ml.to_imp_gallons() - 0.021996).abs() < EPSILON);
+
+        let v_us = Volume::from_us_gallons(1.0);
+        assert!((v_us.to_us_gallons() - 1.0).abs() < EPSILON);
+        assert!((v_us.to_liters() - 3.785411).abs() < EPSILON);
+        assert!((v_us.to_ml() - 3785.411).abs() < EPSILON);
+        assert!((v_us.to_imp_gallons() - 0.832674).abs() < EPSILON);
+
+        let v_imp = Volume::from_imp_gallons(1.0);
+        assert!((v_imp.to_imp_gallons() - 1.0).abs() < EPSILON);
+
+        assert!((v_imp.to_us_gallons() - 1.20095).abs() < EPSILON);
+        assert!((v_imp.to_liters() - 4.54609).abs() < EPSILON);
+        assert!((v_imp.to_ml() - 4546.09).abs() < EPSILON);
+    }
+
 }
