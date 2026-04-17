@@ -203,21 +203,59 @@ void main() {
   });
 
 
-  test('Efficiency conversion', () {
-    final e = Efficiency.fromL100km(10.0);
-    expect(e.toKml, closeTo(10.0, epsilon));
-    expect(e.toMpg, closeTo(23.5215, epsilon));
+  group('Efficiency conversion tests', () {
+    test('Efficiency fromL100km', () {
+      final e = Efficiency.fromL100km(10.0);
+      expect(e.toKml, closeTo(10.0, epsilon));
+      expect(e.toMpg, closeTo(23.5215, epsilon));
+    });
+
+    test('Efficiency MpgToKml', () {
+      final e = Efficiency.fromMpg(23.5215);
+
+      expect(e.toKml, closeTo(10.0, epsilon));
+    });
+
+    test('Efficiency KmlToL100andMPG', () {
+      final e = Efficiency.fromKml(10.0);
+      expect(e.toKml, closeTo(10.0, epsilon));
+      expect(e.toL100km, closeTo(10.0, epsilon));
+      expect(e.toMpg, closeTo(23.5215, epsilon));
+    });
   });
 
-  test('Efficiency MpgToKml', () {
-    final e = Efficiency.fromMpg(23.5215);
 
-    expect(e.toKml, closeTo(10.0, epsilon));
+  group('Volume conversion tests', () {
+    test('Volume fromLiters', () {
+      final v1 = Volume.fromLiters(1.0);
+      expect(v1.toLiters, equals(1.0));
+      expect(v1.toMl, equals(1000.0));
+      expect(v1.toUsGallons, closeTo(0.264172, 0.000001));
+      expect(v1.toImpGallons, closeTo(0.219969, 0.000001));
+    });
+
+    test('Volume fromMl', () {
+      final v2 = Volume.fromMl(1000.0);
+      expect(v2.toLiters, equals(1.0));
+      expect(v2.toMl, equals(1000.0));
+      expect(v2.toUsGallons, closeTo(0.264172, 0.000001));
+      expect(v2.toImpGallons, closeTo(0.219969, 0.000001));
+    });
+
+    test('Volume fromUsGallons', () {
+      final v3 = Volume.fromUsGallons(1.0);
+      expect(v3.toUsGallons, closeTo(1.0, 0.000001));
+      expect(v3.toLiters, closeTo(3.78541, 0.00001));
+      expect(v3.toMl, closeTo(3785.41, 0.01));
+      expect(v3.toImpGallons, closeTo(0.832674, 0.000001));
+    });
+
+    test('Volume fromImpGallons', () {
+      final v4 = Volume.fromImpGallons(1.0);
+      expect(v4.toImpGallons, closeTo(1.0, 0.000001));
+      expect(v4.toLiters, equals(4.54609));
+      expect(v4.toMl, closeTo(4546.09, 0.000001));
+      expect(v4.toUsGallons, closeTo(1.20095, 0.000001));
+    });
   });
-
-  test('Efficiency KmlToL100andMPG', () {
-    final e = Efficiency.fromKml(10.0);
-    expect(e.toKml, closeTo(10.0, epsilon));
-    expect(e.toL100km, closeTo(10.0, epsilon));
-    expect(e.toMpg, closeTo(23.5215, epsilon));
-  });}
+}

@@ -158,3 +158,21 @@ class Efficiency {
   double get toL100km => 100.0 / _kml;
   double get toMpg => _kml / _mpgToKml;
 }
+
+
+class Volume {
+  final double _l;
+  static const double _usGal = 3.785411784;
+  static const double _impGal = 4.54609;
+
+  Volume._(this._l);
+  Volume.fromLiters(double v) : _l = v;
+  Volume.fromMl(double v) : _l = v / 1000.0;
+  Volume.fromUsGallons(double v) : _l = v * _usGal;
+  Volume.fromImpGallons(double v) : _l = v * _impGal;
+
+  double get toLiters => _l;
+  double get toMl => _l * 1000.0;
+  double get toUsGallons => _l / _usGal;
+  double get toImpGallons => _l / _impGal;
+}
