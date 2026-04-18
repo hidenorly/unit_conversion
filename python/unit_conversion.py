@@ -278,3 +278,43 @@ class Efficiency:
     @property
     def to_mpg(self):
         return self._kml / self._MPG_TO_KML
+
+
+class Volume:
+    _US_GAL = 3.785411784
+    _IMP_GAL = 4.54609
+
+    def __init__(self, liters: float):
+        self._l = liters
+
+    @classmethod
+    def from_liters(cls, v):
+        return cls(v)
+
+    @classmethod
+    def from_ml(cls, v):
+        return cls(v / 1000.0)
+
+    @classmethod
+    def from_us_gallons(cls, v):
+        return cls(v * cls._US_GAL)
+
+    @classmethod
+    def from_imp_gallons(cls, v):
+        return cls(v * cls._IMP_GAL)
+
+    @property
+    def to_liters(self):
+        return self._l
+
+    @property
+    def to_ml(self):
+        return self._l * 1000.0
+
+    @property
+    def to_us_gallons(self):
+        return self._l / self._US_GAL
+
+    @property
+    def to_imp_gallons(self):
+        return self._l / self._IMP_GAL

@@ -16,7 +16,7 @@
 
 import unittest
 import math
-from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Torque,Angle,Efficiency
+from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Torque,Angle,Efficiency, Volume
 
 class TestSpeed(unittest.TestCase):
     def test_conversion(self):
@@ -179,6 +179,32 @@ class TestEfficiency(unittest.TestCase):
         self.assertAlmostEqual(e2.to_kml, 10.0, delta=0.0001)
         self.assertAlmostEqual(e2.to_l100km, 10.0, delta=0.0001)
 
+
+class TestVolume(unittest.TestCase):
+    def test_volume_coverage(self):
+        v1 = Volume.from_liters(1.0)
+        self.assertEqual(v1.to_liters, 1.0)
+        self.assertEqual(v1.to_ml, 1000.0)
+        self.assertAlmostEqual(v1.to_us_gallons, 0.264172, places=6)
+        self.assertAlmostEqual(v1.to_imp_gallons, 0.219969, places=6)
+
+        v2 = Volume.from_ml(500.0)
+        self.assertEqual(v2.to_ml, 500)
+        self.assertEqual(v2.to_liters, 0.5)
+        self.assertAlmostEqual(v2.to_us_gallons, 0.132086, places=6)
+        self.assertAlmostEqual(v2.to_imp_gallons, 0.1099845, places=6)
+
+        v3 = Volume.from_us_gallons(10.0)
+        self.assertAlmostEqual(v3.to_us_gallons, 10.0, delta=1e-9)
+        self.assertAlmostEqual(v3.to_liters, 37.8541, places=4)
+        self.assertAlmostEqual(v3.to_ml, 37854.1, places=1)
+        self.assertAlmostEqual(v3.to_imp_gallons, 8.32674, places=5)
+
+        v4 = Volume.from_imp_gallons(10.0)
+        self.assertAlmostEqual(v4.to_imp_gallons, 10.0, delta=1e-9)
+        self.assertAlmostEqual(v4.to_us_gallons, 12.0095, places=4)
+        self.assertAlmostEqual(v4.to_liters, 45.4609, places=4)
+        self.assertAlmostEqual(v4.to_ml, 45460.9, places=1)
 
 if __name__ == '__main__':
     unittest.main()
