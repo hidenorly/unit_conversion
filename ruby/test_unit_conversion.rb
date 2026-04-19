@@ -224,3 +224,32 @@ class TestEfficiency < Minitest::Test
     assert_raises(ArgumentError) { Efficiency.from_kml(0) }
   end
 end
+
+
+class TestVolume < Minitest::Test
+  def test_volume_conversion
+    v = Volume.from_liters(1.0)
+    assert_equal(1.0, v.to_liters)
+    assert_equal(1000.0, v.to_ml)
+    assert_in_delta(0.264172, v.to_us_gallons, 0.000001)
+    assert_in_delta(0.219969, v.to_imp_gallons, 0.000001)
+
+    v_ml = Volume.from_ml(500.0)
+    assert_equal(500, v_ml.to_ml)
+    assert_equal(0.5, v_ml.to_liters)
+    assert_in_delta(0.132086, v_ml.to_us_gallons, 0.000001)
+    assert_in_delta(0.1099845, v_ml.to_imp_gallons, 0.000001)
+
+    v_us = Volume.from_us_gallons(10.0)
+    assert_in_delta(37854.1, v_us.to_ml, 0.1)
+    assert_in_delta(37.8541, v_us.to_liters, 0.0001)
+    assert_in_delta(10.0, v_us.to_us_gallons, 0.000001)
+    assert_in_delta(8.32674, v_us.to_imp_gallons, 0.00001)
+
+    v_imp = Volume.from_imp_gallons(10.0)
+    assert_in_delta(45460.9, v_imp.to_ml, 0.000001)
+    assert_in_delta(45.4609, v_imp.to_liters, 0.0001)
+    assert_in_delta(12.0095, v_imp.to_us_gallons, 0.000001)
+    assert_in_delta(10.0, v_imp.to_imp_gallons, 0.000001)
+  end
+end

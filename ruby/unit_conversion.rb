@@ -312,12 +312,45 @@ class Efficiency
   end
 end
 
-class TestEfficiency < Minitest::Test
-  def test_conversion
-    e = Efficiency.from_l100km(10.0)
-    assert_equal 10.0, e.to_kml
 
-    e2 = Efficiency.from_mpg(23.5215)
-    assert_in_delta 10.0, e2.to_kml, 0.001
+class Volume
+  US_GAL = 3.785411784
+  IMP_GAL = 4.54609
+
+  private_class_method :new
+  def initialize(l)
+    @l = l
+  end
+
+  def self.from_liters(v)
+    return new(v)
+  end
+
+  def self.from_ml(v)
+    return new(v / 1000.0)
+  end
+
+  def self.from_us_gallons(v)
+    return new(v * US_GAL)
+  end
+
+  def self.from_imp_gallons(v)
+    return new(v * IMP_GAL)
+  end
+
+  def to_liters
+    return @l
+  end
+
+  def to_ml
+    return @l * 1000.0
+  end
+
+  def to_us_gallons
+    return @l / US_GAL
+  end
+
+  def to_imp_gallons
+    return @l / IMP_GAL
   end
 end
