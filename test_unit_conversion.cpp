@@ -243,9 +243,46 @@ TEST(EfficiencyTest, EfficiencyFactoryException) {
 }
 
 
+// --- test case for EvEfficiency
+
+TEST(EvEfficiencyTest, fromKmkWh) {
+    auto e = EvEfficiency::fromKmkWh(6.0);
+    EXPECT_DOUBLE_EQ(e.toKmkWh(), 6.0);
+    EXPECT_NEAR(e.toWhkm(), 166.666, 0.001);
+    EXPECT_NEAR(e.toKwh100km(), 16.666, 0.001);
+    EXPECT_NEAR(e.toMpKwh(), 3.728, 0.001);
+}
+
+TEST(EvEfficiencyTest, fromWhkm) {
+    auto e = EvEfficiency::fromWhkm(200.0); // 1000/200 = 5km/kWh
+    EXPECT_NEAR(e.toWhkm(), 200.0, 0.001);
+    EXPECT_NEAR(e.toKmkWh(), 5.0, 0.01);
+    EXPECT_NEAR(e.toKwh100km(), 20.0, 0.01);
+    EXPECT_NEAR(e.toMpKwh(), 3.11, 0.01);
+}
+
+TEST(EvEfficiencyTest, fromKwh100km) {
+    auto e = EvEfficiency::fromKwh100km(20.0); // 100/20 = 5km/kWh
+    EXPECT_NEAR(e.toKwh100km(), 20.0, 0.1);
+    EXPECT_DOUBLE_EQ(e.toKmkWh(), 5.0);
+    EXPECT_NEAR(e.toWhkm(), 200.0, 0.001);
+    EXPECT_NEAR(e.toMpKwh(), 3.11, 0.01);
+}
+
+TEST(EvEfficiencyTest, fromMpKwh) {
+    auto e = EvEfficiency::fromMpKwh(1.0);
+    EXPECT_NEAR(e.toMpKwh(), 1.0, 0.1);
+    EXPECT_NEAR(e.toKmkWh(), 1.609344, 0.000001);
+}
+
+TEST(EvEfficiencyTest, invalid) {
+    EXPECT_THROW(EvEfficiency::fromKmkWh(0.0), std::invalid_argument);
+    EXPECT_THROW(EvEfficiency::fromWhkm(-1.0), std::invalid_argument);
+    EXPECT_THROW(EvEfficiency::fromWhkm(0.0), std::invalid_argument);
+}
+
 // --- test case for Volume
 
-// Test
 TEST(VolumeTest, VolumeFromLiters) {
     auto v = Volume::fromLiters(1.0);
     EXPECT_DOUBLE_EQ(v.toLiters(), 1.0);

@@ -178,6 +178,28 @@ public:
 };
 
 
+class EvEfficiency {
+private:
+    double m_km_per_kwh;
+    static constexpr double MILE_TO_KM = 1.609344;
+
+    explicit EvEfficiency(double km_per_kwh) : m_km_per_kwh(km_per_kwh) {
+        if (km_per_kwh <= 0.0 || std::isinf(km_per_kwh)) throw std::invalid_argument("Must be positive");
+    }
+
+public:
+    static EvEfficiency fromKmkWh(double v) { return EvEfficiency(v); }
+    static EvEfficiency fromWhkm(double v) { return EvEfficiency(1000.0 / v); }
+    static EvEfficiency fromKwh100km(double v) { return EvEfficiency(100.0 / v); }
+    static EvEfficiency fromMpKwh(double v) { return EvEfficiency(v * MILE_TO_KM); }
+
+    double toKmkWh() const { return m_km_per_kwh; }
+    double toWhkm() const { return 1000.0 / m_km_per_kwh; }
+    double toKwh100km() const { return 100.0 / m_km_per_kwh; }
+    double toMpKwh() const { return m_km_per_kwh / MILE_TO_KM; }
+};
+
+
 class Volume {
 private:
     double m_liters;
