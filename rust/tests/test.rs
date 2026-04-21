@@ -208,6 +208,53 @@ mod tests {
     }
 
 
+    use unit_conversion::EvEfficiency;
+    #[test]
+    fn test_ev_conversion() {
+        let e = EvEfficiency::from_km_per_kwh(5.0);
+        assert!((e.to_wh_per_km() - 200.0).abs() < EPSILON);
+        assert!((e.to_kwh_per_100km() - 20.0).abs() < EPSILON);
+        assert!((e.to_km_per_kwh() - 5.0).abs() < EPSILON);
+        assert!((e.to_miles_per_kwh() - 3.11).abs() < 0.01);
+    }
+
+    #[test]
+    fn test_matrix_from_wh_per_km() {
+        let e = EvEfficiency::from_wh_per_km(200.0);
+        assert!((e.to_km_per_kwh() - 5.0).abs() < EPSILON);
+        assert!((e.to_wh_per_km() - 200.0).abs() < EPSILON);
+        assert!((e.to_kwh_per_100km() - 20.0).abs() < EPSILON);
+        assert!((e.to_miles_per_kwh() - 3.106).abs() < 0.01);
+    }
+
+    #[test]
+    fn test_matrix_from_kwh_per_100km() {
+        let e = EvEfficiency::from_kwh_per_100km(20.0);
+        assert!((e.to_km_per_kwh() - 5.0).abs() < EPSILON);
+        assert!((e.to_wh_per_km() - 200.0).abs() < EPSILON);
+        assert!((e.to_kwh_per_100km() - 20.0).abs() < EPSILON);
+        assert!((e.to_miles_per_kwh() - 3.106).abs() < 0.01);
+    }
+
+    #[test]
+    fn test_matrix_from_miles_per_kwh() {
+        let e = EvEfficiency::from_miles_per_kwh(1.0);
+        assert!((e.to_km_per_kwh() - 1.609344).abs() < EPSILON);
+        assert!((e.to_wh_per_km() - 621.371).abs() < EPSILON);
+        assert!((e.to_kwh_per_100km() - 62.137).abs() < EPSILON);
+        assert!((e.to_miles_per_kwh() - 1.0).abs() < EPSILON);
+    }
+
+    #[test]
+    #[should_panic(expected = "Must be positive")]
+    fn test_ev_panic() {
+        let _ = EvEfficiency::from_km_per_kwh(0.0);
+        let _ = EvEfficiency::from_wh_per_km(0.0);
+        let _ = EvEfficiency::from_kwh_per_100km(0.0);
+        let _ = EvEfficiency::from_miles_per_kwh(0.0);
+    }
+
+
     use unit_conversion::Volume;
     #[test]
     fn test_volume_conversion() {

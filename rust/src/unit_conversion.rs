@@ -181,15 +181,43 @@ pub struct Efficiency { kml: f64 }
 impl Efficiency {
     const MPG_TO_KML: f64 = 0.425143707;
 
-    pub fn from_kml(v: f64) -> Self { Self { kml: v } }
-    pub fn from_l100km(v: f64) -> Self { Self { kml: 100.0 / v } }
-    pub fn from_mpg(v: f64) -> Self { Self { kml: v * Self::MPG_TO_KML } }
+    fn new(v: f64) -> Self {
+        if v <= 0.0 || v.is_infinite() { panic!("Must be positive"); }
+        Self { kml: v }
+    }
+
+    pub fn from_kml(v: f64) -> Self { Self::new(v) }
+    pub fn from_l100km(v: f64) -> Self { Self::new(100.0 / v ) }
+    pub fn from_mpg(v: f64) -> Self { Self::new(v * Self::MPG_TO_KML ) }
 
     pub fn to_kml(&self) -> f64 { self.kml }
     pub fn to_l100km(&self) -> f64 { 100.0 / self.kml }
     pub fn to_mpg(&self) -> f64 { self.kml / Self::MPG_TO_KML }
 }
 
+
+// -- EvEfficiency
+
+pub struct EvEfficiency { km_per_kwh: f64 }
+
+impl EvEfficiency {
+    const MILE_TO_KM: f64 = 1.609344;
+
+    fn new(v: f64) -> Self {
+        if v <= 0.0 || v.is_infinite() { panic!("Must be positive"); }
+        Self { km_per_kwh: v }
+    }
+
+    pub fn from_km_per_kwh(v: f64) -> Self { Self::new(v) }
+    pub fn from_wh_per_km(v: f64) -> Self { Self::new(1000.0 / v) }
+    pub fn from_kwh_per_100km(v: f64) -> Self { Self::new(100.0 / v) }
+    pub fn from_miles_per_kwh(v: f64) -> Self { Self::new(v * Self::MILE_TO_KM) }
+
+    pub fn to_km_per_kwh(&self) -> f64 { self.km_per_kwh }
+    pub fn to_wh_per_km(&self) -> f64 { 1000.0 / self.km_per_kwh }
+    pub fn to_kwh_per_100km(&self) -> f64 { 100.0 / self.km_per_kwh }
+    pub fn to_miles_per_kwh(&self) -> f64 { self.km_per_kwh / Self::MILE_TO_KM }
+}
 
 // --- Volume
 
