@@ -147,7 +147,7 @@ class Efficiency {
   static const double _mpgToKml = 0.425143707;
 
   Efficiency._(this._kml) {
-    if (_kml <= 0) throw ArgumentError('Must be positive');
+    if (_kml <= 0 || _kml.isInfinite) throw ArgumentError('Must be positive');
   }
 
   Efficiency.fromKml(double v) : _kml = v;
@@ -159,6 +159,25 @@ class Efficiency {
   double get toMpg => _kml / _mpgToKml;
 }
 
+
+class EvEfficiency {
+  final double _kmPerKwh;
+  static const double _mileToKm = 1.609344;
+
+  EvEfficiency._(this._kmPerKwh) {
+    if (_kmPerKwh <= 0 || _kmPerKwh.isInfinite) throw ArgumentError('Must be positive');
+  }
+
+  EvEfficiency.fromKmkWh(double v) : this._(v);
+  EvEfficiency.fromWhkm(double v) : this._(1000.0 / v);
+  EvEfficiency.fromKwh100km(double v) : this._(100.0 / v);
+  EvEfficiency.fromMpKwh(double v) : this._(v * _mileToKm);
+
+  double get toKmkWh => _kmPerKwh;
+  double get toWhkm => 1000.0 / _kmPerKwh;
+  double get toKwh100km => 100.0 / _kmPerKwh;
+  double get toMpKwh => _kmPerKwh / _mileToKm;
+}
 
 class Volume {
   final double _l;

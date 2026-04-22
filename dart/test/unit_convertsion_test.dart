@@ -225,6 +225,47 @@ void main() {
   });
 
 
+group('EvEfficiency Tests', () {
+    test('fromKmkWh', () {
+      final e = EvEfficiency.fromKmkWh(6.0);
+      expect(e.toKmkWh, equals(6.0));
+      expect(e.toWhkm, closeTo(166.666, 0.001));
+      expect(e.toKwh100km, closeTo(16.666, 0.001));
+      expect(e.toMpKwh, closeTo(3.728, 0.001));
+    });
+
+    test('fromWhkm', () {
+      final e = EvEfficiency.fromWhkm(200.0);
+      expect(e.toKmkWh, closeTo(5.0, 0.001));
+      expect(e.toWhkm, closeTo(200.0, 0.001));
+      expect(e.toKwh100km, closeTo(20.0, 0.001));
+      expect(e.toMpKwh, closeTo(3.106, 0.01));
+    });
+
+    test('fromKwh100km', () {
+      final e = EvEfficiency.fromKwh100km(20.0);
+      expect(e.toKmkWh, closeTo(5.0, 0.001));
+      expect(e.toWhkm, closeTo(200.0, 0.001));
+      expect(e.toKwh100km, closeTo(20.0, 0.001));
+      expect(e.toMpKwh, closeTo(3.106, 0.01));
+    });
+
+    test('fromMpKwh', () {
+      final e = EvEfficiency.fromMpKwh(1.0);
+      expect(e.toKmkWh, closeTo(1.609344, 0.000001));
+      expect(e.toWhkm, closeTo(621.371, 0.001));
+      expect(e.toKwh100km, closeTo(62.137, 0.001));
+      expect(e.toMpKwh, closeTo(1.0, 0.000001));
+    });
+
+    test('Invalid', () {
+      expect(() => EvEfficiency.fromKmkWh(0.0), throwsArgumentError);
+      expect(() => EvEfficiency.fromWhkm(0.0), throwsArgumentError);
+      expect(() => EvEfficiency.fromKwh100km(0.0), throwsArgumentError);
+      expect(() => EvEfficiency.fromMpKwh(0.0), throwsArgumentError);
+    });
+  });
+
   group('Volume conversion tests', () {
     test('Volume fromLiters', () {
       final v1 = Volume.fromLiters(1.0);
