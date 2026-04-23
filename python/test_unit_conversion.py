@@ -16,7 +16,7 @@
 
 import unittest
 import math
-from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Torque,Angle,Efficiency, Volume
+from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Torque,Angle,Efficiency,EvEfficiency,Volume
 
 class TestSpeed(unittest.TestCase):
     def test_conversion(self):
@@ -178,6 +178,46 @@ class TestEfficiency(unittest.TestCase):
         self.assertAlmostEqual(e2.to_mpg, 23.5215, places=3)
         self.assertAlmostEqual(e2.to_kml, 10.0, delta=0.0001)
         self.assertAlmostEqual(e2.to_l100km, 10.0, delta=0.0001)
+
+
+class TestEvEfficiency(unittest.TestCase):
+    def test_from_km_per_kwh_all_to(self):
+        e = EvEfficiency.from_km_per_kwh(6.0)
+        self.assertEqual(e.to_km_per_kwh, 6.0)
+        self.assertAlmostEqual(e.to_wh_per_km, 166.666, places=2)
+        self.assertAlmostEqual(e.to_kwh_per_100km, 16.666, places=2)
+        self.assertAlmostEqual(e.to_miles_per_kwh, 3.728, delta=0.001)
+
+    def test_from_wh_per_km_all_to(self):
+        e = EvEfficiency.from_wh_per_km(200.0)
+        self.assertAlmostEqual(e.to_km_per_kwh, 5.0, delta=0.001)
+        self.assertAlmostEqual(e.to_wh_per_km, 200.0, delta=0.001)
+        self.assertAlmostEqual(e.to_kwh_per_100km, 20.0, delta=0.001)
+        self.assertAlmostEqual(e.to_miles_per_kwh, 3.106, delta=0.01)
+
+    def test_from_kwh_per_100km_all_to(self):
+        e = EvEfficiency.from_kwh_per_100km(20.0)
+        self.assertAlmostEqual(e.to_km_per_kwh, 5.0, delta=0.001)
+        self.assertAlmostEqual(e.to_wh_per_km, 200.0, delta=0.001)
+        self.assertAlmostEqual(e.to_kwh_per_100km, 20.0, delta=0.001)
+        self.assertAlmostEqual(e.to_miles_per_kwh, 3.106, delta=0.01)
+
+    def test_from_miles_per_kwh_all_to(self):
+        e = EvEfficiency.from_miles_per_kwh(1.0)
+        self.assertAlmostEqual(e.to_km_per_kwh, 1.609344, delta=1e-6)
+        self.assertAlmostEqual(e.to_wh_per_km, 621.371, delta=0.001)
+        self.assertAlmostEqual(e.to_kwh_per_100km, 62.137, delta=0.001)
+        self.assertEqual(e.to_miles_per_kwh, 1.0)
+
+    def test_invalid_values(self):
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_wh_per_km(0.0)
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_kwh_per_100km(0.0)
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_km_per_kwh(0.0)
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_miles_per_kwh(0.0)
 
 
 class TestVolume(unittest.TestCase):

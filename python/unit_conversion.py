@@ -251,7 +251,7 @@ class Efficiency:
     _MPG_TO_KML = 0.425143707
 
     def __init__(self, kml: float):
-        if kml <= 0:
+        if kml <= 0 or math.isinf(kml):
             raise ValueError("Must be positive")
         self._kml = kml
 
@@ -278,6 +278,51 @@ class Efficiency:
     @property
     def to_mpg(self):
         return self._kml / self._MPG_TO_KML
+
+
+class EvEfficiency:
+    _MILE_TO_KM = 1.609344
+
+    def __init__(self, v: float):
+        if v <= 0 or math.isinf(v):
+            raise ValueError("Must be positive")
+        self._v = v
+
+    @classmethod
+    def from_km_per_kwh(cls, v):
+        return cls(v)
+
+    @classmethod
+    def from_wh_per_km(cls, v):
+        if v == 0:
+            raise ValueError("Must be positive")
+        return cls(1000.0 / v)
+
+    @classmethod
+    def from_kwh_per_100km(cls, v):
+        if v == 0:
+            raise ValueError("Must be positive")
+        return cls(100.0 / v)
+
+    @classmethod
+    def from_miles_per_kwh(cls, v):
+        return cls(v * cls._MILE_TO_KM)
+
+    @property
+    def to_km_per_kwh(self):
+        return self._v
+
+    @property
+    def to_wh_per_km(self):
+        return 1000.0 / self._v
+
+    @property
+    def to_kwh_per_100km(self):
+        return 100.0 / self._v
+
+    @property
+    def to_miles_per_kwh(self):
+        return self._v / self._MILE_TO_KM
 
 
 class Volume:
