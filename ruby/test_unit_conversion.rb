@@ -226,6 +226,47 @@ class TestEfficiency < Minitest::Test
 end
 
 
+class TestEvEfficiency < Minitest::Test
+  def test_matrix_from_km_per_kwh
+    e = EvEfficiency.from_km_per_kwh(6.0)
+    assert_equal(6.0, e.to_km_per_kwh)
+    assert_in_delta(166.666, e.to_wh_per_km, 0.001)
+    assert_in_delta(16.666, e.to_kwh_per_100km, 0.001)
+    assert_in_delta(3.728, e.to_miles_per_kwh, 0.001)
+  end
+
+  def test_matrix_from_wh_per_km
+    e = EvEfficiency.from_wh_per_km(200.0)
+    assert_in_delta(5.0, e.to_km_per_kwh, 0.001)
+    assert_in_delta(200.0, e.to_wh_per_km, 0.001)
+    assert_in_delta(20.0, e.to_kwh_per_100km, 0.001)
+    assert_in_delta(3.106, e.to_miles_per_kwh, 0.01)
+  end
+
+  def test_matrix_from_kwh_per_100km
+    e = EvEfficiency.from_kwh_per_100km(20.0)
+    assert_in_delta(5.0, e.to_km_per_kwh, 0.001)
+    assert_in_delta(200.0, e.to_wh_per_km, 0.001)
+    assert_in_delta(20.0, e.to_kwh_per_100km, 0.001)
+    assert_in_delta(3.106, e.to_miles_per_kwh, 0.01)
+  end
+
+  def test_matrix_from_miles_per_kwh
+    e = EvEfficiency.from_miles_per_kwh(1.0)
+    assert_in_delta(1.609344, e.to_km_per_kwh, 1e-6)
+    assert_in_delta(621.371, e.to_wh_per_km, 0.001)
+    assert_in_delta(62.137, e.to_kwh_per_100km, 0.001)
+    assert_equal(1.0, e.to_miles_per_kwh)
+  end
+
+  def test_invalid_guards
+    assert_raises(ArgumentError) { EvEfficiency.from_km_per_kwh(0.0) }
+    assert_raises(ArgumentError) { EvEfficiency.from_wh_per_km(0.0) }
+    assert_raises(ArgumentError) { EvEfficiency.from_kwh_per_100km(0.0) }
+    assert_raises(ArgumentError) { EvEfficiency.from_miles_per_kwh(0.0) }
+  end
+end
+
 class TestVolume < Minitest::Test
   def test_volume_conversion
     v = Volume.from_liters(1.0)

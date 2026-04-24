@@ -313,6 +313,49 @@ class Efficiency
 end
 
 
+class EvEfficiency
+  MILE_TO_KM = 1.609344
+
+  private_class_method :new
+  def initialize(v)
+    raise ArgumentError, "Must be positive" if v <= 0 || v.infinite?
+    @v = v
+  end
+
+  def self.from_km_per_kwh(v)
+    return new(v)
+  end
+
+  def self.from_wh_per_km(v)
+    return new(1000.0 / v)
+  end
+
+  def self.from_kwh_per_100km(v)
+    return new(100.0 / v)
+  end
+
+  def self.from_miles_per_kwh(v)
+    return new(v * MILE_TO_KM)
+  end
+
+  def to_km_per_kwh
+    return @v
+  end
+
+  def to_wh_per_km
+    return 1000.0 / @v
+  end
+
+  def to_kwh_per_100km
+    return 100.0 / @v
+  end
+
+  def to_miles_per_kwh
+    return @v / MILE_TO_KM
+  end
+end
+
+
 class Volume
   US_GAL = 3.785411784
   IMP_GAL = 4.54609
