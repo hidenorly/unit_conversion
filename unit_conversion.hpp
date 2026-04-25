@@ -184,7 +184,7 @@ private:
     static constexpr double MILE_TO_KM = 1.609344;
 
     explicit EvEfficiency(double km_per_kwh) : m_km_per_kwh(km_per_kwh) {
-        if (km_per_kwh <= 0.0 || std::isinf(km_per_kwh)) throw std::invalid_argument("Must be positive");
+        if (std::isnan(km_per_kwh) || km_per_kwh <= 0.0 || std::isinf(km_per_kwh)) throw std::invalid_argument("Must be positive");
     }
 
 public:

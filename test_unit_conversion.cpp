@@ -279,6 +279,11 @@ TEST(EvEfficiencyTest, invalid) {
     EXPECT_THROW(EvEfficiency::fromKmkWh(0.0), std::invalid_argument);
     EXPECT_THROW(EvEfficiency::fromWhkm(-1.0), std::invalid_argument);
     EXPECT_THROW(EvEfficiency::fromWhkm(0.0), std::invalid_argument);
+
+    // NaN
+    EXPECT_THROW(EvEfficiency::fromKmkWh(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    // infinite
+    EXPECT_THROW(EvEfficiency::fromKmkWh(std::numeric_limits<double>::infinity()), std::invalid_argument);
 }
 
 // --- test case for Volume
