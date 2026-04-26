@@ -252,6 +252,7 @@ mod tests {
         let _ = EvEfficiency::from_wh_per_km(0.0);
         let _ = EvEfficiency::from_kwh_per_100km(0.0);
         let _ = EvEfficiency::from_miles_per_kwh(0.0);
+        let _ = EvEfficiency::from_km_per_kwh(f64::NAN);
     }
 
 
