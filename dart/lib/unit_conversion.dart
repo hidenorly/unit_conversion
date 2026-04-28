@@ -165,7 +165,7 @@ class EvEfficiency {
   static const double _mileToKm = 1.609344;
 
   EvEfficiency._(this._kmPerKwh) {
-    if (_kmPerKwh <= 0 || _kmPerKwh.isInfinite) throw ArgumentError('Must be positive');
+    if (_kmPerKwh.isNaN || _kmPerKwh <= 0 || _kmPerKwh.isInfinite) throw ArgumentError('Must be positive');
   }
 
   EvEfficiency.fromKmkWh(double v) : this._(v);

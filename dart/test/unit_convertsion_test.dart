@@ -263,6 +263,8 @@ group('EvEfficiency Tests', () {
       expect(() => EvEfficiency.fromWhkm(0.0), throwsArgumentError);
       expect(() => EvEfficiency.fromKwh100km(0.0), throwsArgumentError);
       expect(() => EvEfficiency.fromMpKwh(0.0), throwsArgumentError);
+      expect(() => EvEfficiency.fromKmkWh(-1.0), throwsArgumentError);
+      expect(() => EvEfficiency.fromKmkWh(double.nan), throwsArgumentError);
     });
   });
 
