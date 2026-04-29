@@ -218,7 +218,10 @@ class TestEvEfficiency(unittest.TestCase):
             EvEfficiency.from_km_per_kwh(0.0)
         with self.assertRaises(ValueError):
             EvEfficiency.from_miles_per_kwh(0.0)
-
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_km_per_kwh(float('nan'))
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_miles_per_kwh(-5.0)
 
 class TestVolume(unittest.TestCase):
     def test_volume_coverage(self):

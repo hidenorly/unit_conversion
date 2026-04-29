@@ -284,7 +284,7 @@ class EvEfficiency:
     _MILE_TO_KM = 1.609344
 
     def __init__(self, v: float):
-        if v <= 0 or math.isinf(v):
+        if math.isnan(v) or v <= 0 or math.isinf(v):
             raise ValueError("Must be positive")
         self._v = v
 
