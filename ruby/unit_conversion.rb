@@ -318,7 +318,7 @@ class EvEfficiency
 
   private_class_method :new
   def initialize(v)
-    raise ArgumentError, "Must be positive" if v <= 0 || v.infinite?
+    raise ArgumentError, "Must be positive" if v.nan? || v <= 0 || v.infinite?
     @v = v
   end
 

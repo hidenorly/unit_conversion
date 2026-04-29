@@ -264,6 +264,8 @@ class TestEvEfficiency < Minitest::Test
     assert_raises(ArgumentError) { EvEfficiency.from_wh_per_km(0.0) }
     assert_raises(ArgumentError) { EvEfficiency.from_kwh_per_100km(0.0) }
     assert_raises(ArgumentError) { EvEfficiency.from_miles_per_kwh(0.0) }
+    assert_raises(ArgumentError) { EvEfficiency.from_km_per_kwh(-1.0) }
+    assert_raises(ArgumentError) { EvEfficiency.from_km_per_kwh(Float::NAN) }
   end
 end
 
