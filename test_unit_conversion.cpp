@@ -240,6 +240,15 @@ TEST(EfficiencyTest, EfficiencyFactoryException) {
     EXPECT_THROW(Efficiency::fromKml(0.0), std::invalid_argument);
     EXPECT_THROW(Efficiency::fromKml(-1.0), std::invalid_argument);
     EXPECT_THROW(Efficiency::fromL100km(-5.0), std::invalid_argument);
+
+    // NaN
+    EXPECT_THROW(Efficiency::fromKml(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(Efficiency::fromL100km(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(Efficiency::fromMpg(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    // infinite
+    EXPECT_THROW(Efficiency::fromKml(std::numeric_limits<double>::infinity()), std::invalid_argument);
+    EXPECT_THROW(Efficiency::fromL100km(std::numeric_limits<double>::infinity()), std::invalid_argument);
+    EXPECT_THROW(Efficiency::fromMpg(std::numeric_limits<double>::infinity()), std::invalid_argument);
 }
 
 

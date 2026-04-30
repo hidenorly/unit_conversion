@@ -162,7 +162,7 @@ private:
     static constexpr double MPG_TO_KML = 0.425143707;
 
     explicit Efficiency(double kml) : m_kml(kml) {
-        if (m_kml <= 0.0){
+        if( std::isnan(kml) || (std::isinf(kml)) || m_kml <= 0.0 ){
             throw std::invalid_argument("Must be positive");
         }
     }
@@ -184,7 +184,9 @@ private:
     static constexpr double MILE_TO_KM = 1.609344;
 
     explicit EvEfficiency(double km_per_kwh) : m_km_per_kwh(km_per_kwh) {
-        if (std::isnan(km_per_kwh) || km_per_kwh <= 0.0 || std::isinf(km_per_kwh)) throw std::invalid_argument("Must be positive");
+        if( std::isnan(km_per_kwh) || std::isinf(km_per_kwh) || km_per_kwh <= 0.0 ){
+            throw std::invalid_argument("Must be positive");
+        }
     }
 
 public:
