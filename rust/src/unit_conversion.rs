@@ -182,7 +182,9 @@ impl Efficiency {
     const MPG_TO_KML: f64 = 0.425143707;
 
     fn new(v: f64) -> Self {
-        if v <= 0.0 || v.is_infinite() { panic!("Must be positive"); }
+        if v <= 0.0 || v.is_nan() || v.is_infinite() {
+            panic!("Must be positive");
+        }
         Self { kml: v }
     }
 
@@ -204,7 +206,9 @@ impl EvEfficiency {
     const MILE_TO_KM: f64 = 1.609344;
 
     fn new(v: f64) -> Self {
-        if v.is_nan() || v <= 0.0 || v.is_infinite() { panic!("Must be positive"); }
+        if v <= 0.0 || v.is_nan() || v.is_infinite() {
+            panic!("Must be positive");
+        }
         Self { km_per_kwh: v }
     }
 

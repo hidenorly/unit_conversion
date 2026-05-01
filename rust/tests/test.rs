@@ -206,6 +206,17 @@ mod tests {
         assert!((e_kml.to_mpg() - 23.5215).abs() < EPSILON);
         assert!((e_kml.to_l100km() - 10.0).abs() < EPSILON);
     }
+    #[test]
+    #[should_panic(expected = "Must be positive")]
+    fn test_efficiency_panic() {
+        let _ = Efficiency::from_kml(0.0);
+        let _ = Efficiency::from_l100km(-1.0);
+        let _ = Efficiency::from_mpg(0.0);
+
+        let _ = Efficiency::from_kml(f64::NAN);
+        let _ = Efficiency::from_l100km(f64::NAN);
+        let _ = Efficiency::from_mpg(f64::NAN);
+    }
 
 
     use unit_conversion::EvEfficiency;
