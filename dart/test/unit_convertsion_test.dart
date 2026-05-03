@@ -222,6 +222,16 @@ void main() {
       expect(e.toL100km, closeTo(10.0, epsilon));
       expect(e.toMpg, closeTo(23.5215, epsilon));
     });
+
+    test('Efficiency Invalid', () {
+      expect(() => Efficiency.fromKml(0.0), throwsArgumentError);
+      expect(() => Efficiency.fromL100km(0.0), throwsArgumentError);
+      expect(() => Efficiency.fromMpg(0.0), throwsArgumentError);
+
+      expect(() => Efficiency.fromKml(double.nan), throwsArgumentError);
+      expect(() => Efficiency.fromL100km(double.nan), throwsArgumentError);
+      expect(() => Efficiency.fromMpg(double.nan), throwsArgumentError);
+    });
   });
 
 
