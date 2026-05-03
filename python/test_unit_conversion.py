@@ -179,6 +179,21 @@ class TestEfficiency(unittest.TestCase):
         self.assertAlmostEqual(e2.to_kml, 10.0, delta=0.0001)
         self.assertAlmostEqual(e2.to_l100km, 10.0, delta=0.0001)
 
+    def test_invalid_values(self):
+        with self.assertRaises(ValueError):
+            Efficiency.from_kml(0.0)
+        with self.assertRaises(ValueError):
+            Efficiency.from_l100km(0.0)
+        with self.assertRaises(ValueError):
+            Efficiency.from_mpg(0.0)
+
+        with self.assertRaises(ValueError):
+            Efficiency.from_kml(float('nan'))
+        with self.assertRaises(ValueError):
+            Efficiency.from_l100km(float('nan'))
+        with self.assertRaises(ValueError):
+            Efficiency.from_mpg(float('nan'))
+
 
 class TestEvEfficiency(unittest.TestCase):
     def test_from_km_per_kwh_all_to(self):

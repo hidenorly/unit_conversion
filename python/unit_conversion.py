@@ -250,10 +250,10 @@ class Angle:
 class Efficiency:
     _MPG_TO_KML = 0.425143707
 
-    def __init__(self, kml: float):
-        if kml <= 0 or math.isinf(kml):
+    def __init__(self, v: float):
+        if v <= 0 or math.isnan(v) or math.isinf(v):
             raise ValueError("Must be positive")
-        self._kml = kml
+        self._kml = v
 
     @classmethod
     def from_kml(cls, v: float):
@@ -261,6 +261,8 @@ class Efficiency:
 
     @classmethod
     def from_l100km(cls, v: float):
+        if v == 0:
+            raise ValueError("Must be positive")
         return cls(100.0 / v)
 
     @classmethod
@@ -284,7 +286,7 @@ class EvEfficiency:
     _MILE_TO_KM = 1.609344
 
     def __init__(self, v: float):
-        if math.isnan(v) or v <= 0 or math.isinf(v):
+        if v <= 0 or math.isnan(v) or math.isinf(v):
             raise ValueError("Must be positive")
         self._v = v
 
