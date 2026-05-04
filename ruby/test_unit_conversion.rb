@@ -222,6 +222,12 @@ class TestEfficiency < Minitest::Test
     assert_in_delta(23.5215, e3.to_mpg, 0.001)
     
     assert_raises(ArgumentError) { Efficiency.from_kml(0) }
+    assert_raises(ArgumentError) { Efficiency.from_l100km(0) }
+    assert_raises(ArgumentError) { Efficiency.from_mpg(0) }
+
+    assert_raises(ArgumentError) { Efficiency.from_kml(Float::NAN) }
+    assert_raises(ArgumentError) { Efficiency.from_l100km(Float::NAN) }
+    assert_raises(ArgumentError) { Efficiency.from_mpg(Float::NAN) }
   end
 end
 

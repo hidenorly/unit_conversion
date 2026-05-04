@@ -282,9 +282,9 @@ class Efficiency
 
   private_class_method :new
 
-  def initialize(kml)
-    raise ArgumentError, "Must be positive" if kml <= 0
-    @kml = kml
+  def initialize(v)
+    raise ArgumentError, "Must be positive" if v <= 0 || v.nan? ||  v.infinite?
+    @kml = v
   end
 
   def self.from_kml(v)
@@ -318,7 +318,7 @@ class EvEfficiency
 
   private_class_method :new
   def initialize(v)
-    raise ArgumentError, "Must be positive" if v.nan? || v <= 0 || v.infinite?
+    raise ArgumentError, "Must be positive" if v <= 0 || v.nan? ||  v.infinite?
     @v = v
   end
 
