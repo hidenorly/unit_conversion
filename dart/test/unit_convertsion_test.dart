@@ -169,6 +169,18 @@ void main() {
   });
 
 
+
+  group('Torque Conversion tests', () {
+    test('Power Matrix and Guards', () {
+      final p = Power.fromPs(100);
+      expect(p.toKw, closeTo(73.549, 0.001));
+      
+      expect(() => Power.fromKw(double.nan), throwsArgumentError);
+      expect(() => Power.fromKw(-5.0), throwsArgumentError);
+    });
+  });
+
+
   group('Torque Conversion tests', () {
     test('Nm to Kgfm/Lbft,', () {
       final t = Torque.fromNm(100.0);

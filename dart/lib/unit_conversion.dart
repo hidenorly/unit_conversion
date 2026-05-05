@@ -111,6 +111,27 @@ class Pressure {
 }
 
 
+class Power {
+  final double _kw;
+  static const double _psToKw = 0.73549875;
+  static const double _hpToKw = 0.74569987;
+
+  Power._(this._kw) {
+    if (_kw.isNaN || _kw < 0 || _kw.isInfinite) {
+      throw ArgumentError('Power must be a non-negative finite number');
+    }
+  }
+
+  Power.fromKw(double v) : this._(v);
+  Power.fromPs(double v) : this._(v * _psToKw);
+  Power.fromHp(double v) : this._(v * _hpToKw);
+
+  double get toKw => _kw;
+  double get toPs => _kw / _psToKw;
+  double get toHp => _kw / _hpToKw;
+}
+
+
 class Torque {
   final double _nm;
   static const double _kgfmToNm = 9.80665;
@@ -150,9 +171,9 @@ class Efficiency {
     if (_kml <= 0 || _kml.isNaN || _kml.isInfinite) throw ArgumentError('Must be positive');
   }
 
-  Efficiency.fromKml(double v) : _kml = v;
-  Efficiency.fromL100km(double v) : _kml = 100.0 / v;
-  Efficiency.fromMpg(double v) : _kml = v * _mpgToKml;
+  Efficiency.fromKml(double v) : this._(v);
+  Efficiency.fromL100km(double v) : this._(100.0 / v);
+  Efficiency.fromMpg(double v) : this._(v * _mpgToKml);
 
   double get toKml => _kml;
   double get toL100km => 100.0 / _kml;
