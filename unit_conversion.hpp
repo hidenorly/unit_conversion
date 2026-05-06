@@ -17,6 +17,11 @@
 #ifndef __UNIT_CONVERSION_HPP__
 #define __UNIT_CONVERSION_HPP__
 
+#include <cmath>
+#include <stdexcept>
+#include <limits>
+
+
 class Speed {
 private:
     double m_ms; // internal value is based on m/s
@@ -117,6 +122,29 @@ public:
     double toKpa() const { return m_kpa; }
     double toBar() const { return m_kpa / BAR_TO_KPA; }
     double toPsi() const { return m_kpa / PSI_TO_KPA; }
+};
+
+
+class Power {
+private:
+    double m_kw;
+    static constexpr double PS_TO_KW = 0.73549875;
+    static constexpr double HP_TO_KW = 0.74569987;
+
+    explicit Power(double kw) : m_kw(kw) {
+        if (std::isnan(kw) || kw < 0.0 || std::isinf(kw)) {
+            throw std::invalid_argument("Power must be a non-negative finite number");
+        }
+    }
+
+public:
+    static Power fromKw(double v) { return Power(v); }
+    static Power fromPs(double v) { return Power(v * PS_TO_KW); }
+    static Power fromHp(double v) { return Power(v * HP_TO_KW); }
+
+    double toKw() const { return m_kw; }
+    double toPs() const { return m_kw / PS_TO_KW; }
+    double toHp() const { return m_kw / HP_TO_KW; }
 };
 
 

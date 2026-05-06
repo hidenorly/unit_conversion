@@ -181,6 +181,33 @@ TEST(PressureTest, PsiToPsi) {
 }
 
 
+// --- test case for power
+
+TEST(PowerTest, KwPsHpToAll) {
+    // fromKw -> all to
+    auto p1 = Power::fromKw(100.0);
+    EXPECT_NEAR(p1.toKw(), 100.0, 1e-9);
+    EXPECT_NEAR(p1.toPs(), 135.962, 0.001);
+    EXPECT_NEAR(p1.toHp(), 134.102, 0.001);
+
+    // fromPs -> all to
+    auto p2 = Power::fromPs(135.962);
+    EXPECT_NEAR(p2.toKw(), 100.0, 0.01);
+
+    // fromHp -> all to
+    auto p3 = Power::fromHp(134.102);
+    EXPECT_NEAR(p3.toKw(), 100.0, 0.01);
+}
+
+TEST(PowerTest, invalid) {
+    EXPECT_THROW(Power::fromKw(-1.0), std::invalid_argument);
+    EXPECT_THROW(Power::fromKw(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(Power::fromKw(std::numeric_limits<double>::infinity()), std::invalid_argument);
+    // 0.0
+    EXPECT_NO_THROW(Power::fromKw(0.0));
+}
+
+
 // --- test case for torque
 
 TEST(TorqueTest, NmToNm) {
