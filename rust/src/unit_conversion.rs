@@ -141,6 +141,31 @@ impl Pressure {
 }
 
 
+// --- Power
+
+pub struct Power { kw: f64 }
+
+impl Power {
+    const PS_TO_KW: f64 = 0.73549875;
+    const HP_TO_KW: f64 = 0.74569987;
+
+    fn new(v: f64) -> Self {
+        if v.is_nan() || v < 0.0 || v.is_infinite() {
+            panic!("Power must be a non-negative finite number");
+        }
+        Self { kw: v }
+    }
+
+    pub fn from_kw(v: f64) -> Self { Self::new(v) }
+    pub fn from_ps(v: f64) -> Self { Self::new(v * Self::PS_TO_KW) }
+    pub fn from_hp(v: f64) -> Self { Self::new(v * Self::HP_TO_KW) }
+
+    pub fn to_kw(&self) -> f64 { self.kw }
+    pub fn to_ps(&self) -> f64 { self.kw / Self::PS_TO_KW }
+    pub fn to_hp(&self) -> f64 { self.kw / Self::HP_TO_KW }
+}
+
+
 // --- Torque
 
 pub struct Torque { nm: f64 }

@@ -153,6 +153,28 @@ mod tests {
     }
 
 
+    use unit_conversion::Power;
+
+    #[test]
+    fn test_power_conversion() {
+        let p = Power::from_kw(100.0);
+        assert!((p.to_ps() - 135.962).abs() < 0.001);
+        assert!((p.to_hp() - 134.102).abs() < 0.001);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_power_conversion_nan_guard() {
+        Power::from_kw(f64::NAN);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_power_conversion_neg_guard() {
+        Power::from_kw(-0.1);
+    }
+
+
     use unit_conversion::Torque;
 
     #[test]
