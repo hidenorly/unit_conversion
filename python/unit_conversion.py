@@ -192,6 +192,40 @@ class Pressure:
         return self._kpa / self._PSI_TO_KPA
 
 
+class Power:
+    _PS_TO_KW = 0.73549875
+    _HP_TO_KW = 0.74569987
+
+    def __init__(self, kw: float):
+        if math.isnan(kw) or kw < 0 or math.isinf(kw):
+            raise ValueError(f"Invalid power value: {kw}")
+        self._kw = kw
+
+    @classmethod
+    def from_kw(cls, v):
+        return cls(v)
+
+    @classmethod
+    def from_ps(cls, v):
+        return cls(v * cls._PS_TO_KW)
+
+    @classmethod
+    def from_hp(cls, v):
+        return cls(v * cls._HP_TO_KW)
+
+    @property
+    def to_kw(self):
+        return self._kw
+
+    @property
+    def to_ps(self):
+        return self._kw / self._PS_TO_KW
+
+    @property
+    def to_hp(self):
+        return self._kw / self._HP_TO_KW
+
+
 class Torque:
     _KGFM_TO_NM = 9.80665
     _LBFT_TO_NM = 1.355817948

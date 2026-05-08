@@ -16,7 +16,7 @@
 
 import unittest
 import math
-from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Torque,Angle,Efficiency,EvEfficiency,Volume
+from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Power,Torque,Angle,Efficiency,EvEfficiency,Volume
 
 class TestSpeed(unittest.TestCase):
     def test_conversion(self):
@@ -136,6 +136,19 @@ class TestPressure(unittest.TestCase):
         p_psi = Pressure.from_psi(36.2594)
         self.assertAlmostEqual(p_psi.to_psi, 36.2594, places=3)
         self.assertAlmostEqual(p_psi.to_kpa, 250.0, places=3)
+
+
+class TestPower(unittest.TestCase):
+    def test_matrix(self):
+        p = Power.from_hp(200)
+        self.assertAlmostEqual(p.to_kw, 149.139, places=2)
+        self.assertAlmostEqual(p.to_ps, 202.774, places=2)
+
+    def test_guards(self):
+        with self.assertRaises(ValueError):
+            Power.from_kw(float('nan'))
+        with self.assertRaises(ValueError):
+            Power.from_kw(-0.00001)
 
 
 class TestTorque(unittest.TestCase):
