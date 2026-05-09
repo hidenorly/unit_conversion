@@ -214,6 +214,42 @@ class Pressure
 end
 
 
+class Power
+  PS_TO_KW = 0.73549875
+  HP_TO_KW = 0.74569987
+
+  private_class_method :new
+  def initialize(kw)
+    kw = kw.to_f
+    raise ArgumentError if kw.nan? || kw < 0 || kw.infinite?
+    @kw = kw
+  end
+
+  def self.from_kw(v)
+    return new(v)
+  end
+
+  def self.from_ps(v)
+    return new(v * PS_TO_KW)
+  end
+
+  def self.from_hp(v)
+    return new(v * HP_TO_KW)
+  end
+
+  def to_kw
+    return @kw
+  end
+
+  def to_ps
+    return @kw / PS_TO_KW
+  end
+
+  def to_hp
+    return @kw / HP_TO_KW
+  end
+end
+
 class Torque
   KGFM_TO_NM = 9.80665
   LBFT_TO_NM = 1.355817948

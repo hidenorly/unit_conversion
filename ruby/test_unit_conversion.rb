@@ -176,6 +176,20 @@ class TestPressure < Minitest::Test
 end
 
 
+class TestPower < Minitest::Test
+  def test_conversion
+    p = Power.from_kw(1)
+    assert_in_delta 1.3596, p.to_ps, 0.0001
+    assert_in_delta 1.3410, p.to_hp, 0.0001
+  end
+
+  def test_guards
+    assert_raises(ArgumentError) { Power.from_kw(Float::NAN) }
+    assert_raises(ArgumentError) { Power.from_kw(-1) }
+  end
+end
+
+
 class TestTorque < Minitest::Test
   def test_conversion
     t = Torque.from_lbft(100.0)
