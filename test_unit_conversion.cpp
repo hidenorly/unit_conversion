@@ -95,6 +95,13 @@ TEST(TemperatureTest, KelvinToCelsius) {
     EXPECT_NEAR(t.toCelsius(), 100.0, 0.001);
 }
 
+TEST(TemperatureTest, Invalid) {
+    EXPECT_NO_THROW(Temperature::fromKelvin(0.0));
+    EXPECT_THROW(Temperature::fromCelsius(-273.16), std::invalid_argument);
+    EXPECT_THROW(Temperature::fromKelvin(-0.01), std::invalid_argument);
+    EXPECT_THROW(Temperature::fromCelsius(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+}
+
 
 // --- test case for Weight
 

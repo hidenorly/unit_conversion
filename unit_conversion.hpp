@@ -42,11 +42,16 @@ public:
 class Temperature {
 private:
     double m_celsius;
+    static constexpr double ABSOLUTE_ZERO_C = -273.15;
     static constexpr double F_OFFSET = 32.0;
     static constexpr double F_FACTOR = 1.8;
     static constexpr double K_OFFSET = 273.15;
 
-    explicit Temperature(double c) : m_celsius(c) {}
+    explicit Temperature(double c) : m_celsius(c) {
+        if (std::isnan(c) || c < ABSOLUTE_ZERO_C || std::isinf(c)) {
+            throw std::invalid_argument("Temperature below absolute zero or invalid");
+        }
+    }
 
 public:
     static Temperature fromCelsius(double v) { return Temperature(v); }
