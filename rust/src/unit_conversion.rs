@@ -58,13 +58,22 @@ pub struct Temperature {
 }
 
 impl Temperature {
+    const ABSOLUTE_ZERO_C: f64 = -273.15;
     const F_OFFSET: f64 = 32.0;
     const F_FACTOR: f64 = 1.8;
     const K_OFFSET: f64 = 273.15;
 
-    pub fn from_celsius(v: f64) -> Self { Self { celsius: v } }
-    pub fn from_fahrenheit(v: f64) -> Self { Self { celsius: (v - Self::F_OFFSET) / Self::F_FACTOR } }
-    pub fn from_kelvin(v: f64) -> Self { Self { celsius: v - Self::K_OFFSET } }
+    fn new(c: f64) -> Self {
+        if c.is_nan() || c < Self::ABSOLUTE_ZERO_C || c.is_infinite() {
+            panic!("Below absolute zero or invalid value");
+        }
+
+    Self { celsius: c }
+    }
+
+    pub fn from_celsius(v: f64) -> Self { Self::new(v) }
+    pub fn from_fahrenheit(v: f64) -> Self { Self::new( (v - Self::F_OFFSET) / Self::F_FACTOR ) }
+    pub fn from_kelvin(v: f64) -> Self { Self::new(v - Self::K_OFFSET) }
 
     pub fn to_celsius(&self) -> f64 { self.celsius }
     pub fn to_fahrenheit(&self) -> f64 { self.celsius * Self::F_FACTOR + Self::F_OFFSET }

@@ -79,6 +79,18 @@ mod tests {
         assert!((t4.to_celsius() - 0.0).abs() < EPSILON);
     }
 
+    #[test]
+    fn test_absolute_zero() {
+        let t = Temperature::from_kelvin(0.0);
+        assert!((t.to_celsius() - (-273.15)).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_below_absolute_zero() {
+        Temperature::from_celsius(-274.0);
+    }
+
 
     use unit_conversion::Mass;
 
