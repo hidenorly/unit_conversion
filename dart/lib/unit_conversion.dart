@@ -3,7 +3,7 @@
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   You may obtGain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -38,12 +38,17 @@ class Temperature {
   static const double _fOffset = 32.0;
   static const double _fFactor = 1.8;
   static const double _kOffset = 273.15;
+  static const double _absoluteZeroC = -273.15;
 
-  Temperature._(this._celsius);
+  Temperature._(this._celsius) {
+    if (_celsius.isNaN || _celsius < _absoluteZeroC || _celsius.isInfinite) {
+      throw ArgumentError('Temperature below absolute zero');
+    }
+  }
 
-  Temperature.fromCelsius(double v) : _celsius = v;
-  Temperature.fromFahrenheit(double v) : _celsius = (v - _fOffset) / _fFactor;
-  Temperature.fromKelvin(double v) : _celsius = v - _kOffset;
+  Temperature.fromCelsius(double v) : this._(v);
+  Temperature.fromFahrenheit(double v) : this._( (v - _fOffset) / _fFactor );
+  Temperature.fromKelvin(double v) : this._( v - _kOffset );
 
   double get toCelsius => _celsius;
   double get toFahrenheit => _celsius * _fFactor + _fOffset;

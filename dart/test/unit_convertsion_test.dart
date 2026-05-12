@@ -83,6 +83,14 @@ void main() {
       expect(t.toKelvin, equals(0.0));
       expect(t.toCelsius, equals(-273.15));
     });
+
+    test('Temperature Absolute Zero Guard', () {
+      expect(() => Temperature.fromCelsius(-273.16), throwsArgumentError);
+      expect(() => Temperature.fromKelvin(-0.1), throwsArgumentError);
+      
+      final t = Temperature.fromFahrenheit(-459.67); // Absolute Zero
+      expect(t.toCelsius, closeTo(-273.15, 0.001));
+    });
   });
 
 
