@@ -77,6 +77,18 @@ class TestTemperature < Minitest::Test
     assert_equal(273.15, t4.to_kelvin)
     assert_equal(0.0, t4.to_celsius)
   end
+
+  def test_absolute_zero
+    assert_raises(ArgumentError) { Temperature.from_kelvin(-0.01) }
+    t = Temperature.from_kelvin(0)
+    assert_in_delta(-273.15, t.to_celsius, 0.001)
+
+    assert_raises(ArgumentError) { Temperature.from_celsius(-273.16) }
+
+    t = Temperature.from_fahrenheit(-459.67) # Absolute Zero
+    assert_in_delta(-273.15, t.to_celsius, 0.001)
+  end
+
 end
 
 

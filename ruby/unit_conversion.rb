@@ -50,10 +50,14 @@ class Temperature
   F_FACTOR = 1.8
   K_OFFSET = 273.15
 
+  ABS_ZERO_C = -273.15
+
   private_class_method :new
 
   def initialize(celsius)
-    @celsius = celsius
+    val = celsius.to_f
+    raise ArgumentError if val.nan? || val < ABS_ZERO_C || val.infinite?
+    @celsius = val
   end
 
   def self.from_celsius(v)
