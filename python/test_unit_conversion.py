@@ -62,6 +62,20 @@ class TestTemperature(unittest.TestCase):
         self.assertEqual(t4.to_kelvin, 273.15)
         self.assertAlmostEqual(t3.to_celsius, 0.0, places=3)
 
+    def test_guards(self):
+        with self.assertRaises(ValueError):
+            Temperature.from_kelvin(-1)
+
+        with self.assertRaises(ValueError):
+            Temperature.from_celsius(-273.16)
+
+        with self.assertRaises(ValueError):
+            Temperature.from_kelvin(-0.1)
+
+        t = Temperature.from_fahrenheit(-459.67) # Absolute Zero
+        self.assertAlmostEqual(t.to_celsius, -273.15, places=3)
+
+
 
 class TestMass(unittest.TestCase):
     def test_conversion(self):

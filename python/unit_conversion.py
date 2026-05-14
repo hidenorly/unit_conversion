@@ -44,8 +44,11 @@ class Temperature:
     _F_OFFSET = 32.0
     _F_FACTOR = 1.8
     _K_OFFSET = 273.15
+    ABS_ZERO_C = -273.15
 
     def __init__(self, celsius: float):
+        if math.isnan(celsius) or celsius < self.ABS_ZERO_C or math.isinf(celsius):
+            raise ValueError(f"Invalid temperature: {celsius}")
         self._celsius = celsius
 
     @classmethod
