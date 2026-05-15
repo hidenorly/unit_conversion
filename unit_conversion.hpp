@@ -25,9 +25,13 @@
 class Speed {
 private:
     double m_ms; // internal value is based on m/s
-    explicit Speed(double ms) : m_ms(ms) {}
-    static constexpr float convert_kmh_ms = 3.6f;
-    static constexpr float convert_mph_ms = 0.44704f;
+    explicit Speed(double ms) : m_ms(ms) {
+        if (std::isnan(ms) || ms < 0.0 || std::isinf(ms)) {
+            throw std::invalid_argument("Speed must be non-negative and finite");
+        }        
+    }
+    static constexpr double convert_kmh_ms = 3.6f;
+    static constexpr double convert_mph_ms = 0.44704f;
 
 public:
     static Speed fromKmH(double value) { return Speed(value / convert_kmh_ms); }
