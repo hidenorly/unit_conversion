@@ -210,6 +210,15 @@ TEST(PowerTest, invalid) {
     EXPECT_THROW(Power::fromKw(-1.0), std::invalid_argument);
     EXPECT_THROW(Power::fromKw(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
     EXPECT_THROW(Power::fromKw(std::numeric_limits<double>::infinity()), std::invalid_argument);
+
+    EXPECT_THROW(Power::fromPs(-1.0), std::invalid_argument);
+    EXPECT_THROW(Power::fromPs(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(Power::fromPs(std::numeric_limits<double>::infinity()), std::invalid_argument);
+
+    EXPECT_THROW(Power::fromHp(-1.0), std::invalid_argument);
+    EXPECT_THROW(Power::fromHp(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(Power::fromHp(std::numeric_limits<double>::infinity()), std::invalid_argument);
+
     // 0.0
     EXPECT_NO_THROW(Power::fromKw(0.0));
 }
@@ -231,6 +240,23 @@ TEST(TorqueTest, KgfmToNm) {
 TEST(TorqueTest, LbftToLbft) {
     auto t = Torque::fromLbft(1.0);
     EXPECT_NEAR(t.toLbft(), 1.0, 0.0001);
+}
+
+TEST(TorqueTest, invalid) {
+    EXPECT_THROW(Torque::fromNm(-1.0), std::invalid_argument);
+    EXPECT_THROW(Torque::fromNm(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(Torque::fromNm(std::numeric_limits<double>::infinity()), std::invalid_argument);
+
+    EXPECT_THROW(Torque::fromKgfm(-1.0), std::invalid_argument);
+    EXPECT_THROW(Torque::fromKgfm(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(Torque::fromKgfm(std::numeric_limits<double>::infinity()), std::invalid_argument);
+
+    EXPECT_THROW(Torque::fromLbft(-1.0), std::invalid_argument);
+    EXPECT_THROW(Torque::fromLbft(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(Torque::fromLbft(std::numeric_limits<double>::infinity()), std::invalid_argument);
+
+    // 0.0
+    EXPECT_NO_THROW(Torque::fromNm(0.0));
 }
 
 

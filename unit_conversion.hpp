@@ -163,7 +163,9 @@ private:
     static constexpr double KGFM_TO_NM = 9.80665;
     static constexpr double LBFT_TO_NM = 1.355817948;
 
-    explicit Torque(double nm) : m_nm(nm) {}
+    explicit Torque(double nm) : m_nm(nm) {
+    if (std::isnan(nm) || nm < 0.0 || std::isinf(nm)) throw std::invalid_argument("Invalid torque");
+    }
 
 public:
     static Torque fromNm(double v) { return Torque(v); }
