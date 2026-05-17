@@ -176,14 +176,62 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn test_power_conversion_nan_guard() {
+    fn test_power_conversion_nan_guard_kw() {
         Power::from_kw(f64::NAN);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_power_conversion_nan_guard_ps() {
+        Power::from_ps(f64::NAN);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_power_conversion_nan_guard_hp() {
+        Power::from_hp(f64::NAN);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_power_conversion_infinity_guard_kw() {
+        Power::from_kw(f64::INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_power_conversion_infinity_guard_ps() {
+        Power::from_ps(f64::INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_power_conversion_infinity_guard_hp() {
+        Power::from_hp(f64::INFINITY);
     }
 
     #[test]
     #[should_panic]
     fn test_power_conversion_neg_guard() {
         Power::from_kw(-0.1);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_power_conversion_neg_guard_kw() {
+        Power::from_kw(f64::NEG_INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_power_conversion_neg_guard_ps() {
+        Power::from_ps(f64::NEG_INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_power_conversion_neg_guard_hp() {
+        Power::from_hp(f64::NEG_INFINITY);
     }
 
 
@@ -205,6 +253,60 @@ mod tests {
         assert!((t3.to_lbft() - 1.0).abs() < EPSILON);
         assert!((t3.to_nm() - 1.355818).abs() < EPSILON);
         assert!((t3.to_kgfm() - 0.138255).abs() < EPSILON);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_torque_conversion_nan_guard_kw() {
+        Torque::from_nm(f64::NAN);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_torque_conversion_nan_guard_kgfm() {
+        Torque::from_kgfm(f64::NAN);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_torque_conversion_nan_guard_lbft() {
+        Torque::from_lbft(f64::NAN);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_torque_conversion_inf_guard_kw() {
+        Torque::from_nm(f64::INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_torque_conversion_inf_guard_kgfm() {
+        Torque::from_kgfm(f64::INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_torque_conversion_inf_guard_lbft() {
+        Torque::from_lbft(f64::INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_torque_conversion_neg_guard_kw() {
+        Torque::from_nm(f64::NEG_INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_torque_conversion_neg_guard_kgfm() {
+        Torque::from_kgfm(f64::NEG_INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_torque_conversion_neg_guard_lbft() {
+        Torque::from_lbft(f64::NEG_INFINITY);
     }
 
 

@@ -183,9 +183,14 @@ impl Torque {
     const KGFM_TO_NM: f64 = 9.80665;
     const LBFT_TO_NM: f64 = 1.355817948;
 
-    pub fn from_nm(v: f64) -> Self { Self { nm: v } }
-    pub fn from_kgfm(v: f64) -> Self { Self { nm: v * Self::KGFM_TO_NM } }
-    pub fn from_lbft(v: f64) -> Self { Self { nm: v * Self::LBFT_TO_NM } }
+    fn new(nm: f64) -> Self {
+        if nm.is_nan() || nm < 0.0 || nm.is_infinite() { panic!("Invalid torque"); }
+        Self { nm }
+    }
+
+    pub fn from_nm(v: f64) -> Self { Self::new(v)  }
+    pub fn from_kgfm(v: f64) -> Self { Self::new(v * Self::KGFM_TO_NM) }
+    pub fn from_lbft(v: f64) -> Self { Self::new(v * Self::LBFT_TO_NM ) }
 
     pub fn to_nm(&self) -> f64 { self.nm }
     pub fn to_kgfm(&self) -> f64 { self.nm / Self::KGFM_TO_NM }
