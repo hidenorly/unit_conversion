@@ -142,11 +142,12 @@ class Torque {
   static const double _kgfmToNm = 9.80665;
   static const double _lbftToNm = 1.355817948;
 
-  Torque._(this._nm);
-
-  Torque.fromNm(double v) : _nm = v;
-  Torque.fromKgfm(double v) : _nm = v * _kgfmToNm;
-  Torque.fromLbft(double v) : _nm = v * _lbftToNm;
+  Torque._(this._nm) {
+  if (_nm.isNaN || _nm < 0 || _nm.isInfinite) throw ArgumentError("Invalid torque");
+  }
+  Torque.fromNm(v) : this._( v );
+  Torque.fromKgfm(double v) : this._( v * _kgfmToNm );
+  Torque.fromLbft(double v) : this._( v * _lbftToNm );
 
   double get toNm => _nm;
   double get toKgfm => _nm / _kgfmToNm;

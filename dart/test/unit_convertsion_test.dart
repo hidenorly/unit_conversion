@@ -178,13 +178,23 @@ void main() {
 
 
 
-  group('Torque Conversion tests', () {
+  group('Power Conversion tests', () {
     test('Power Matrix and Guards', () {
       final p = Power.fromPs(100);
       expect(p.toKw, closeTo(73.549, 0.001));
       
       expect(() => Power.fromKw(double.nan), throwsArgumentError);
+      expect(() => Power.fromKw(double.infinity), throwsArgumentError);
       expect(() => Power.fromKw(-5.0), throwsArgumentError);
+
+      expect(() => Power.fromKw(double.nan), throwsArgumentError);
+      expect(() => Power.fromPs(double.infinity), throwsArgumentError);
+      expect(() => Power.fromPs(-5.0), throwsArgumentError);
+
+
+      expect(() => Power.fromHp(double.nan), throwsArgumentError);
+      expect(() => Power.fromHp(double.infinity), throwsArgumentError);
+      expect(() => Power.fromHp(-5.0), throwsArgumentError);
     });
   });
 
@@ -210,6 +220,21 @@ void main() {
       expect(t.toNm, closeTo(100.0, epsilon));
       expect(t.toKgfm, closeTo(10.1971, epsilon));
     });
+
+    test('Torque guards,', () {
+      expect(() => Torque.fromNm(double.nan), throwsArgumentError);
+      expect(() => Torque.fromKgfm(double.infinity), throwsArgumentError);
+      expect(() => Torque.fromLbft(-5.0), throwsArgumentError);
+
+      expect(() => Torque.fromNm(double.nan), throwsArgumentError);
+      expect(() => Torque.fromKgfm(double.infinity), throwsArgumentError);
+      expect(() => Torque.fromLbft(-5.0), throwsArgumentError);
+
+
+      expect(() => Torque.fromNm(double.nan), throwsArgumentError);
+      expect(() => Torque.fromKgfm(double.infinity), throwsArgumentError);
+      expect(() => Torque.fromLbft(-5.0), throwsArgumentError);
+   });
   });
 
   test('Angle Conversion test', () {
