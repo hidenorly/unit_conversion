@@ -261,7 +261,9 @@ class Torque
   private_class_method :new
 
   def initialize(nm)
-    @nm = nm
+    val = nm.to_f
+    raise ArgumentError if val.nan? || val < 0 || val.infinite?
+    @nm = val
   end
 
   def self.from_nm(v)

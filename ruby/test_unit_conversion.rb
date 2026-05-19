@@ -197,7 +197,18 @@ class TestPower < Minitest::Test
 
   def test_guards
     assert_raises(ArgumentError) { Power.from_kw(Float::NAN) }
+    assert_raises(ArgumentError) { Power.from_ps(Float::NAN) }
+    assert_raises(ArgumentError) { Power.from_hp(Float::NAN) }
+
+    assert_raises(ArgumentError) { Power.from_kw(Float::INFINITY) }
+    assert_raises(ArgumentError) { Power.from_ps(Float::INFINITY) }
+    assert_raises(ArgumentError) { Power.from_hp(Float::INFINITY) }
+
+    # neg
     assert_raises(ArgumentError) { Power.from_kw(-1) }
+    assert_raises(ArgumentError) { Power.from_kw(-Float::INFINITY) }
+    assert_raises(ArgumentError) { Power.from_ps(-Float::INFINITY) }
+    assert_raises(ArgumentError) { Power.from_hp(-Float::INFINITY) }
   end
 end
 
@@ -216,6 +227,21 @@ class TestTorque < Minitest::Test
     assert_in_delta(1.0, t3.to_kgfm, 0.001)
     assert_in_delta(9.80665, t3.to_nm, 0.001)
     assert_in_delta(7.233014, t3.to_lbft, 0.001)
+  end
+
+  def test_guards
+    assert_raises(ArgumentError) { Torque.from_nm(Float::NAN) }
+    assert_raises(ArgumentError) { Torque.from_kgfm(Float::NAN) }
+    assert_raises(ArgumentError) { Torque.from_lbft(Float::NAN) }
+
+    assert_raises(ArgumentError) { Torque.from_nm(Float::INFINITY) }
+    assert_raises(ArgumentError) { Torque.from_kgfm(Float::INFINITY) }
+    assert_raises(ArgumentError) { Torque.from_lbft(Float::INFINITY) }
+
+    # neg
+    assert_raises(ArgumentError) { Torque.from_nm(-Float::INFINITY) }
+    assert_raises(ArgumentError) { Torque.from_kgfm(-Float::INFINITY) }
+    assert_raises(ArgumentError) { Torque.from_lbft(-Float::INFINITY) }
   end
 end
 
