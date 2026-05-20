@@ -162,7 +162,26 @@ class TestPower(unittest.TestCase):
         with self.assertRaises(ValueError):
             Power.from_kw(float('nan'))
         with self.assertRaises(ValueError):
+            Power.from_ps(float('nan'))
+        with self.assertRaises(ValueError):
+            Power.from_hp(float('nan'))
+
+        with self.assertRaises(ValueError):
             Power.from_kw(-0.00001)
+
+        with self.assertRaises(ValueError):
+            Power.from_kw(float('inf'))
+        with self.assertRaises(ValueError):
+            Power.from_ps(float('inf'))
+        with self.assertRaises(ValueError):
+            Power.from_hp(float('inf'))
+
+        with self.assertRaises(ValueError):
+            Power.from_kw(float('-inf'))
+        with self.assertRaises(ValueError):
+            Power.from_ps(float('-inf'))
+        with self.assertRaises(ValueError):
+            Power.from_hp(float('-inf'))
 
 
 class TestTorque(unittest.TestCase):
@@ -181,6 +200,28 @@ class TestTorque(unittest.TestCase):
         self.assertAlmostEqual(t3.to_lbft, 7.233014, places=5)
         self.assertAlmostEqual(t3.to_nm, 9.80665, places=5)
         self.assertAlmostEqual(t3.to_kgfm, 1.0, places=5)
+
+    def test_guards(self):
+        with self.assertRaises(ValueError):
+            Torque.from_nm(float('nan'))
+        with self.assertRaises(ValueError):
+            Torque.from_kgfm(float('nan'))
+        with self.assertRaises(ValueError):
+            Torque.from_lbft(float('nan'))
+
+        with self.assertRaises(ValueError):
+            Torque.from_nm(float('inf'))
+        with self.assertRaises(ValueError):
+            Torque.from_kgfm(float('inf'))
+        with self.assertRaises(ValueError):
+            Torque.from_lbft(float('inf'))
+
+        with self.assertRaises(ValueError):
+            Torque.from_nm(float('-inf'))
+        with self.assertRaises(ValueError):
+            Torque.from_kgfm(float('-inf'))
+        with self.assertRaises(ValueError):
+            Torque.from_lbft(float('-inf'))
 
 
 class TestAngle(unittest.TestCase):

@@ -234,6 +234,7 @@ class Torque:
     _LBFT_TO_NM = 1.355817948
 
     def __init__(self, nm: float):
+        if math.isnan(nm) or nm < 0 or math.isinf(nm): raise ValueError("Invalid torque")
         self._nm = nm
 
     @classmethod
