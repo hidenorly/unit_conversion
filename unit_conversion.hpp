@@ -97,8 +97,13 @@ private:
     static constexpr double MILE_TO_M = 1609.344;
     static constexpr double FT_TO_M = 0.3048;
     static constexpr double IN_TO_M = 0.0254;
+    static constexpr double MM_TO_M = 0.001;
 
-    explicit Distance(double meters) : m_meters(meters) {}
+    explicit Distance(double meters) : m_meters(meters) {
+        if (std::isnan(meters) || meters < 0.0 || std::isinf(meters)) {
+            throw std::invalid_argument("Distance must be non-negative and finite");
+        }
+    }
 
 public:
     static Distance fromMeters(double v) { return Distance(v); }
@@ -106,12 +111,14 @@ public:
     static Distance fromMile(double v) { return Distance(v * MILE_TO_M); }
     static Distance fromFeet(double v) { return Distance(v * FT_TO_M); }
     static Distance fromInch(double v) { return Distance(v * IN_TO_M); }
+    static Distance fromMm(double v)     { return Distance(v * MM_TO_M); }
 
     double toMeters() const { return m_meters; }
     double toKm() const { return m_meters / KM_TO_M; }
     double toMile() const { return m_meters / MILE_TO_M; }
     double toFeet() const { return m_meters / FT_TO_M; }
     double toInch() const { return m_meters / IN_TO_M; }
+    double toMm() const     { return m_meters / MM_TO_M; }
 };
 
 

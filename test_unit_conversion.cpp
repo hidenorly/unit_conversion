@@ -167,6 +167,14 @@ TEST(DistanceTest, InchToInch) {
 }
 
 
+TEST(DistanceTest, Mm) {
+    auto d = Distance::fromMm(1000.0);
+    EXPECT_NEAR(d.toMeters(), 1.0, 0.000001);
+
+    EXPECT_THROW(Distance::fromMm(-1.0), std::invalid_argument);
+}
+
+
 // --- test case for pressure
 
 TEST(PressureTest, BarToKpa) {
