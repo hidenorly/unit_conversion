@@ -141,8 +141,36 @@ mod tests {
         let d_in = Distance::from_inch(100.0);
         assert!((d_in.to_inch() - 100.0).abs() < EPSILON);
         assert!((d_in.to_meters() - 2.54).abs() < EPSILON);
+
+        // 1000.0 mm -> 1.0m
+        let d_mm = Distance::from_mm(1000.0);
+        assert_eq!(d_mm.to_meters(), 1.0);
     }
 
+    #[test]
+    #[should_panic]
+    fn test_distance_mm_guard() {
+        Distance::from_mm(-1.0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_distance_meters_guard() {
+        Distance::from_meters(f64::NAN);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_distance_km_guard() {
+        Distance::from_km(f64::INFINITY);
+    }
+
+
+    #[test]
+    #[should_panic]
+    fn test_distance_mile_guard() {
+        Distance::from_mile(f64::NEG_INFINITY);
+    }
 
     use unit_conversion::Pressure;
 

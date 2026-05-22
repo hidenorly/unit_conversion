@@ -115,18 +115,26 @@ impl Distance {
     const MILE_TO_M: f64 = 1609.344;
     const FT_TO_M: f64 = 0.3048;
     const IN_TO_M: f64 = 0.0254;
+    const MM_TO_M: f64 = 0.001;
 
-    pub fn from_meters(v: f64) -> Self { Self { meters: v } }
-    pub fn from_km(v: f64) -> Self { Self { meters: v * Self::KM_TO_M } }
-    pub fn from_mile(v: f64) -> Self { Self { meters: v * Self::MILE_TO_M } }
-    pub fn from_feet(v: f64) -> Self { Self { meters: v * Self::FT_TO_M } }
-    pub fn from_inch(v: f64) -> Self { Self { meters: v * Self::IN_TO_M } }
+    fn new(meters: f64) -> Self {
+        if meters.is_nan() || meters < 0.0 || meters.is_infinite() { panic!("Invalid distance"); }
+        Self { meters }
+    }
+
+    pub fn from_meters(v: f64) -> Self { Self::new( v ) }
+    pub fn from_km(v: f64) -> Self { Self::new( v * Self::KM_TO_M ) }
+    pub fn from_mile(v: f64) -> Self { Self::new( v * Self::MILE_TO_M ) }
+    pub fn from_feet(v: f64) -> Self { Self::new( v * Self::FT_TO_M ) }
+    pub fn from_inch(v: f64) -> Self { Self::new( v * Self::IN_TO_M ) }
+    pub fn from_mm(v: f64) -> Self { Self::new(v * Self::MM_TO_M) }
 
     pub fn to_meters(&self) -> f64 { self.meters }
     pub fn to_km(&self) -> f64 { self.meters / Self::KM_TO_M }
     pub fn to_mile(&self) -> f64 { self.meters / Self::MILE_TO_M }
     pub fn to_feet(&self) -> f64 { self.meters / Self::FT_TO_M }
     pub fn to_inch(&self) -> f64 { self.meters / Self::IN_TO_M }
+    pub fn to_mm(&self) -> f64 { self.meters / Self::MM_TO_M }
 }
 
 
