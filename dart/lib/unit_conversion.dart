@@ -82,20 +82,25 @@ class Distance {
   static const double _mileToM = 1609.344;
   static const double _ftToM = 0.3048;
   static const double _inToM = 0.0254;
+  static const double _mmToM = 0.001;
 
-  Distance._(this._meters);
+  Distance._(this._meters){
+    if (_meters.isNaN || _meters < 0 || _meters.isInfinite) throw ArgumentError('Invalid distance');
+  }
 
-  Distance.fromMeters(double v) : _meters = v;
-  Distance.fromKm(double v) : _meters = v * _kmToM;
-  Distance.fromMile(double v) : _meters = v * _mileToM;
-  Distance.fromFeet(double v) : _meters = v * _ftToM;
-  Distance.fromInch(double v) : _meters = v * _inToM;
+  Distance.fromMeters(double v) : this._(v);
+  Distance.fromKm(double v) : this._(v * _kmToM);
+  Distance.fromMile(double v) : this._(v * _mileToM);
+  Distance.fromFeet(double v) : this._(v * _ftToM);
+  Distance.fromInch(double v) : this._(v * _inToM);
+  Distance.fromMm(double v) : this._(v * _mmToM);
 
   double get toMeters => _meters;
   double get toKm => _meters / _kmToM;
   double get toMile => _meters / _mileToM;
   double get toFeet => _meters / _ftToM;
   double get toInch => _meters / _inToM;
+  double get toMm => _meters / _mmToM;
 }
 
 

@@ -152,6 +152,13 @@ void main() {
       expect(d.toFeet, closeTo(1.0, epsilon));
       expect(d.toInch, closeTo(12.0, epsilon));
     });
+
+    test('MmToMeter', () {
+      expect(() => Distance.fromMm(-1.0), throwsArgumentError);
+      final d = Distance.fromMm(1000.0);
+      expect(d.toMm, 1000.0);
+      expect(d.toMeters, 1.0);
+    });
   });
 
 
