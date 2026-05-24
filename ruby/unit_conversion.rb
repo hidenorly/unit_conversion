@@ -20,7 +20,7 @@ class Speed
   private_class_method :new
 
   def initialize(ms)
-    @ms = ms
+    @ms = ms.to_f
   end
 
   def self.from_kmh(value)
@@ -92,7 +92,9 @@ class Mass
   OZ_TO_KG = 0.0283495231
 
   private_class_method :new
-  def initialize(kg); @kg = kg; end
+  def initialize(kg)
+    @kg = kg.to_f
+  end
 
   def self.from_kg(v)
     return new(v)
@@ -133,11 +135,14 @@ class Distance
   MILE_TO_M = 1609.344
   FT_TO_M   = 0.3048
   IN_TO_M   = 0.0254
+  MM_TO_M = 0.001
 
   private_class_method :new
 
   def initialize(meters)
-    @meters = meters
+    val = meters.to_f
+    raise ArgumentError if val.nan? || val < 0 || val.infinite?
+    @meters = val
   end
 
   def self.from_meters(v)
@@ -160,6 +165,10 @@ class Distance
     return new(v * IN_TO_M)
   end
 
+  def self.from_mm(v)
+    return new(v * MM_TO_M)
+  end
+
   def to_meters
     return @meters
   end
@@ -178,6 +187,10 @@ class Distance
 
   def to_inch
     return @meters / IN_TO_M
+  end
+
+  def to_mm
+    return @meters / MM_TO_M
   end
 end
 
@@ -298,7 +311,7 @@ class Angle
   private_class_method :new
 
   def initialize(rad)
-    @rad = rad
+    @rad = rad.to_f
   end
 
   def self.from_radians(v)
@@ -326,7 +339,7 @@ class Efficiency
 
   def initialize(v)
     raise ArgumentError, "Must be positive" if v <= 0 || v.nan? ||  v.infinite?
-    @kml = v
+    @kml = v.to_f
   end
 
   def self.from_kml(v)
@@ -361,7 +374,7 @@ class EvEfficiency
   private_class_method :new
   def initialize(v)
     raise ArgumentError, "Must be positive" if v <= 0 || v.nan? ||  v.infinite?
-    @v = v
+    @v = v.to_f
   end
 
   def self.from_km_per_kwh(v)
@@ -404,7 +417,7 @@ class Volume
 
   private_class_method :new
   def initialize(l)
-    @l = l
+    @l = l.to_f
   end
 
   def self.from_liters(v)

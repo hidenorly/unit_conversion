@@ -164,6 +164,11 @@ class TestDistance < Minitest::Test
     assert_in_delta(12.0, d.to_inch, 0.000001)
     assert_in_delta(1.0, d.to_feet, 0.000001)
   end
+
+  def test_mm
+    assert_in_delta(1000.0, Distance.from_mm(1000.0).to_mm, 0.001)
+    assert_raises(ArgumentError) { Distance.from_mm(-1.0) }
+  end
 end
 
 
