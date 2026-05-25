@@ -118,8 +118,11 @@ class Distance:
     _mileToM = 1609.344;
     _ftToM = 0.3048;
     _inToM = 0.0254;
+    _MM_TO_M = 0.001
 
     def __init__(self, meter: float):
+        if math.isnan(meter) or meter < 0 or math.isinf(meter):
+            raise ValueError("Invalid")
         self._meters = meter;
 
     @classmethod
@@ -142,6 +145,10 @@ class Distance:
     def from_inch(cls, v: float):
         return cls(v * cls._inToM)
 
+    @classmethod
+    def from_mm(cls, v):
+        return cls(v * cls._MM_TO_M)
+
     @property
     def to_meters(self):
         return self._meters;
@@ -161,6 +168,10 @@ class Distance:
     @property
     def to_inch(self):
         return self._meters/ self._inToM;
+
+    @property
+    def to_mm(self):
+        return self._meters / self._MM_TO_M
 
 
 class Pressure:

@@ -136,6 +136,12 @@ class TestDistance(unittest.TestCase):
         d5 = Distance.from_inch(16.0)
         self.assertEqual(d5.to_inch, 16.0)
 
+        d6 = Distance.from_mm(1000.0)
+        self.assertEqual(d6.to_meters, 1.0)
+
+        with self.assertRaises(ValueError):
+            Distance.from_mm(-1.0)
+
 
 class TestPressure(unittest.TestCase):
     def test_conversion(self):
