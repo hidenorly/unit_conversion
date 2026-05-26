@@ -267,4 +267,22 @@ public:
     double toImpGallons() const { return m_liters / IMP_GAL_TO_L; }
 };
 
+
+class Time {
+private:
+    double m_sec;
+    explicit Time(double s) : m_sec(s) {
+        if (std::isnan(s) || s < 0.0 || std::isinf(s)) throw std::invalid_argument("Invalid Time");
+    }
+
+public:
+    static Time fromSeconds(double v) { return Time(v); }
+    static Time fromMinutes(double v) { return Time(v * 60.0); }
+    static Time fromHours(double v)   { return Time(v * 3600.0); }
+
+    double toSeconds() const { return m_sec; }
+    double toMinutes() const { return m_sec / 60.0; }
+    double toHours() const   { return m_sec / 3600.0; }
+};
+
 #endif // __UNIT_CONVERSION_HPP__

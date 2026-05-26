@@ -396,3 +396,41 @@ TEST(VolumeTest, VolumeFromImpGallons) {
     EXPECT_NEAR(v.toLiters(), 45.4609, 0.0001);
     EXPECT_NEAR(v.toMl(), 45460.9, 0.1);
 }
+
+
+// --- test case for Time
+
+TEST(TimeTest, ConversionMatrix) {
+    auto t1 = Time::fromSeconds(60.0);
+    EXPECT_NEAR(t1.toSeconds(), 60.0, 1e-9);
+    EXPECT_NEAR(t1.toMinutes(), 1.0, 1e-9);
+    EXPECT_NEAR(t1.toHours(), 1.0/60.0, 1e-9);
+
+    auto t2 = Time::fromMinutes(1.0);
+    EXPECT_NEAR(t2.toSeconds(), 60.0, 1e-9);
+    EXPECT_NEAR(t2.toMinutes(), 1.0, 1e-9);
+    EXPECT_NEAR(t2.toHours(), 1.0/60.0, 1e-9);
+
+    auto t3 = Time::fromHours(1.0/60.0);
+    EXPECT_NEAR(t3.toSeconds(), 60.0, 1e-9);
+    EXPECT_NEAR(t3.toMinutes(), 1.0, 1e-9);
+    EXPECT_NEAR(t3.toHours(), 1.0/60.0, 1e-9);
+
+    EXPECT_NO_THROW(Time::fromSeconds(0.0));
+    EXPECT_NO_THROW(Time::fromMinutes(0.0));
+    EXPECT_NO_THROW(Time::fromHours(0.0));
+}
+
+TEST(TimeTest, exception) {
+    EXPECT_THROW(Time::fromSeconds(NAN), std::invalid_argument);
+    EXPECT_THROW(Time::fromSeconds(-1.0), std::invalid_argument);
+    EXPECT_THROW(Time::fromSeconds(INFINITY), std::invalid_argument);
+
+    EXPECT_THROW(Time::fromMinutes(NAN), std::invalid_argument);
+    EXPECT_THROW(Time::fromMinutes(-1.0), std::invalid_argument);
+    EXPECT_THROW(Time::fromMinutes(INFINITY), std::invalid_argument);
+
+    EXPECT_THROW(Time::fromHours(NAN), std::invalid_argument);
+    EXPECT_THROW(Time::fromHours(-1.0), std::invalid_argument);
+    EXPECT_THROW(Time::fromHours(INFINITY), std::invalid_argument);
+}
