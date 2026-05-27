@@ -288,3 +288,22 @@ impl Volume {
     pub fn to_us_gallons(&self) -> f64 { self.liters / Self::US_GAL }
     pub fn to_imp_gallons(&self) -> f64 { self.liters / Self::IMP_GAL }
 }
+
+
+// --- Time
+
+pub struct Time { s: f64 }
+
+impl Time {
+    pub fn new(s: f64) -> Self {
+        if s.is_nan() || s < 0.0 || s.is_infinite() { panic!("Invalid Time"); }
+        Self { s }
+    }
+    pub fn from_seconds(v: f64) -> Self { Self::new(v) }
+    pub fn from_minutes(v: f64) -> Self { Self::new(v * 60.0) }
+    pub fn from_hours(v: f64) -> Self { Self::new(v * 3600.0) }
+
+    pub fn to_seconds(&self) -> f64 { self.s }
+    pub fn to_minutes(&self) -> f64 { self.s / 60.0 }
+    pub fn to_hours(&self) -> f64 { self.s / 3600.0 }
+}

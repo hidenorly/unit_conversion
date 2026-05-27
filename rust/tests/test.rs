@@ -460,4 +460,33 @@ mod tests {
         assert!((v_imp.to_ml() - 4546.09).abs() < EPSILON);
     }
 
+
+    use unit_conversion::Time;
+
+    #[test]
+    fn test_time() {
+        let t = Time::from_hours(1.0);
+        assert_eq!(t.to_seconds(), 3600.0);
+        assert_eq!(t.to_minutes(), 60.0);
+        assert_eq!(t.to_hours(), 1.0);
+        Time::new(0.0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_time_nan() {
+        Time::new(f64::NAN);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_time_neg() {
+        Time::new(-0.1);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_time_inf() {
+        Time::new(f64::INFINITY);
+    }
 }
