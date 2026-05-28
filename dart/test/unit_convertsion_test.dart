@@ -363,4 +363,21 @@ group('EvEfficiency Tests', () {
       expect(v4.toUsGallons, closeTo(1.20095, 0.000001));
     });
   });
+
+
+  group('Time conversion tests', () {
+    test('Time normal', () {
+      final t = Time.fromHours(1.0);
+      expect(t.toSeconds, 3600.0);
+      expect(t.toMinutes, 60.0);
+      expect(t.toHours, 1.0);
+      expect(Time.fromSeconds(0.0).toSeconds, 0.0);
+    });
+
+    test('Time illegal', () {
+      expect(() => Time.fromSeconds(double.nan), throwsArgumentError);
+      expect(() => Time.fromSeconds(-0.1), throwsArgumentError);
+      expect(() => Time.fromSeconds(double.infinity), throwsArgumentError);
+    });
+  });
 }

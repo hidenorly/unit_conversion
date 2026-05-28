@@ -211,6 +211,7 @@ class EvEfficiency {
   double get toMpKwh => _kmPerKwh / _mileToKm;
 }
 
+
 class Volume {
   final double _l;
   static const double _usGal = 3.785411784;
@@ -226,4 +227,23 @@ class Volume {
   double get toMl => _l * 1000.0;
   double get toUsGallons => _l / _usGal;
   double get toImpGallons => _l / _impGal;
+}
+
+
+class Time {
+  final double _s;
+
+  Time._(this._s) {
+    if (_s.isNaN || _s < 0 || _s.isInfinite){
+      throw ArgumentError();
+    }
+  }
+
+  factory Time.fromSeconds(double v) => Time._(v);
+  factory Time.fromMinutes(double v) => Time._(v * 60.0);
+  factory Time.fromHours(double v) => Time._(v * 3600.0);
+
+  double get toSeconds => _s;
+  double get toMinutes => _s / 60.0;
+  double get toHours => _s / 3600.0;
 }
