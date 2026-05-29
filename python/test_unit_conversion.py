@@ -16,7 +16,7 @@
 
 import unittest
 import math
-from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Power,Torque,Angle,Efficiency,EvEfficiency,Volume
+from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Power,Torque,Angle,Efficiency,EvEfficiency,Volume,Time
 
 class TestSpeed(unittest.TestCase):
     def test_conversion(self):
@@ -312,6 +312,7 @@ class TestEvEfficiency(unittest.TestCase):
         with self.assertRaises(ValueError):
             EvEfficiency.from_miles_per_kwh(-5.0)
 
+
 class TestVolume(unittest.TestCase):
     def test_volume_coverage(self):
         v1 = Volume.from_liters(1.0)
@@ -337,6 +338,29 @@ class TestVolume(unittest.TestCase):
         self.assertAlmostEqual(v4.to_us_gallons, 12.0095, places=4)
         self.assertAlmostEqual(v4.to_liters, 45.4609, places=4)
         self.assertAlmostEqual(v4.to_ml, 45460.9, places=1)
+
+
+class TestTime(unittest.TestCase):
+    def test_conversion_matrix(self):
+        t = Time.from_hours(1)
+        self.assertAlmostEqual(t.to_seconds, 3600)
+        self.assertAlmostEqual(t.to_minutes, 60)
+        self.assertAlmostEqual(t.to_hours, 1)
+
+        t_s = Time.from_seconds(60.0)
+        self.assertAlmostEqual(t_s.to_seconds, 60.0);
+        self.assertAlmostEqual(t_s.to_minutes, 1.0);
+        self.assertAlmostEqual(t_s.to_hours, 1.0/60.0)
+
+        t_m = Time.from_minutes(1.0)
+        self.assertAlmostEqual(t_m.to_seconds, 60.0);
+        self.assertAlmostEqual(t_m.to_minutes, 1.0);
+        self.assertAlmostEqual(t_m.to_hours, 1.0/60.0)
+
+        t0 = Time.from_hours(0)
+        self.assertAlmostEqual(t0.to_seconds, 0)
+        self.assertAlmostEqual(t0.to_minutes, 0)
+        self.assertAlmostEqual(t0.to_hours, 0)
 
 if __name__ == '__main__':
     unittest.main()

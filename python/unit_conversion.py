@@ -414,3 +414,33 @@ class Volume:
     @property
     def to_imp_gallons(self):
         return self._l / self._IMP_GAL
+
+class Time:
+    def __init__(self, s: float):
+        if math.isnan(s) or s < 0 or math.isinf(s):
+            raise ValueError("Invalid Time")
+        self._s = s
+
+    @classmethod
+    def from_seconds(cls, v):
+        return cls(v)
+
+    @classmethod
+    def from_minutes(cls, v):
+        return cls(v * 60.0)
+
+    @classmethod
+    def from_hours(cls, v):
+        return cls(v * 3600.0)
+
+    @property
+    def to_seconds(self):
+        return self._s
+
+    @property
+    def to_minutes(self):
+        return self._s / 60.0
+
+    @property
+    def to_hours(self):
+        return self._s / 3600.0
