@@ -332,6 +332,7 @@ class TestEvEfficiency < Minitest::Test
   end
 end
 
+
 class TestVolume < Minitest::Test
   def test_volume_conversion
     v = Volume.from_liters(1.0)
@@ -357,5 +358,25 @@ class TestVolume < Minitest::Test
     assert_in_delta(45.4609, v_imp.to_liters, 0.0001)
     assert_in_delta(12.0095, v_imp.to_us_gallons, 0.000001)
     assert_in_delta(10.0, v_imp.to_imp_gallons, 0.000001)
+  end
+end
+
+
+class TestTime < Minitest::Test
+  def test_time_conversion_matrix
+    t_s = Time.from_seconds(60.0)
+    assert_in_delta(60.0, t_s.to_seconds)
+    assert_in_delta(1.0, t_s.to_minutes)
+    assert_in_delta(1.0/60.0, t_s.to_hours)
+
+    t_m = Time.from_minutes(1.0)
+    assert_in_delta(60.0, t_m.to_seconds)
+    assert_in_delta(1.0, t_m.to_minutes)
+    assert_in_delta(1.0/60.0, t_m.to_hours)
+
+    t_h = Time.from_hours(1.0/60.0)
+    assert_in_delta(60.0, t_h.to_seconds)
+    assert_in_delta(1.0, t_h.to_minutes)
+    assert_in_delta(1.0/60.0, t_h.to_hours)
   end
 end

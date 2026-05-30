@@ -452,3 +452,37 @@ class Volume
     return @l / IMP_GAL
   end
 end
+
+
+class Time
+  private_class_method :new
+  def initialize(s)
+    val = s.to_f
+    raise ArgumentError if val.nan? || val < 0 || val.infinite?
+    @s = val
+  end
+
+  def self.from_seconds(v)
+    return new(v)
+  end
+
+  def self.from_minutes(v)
+    return new(v * 60.0)
+  end
+
+  def self.from_hours(v)
+    return new(v * 3600.0)
+  end
+
+  def to_seconds
+    return @s
+  end
+
+  def to_minutes
+    return @s / 60.0
+  end
+
+  def to_hours
+    return @s / 3600.0
+  end
+end
