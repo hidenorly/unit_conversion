@@ -36,6 +36,7 @@ private:
 public:
     static Speed fromKmH(double value) { return Speed(value / convert_kmh_ms); }
     static Speed fromMph(double value) { return Speed(value * convert_mph_ms); }
+    static Speed fromMs(double value) { return Speed(value); }
 
     double toKmH() const { return m_ms * convert_kmh_ms; }
     double toMph() const { return m_ms / convert_mph_ms; }
@@ -284,5 +285,30 @@ public:
     double toMinutes() const { return m_sec / 60.0; }
     double toHours() const   { return m_sec / 3600.0; }
 };
+
+
+class Acceleration {
+    double m_a;
+public:
+    explicit Acceleration(double a) : m_a(a) {
+        if (std::isnan(a) || std::isinf(a)) throw std::invalid_argument("Invalid Accel");
+    }
+    static Acceleration fromMs2(double a) { return Acceleration(a); }
+    static Acceleration fromSpeedAndTime(const Speed& s, const Time& t) {
+        return Acceleration(s.toMs() / t.toSeconds());
+    }
+    double toMs2() const { return m_a; }
+};
+
+
+// Acceleration * Time = Speed
+inline Speed operator*(const Acceleration& a, const Time& t) {
+    return Speed::fromMs(a.toMs2() * t.toSeconds());
+}
+
+// Speed * Time = Distance
+Distance operator*(const Speed& s, const Time& t) {
+    return Distance::fromMeters(s.toMs() * t.toSeconds());
+}
 
 #endif // __UNIT_CONVERSION_HPP__
