@@ -307,3 +307,30 @@ impl Time {
     pub fn to_minutes(&self) -> f64 { self.s / 60.0 }
     pub fn to_hours(&self) -> f64 { self.s / 3600.0 }
 }
+
+
+// --- Accelerarion
+
+pub struct Acceleration { a: f64 }
+
+impl Acceleration {
+    pub fn new(a: f64) -> Self {
+        if a.is_nan() || a.is_infinite() { panic!("Invalid Acceleration"); }
+        Self { a }
+    }
+    pub fn from_speed_and_time(s: Speed, t: Time) -> Self {
+        Self::new(s.to_ms() / t.to_seconds())
+    }
+    pub fn to_ms2(&self) -> f64 { self.a }
+}
+
+impl std::ops::Mul<Time> for Acceleration {
+    type Output = Speed;
+    fn mul(self, rhs: Time) -> Self::Output { Speed::from_ms(self.to_ms2() * rhs.to_seconds()) }
+}
+
+
+impl std::ops::Mul<Time> for Speed {
+    type Output = Distance;
+    fn mul(self, rhs: Time) -> Self::Output { Distance::from_meters(self.to_ms() * rhs.to_seconds()) }
+}

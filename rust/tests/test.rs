@@ -489,4 +489,32 @@ mod tests {
     fn test_time_inf() {
         Time::new(f64::INFINITY);
     }
+
+    use unit_conversion::Acceleration;
+
+    #[test]
+    fn test_acceleration_coverage() {
+        let a = Acceleration::new(9.8);
+        let s = a * Time::from_seconds(2.0);
+        assert!((s.to_ms() - 19.6).abs() < 1e-9);
+        Acceleration::new(0.0); // 境界値
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_nan() {
+        Acceleration::new(f64::NAN);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_inf(){
+        Acceleration::new(f64::INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_time_guard() {
+        let _ = Acceleration::new(9.8) * Time::from_seconds(-1.0);
+    }
 }
