@@ -380,4 +380,21 @@ group('EvEfficiency Tests', () {
       expect(() => Time.fromSeconds(double.infinity), throwsArgumentError);
     });
   });
+
+
+  group('Acceleration conversion tests', () {
+    test('Acceleration Conversion normal', () {
+      final a = Acceleration.fromMs2(9.8);
+      final s = a * Time.fromSeconds(2.0);
+      expect(s.toMs, closeTo(19.6, 1e-9));
+    });
+      
+    test('Acceleration Conversion Exception', () {
+      expect(() => Acceleration.fromMs2(double.nan), throwsArgumentError);
+      expect(() => Acceleration.fromMs2(double.infinity), throwsArgumentError);
+
+      final a = Acceleration.fromMs2(9.8);
+      expect(() => a * Time.fromSeconds(-1.0), throwsArgumentError);
+    });
+  });
 }

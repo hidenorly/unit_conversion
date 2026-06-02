@@ -247,3 +247,28 @@ class Time {
   double get toMinutes => _s / 60.0;
   double get toHours => _s / 3600.0;
 }
+
+
+class Acceleration {
+  final double _ms2;
+
+  Acceleration.fromMs2(double ms2) : _ms2 = ms2 {
+    if (ms2.isNaN || ms2.isInfinite) {
+      throw ArgumentError('Acceleration must be finite');
+    }
+  }
+
+  double get toMs2 => _ms2;
+
+  Speed operator *(Time t) {
+    return Speed.fromMs(_ms2 * t.toSeconds);
+  }
+}
+
+extension AccelOps on Acceleration {
+  Speed operator *(Time t) => Speed.fromMs(this.toMs2 * t.toSeconds);
+}
+
+extension PhysicsOps on Speed {
+  Distance operator *(Time t) => Distance.fromMeters(this.toMs * t.toSeconds);
+}
