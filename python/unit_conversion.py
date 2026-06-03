@@ -24,6 +24,10 @@ class Speed:
         self._ms = ms
 
     @classmethod
+    def from_ms(cls, value: float):
+        return cls(value)
+
+    @classmethod
     def from_kmh(cls, value: float):
         return cls(value / cls.KMH_TO_MS)
 
@@ -38,6 +42,13 @@ class Speed:
     @property
     def to_mph(self) -> float:
         return self._ms / self.MPH_TO_MS
+
+    @property
+    def to_ms(self) -> float:
+        return self._ms
+
+    def __mul__(self, other: 'Time') -> 'Distance':
+        return Distance.from_meters(self.to_ms * other.to_seconds)
 
 
 class Temperature:
@@ -415,6 +426,7 @@ class Volume:
     def to_imp_gallons(self):
         return self._l / self._IMP_GAL
 
+
 class Time:
     def __init__(self, s: float):
         if math.isnan(s) or s < 0 or math.isinf(s):
@@ -444,3 +456,20 @@ class Time:
     @property
     def to_hours(self):
         return self._s / 3600.0
+
+
+class Acceleration:
+    def __init__(self, a: float):
+        if math.isnan(a) or math.isinf(a): raise ValueError("Invalid Acceleration")
+        self._a = a
+
+    def __mul__(self, other: Time) -> Speed:
+        return Speed.from_ms(self.to_ms2 * other.to_seconds)
+
+    @classmethod
+    def from_speed_and_time(cls, s, t):
+        return cls(s.to_ms / t.to_seconds)
+
+    @property
+    def to_ms2(self):
+        return self._a

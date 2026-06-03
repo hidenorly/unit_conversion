@@ -16,7 +16,7 @@
 
 import unittest
 import math
-from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Power,Torque,Angle,Efficiency,EvEfficiency,Volume,Time
+from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Power,Torque,Angle,Efficiency,EvEfficiency,Volume,Time,Acceleration
 
 class TestSpeed(unittest.TestCase):
     def test_conversion(self):
@@ -24,6 +24,7 @@ class TestSpeed(unittest.TestCase):
         s1 = Speed.from_kmh(60.0)
         self.assertAlmostEqual(s1.to_kmh, 60.0, places=3)
         self.assertAlmostEqual(s1.to_mph, 37.2823, places=3)
+        self.assertAlmostEqual(s1.to_ms, 16.6666, places=3)
 
         # test conversion mph -> km/h
         s2 = Speed.from_mph(60.0)
@@ -33,6 +34,11 @@ class TestSpeed(unittest.TestCase):
         # test zero
         s3 = Speed.from_kmh(0.0)
         self.assertEqual(s3.to_mph, 0.0)
+
+        s4 = Speed.from_ms(16.6666)
+        self.assertAlmostEqual(s4.to_kmh, 60.0, places=3)
+        self.assertAlmostEqual(s4.to_mph, 37.2823, places=3)
+        self.assertAlmostEqual(s4.to_ms, 16.6666, places=3)
 
         # test identicality
         original = 120.5
@@ -361,6 +367,33 @@ class TestTime(unittest.TestCase):
         self.assertAlmostEqual(t0.to_seconds, 0)
         self.assertAlmostEqual(t0.to_minutes, 0)
         self.assertAlmostEqual(t0.to_hours, 0)
+
+
+class TestAcceleration(unittest.TestCase):
+    def test_calc(self):
+        s = Speed.from_ms(10.0)
+        t = Time.from_seconds(2.0)
+        accel = Acceleration.from_speed_and_time(s, t)
+        self.assertEqual(accel.to_ms2, 5.0)
+
+    def test_guards(self):
+        with self.assertRaises(ValueError):
+            Acceleration(float('nan'))
+        with self.assertRaises(ValueError):
+            Acceleration(float('inf'))
+        with self.assertRaises(ValueError): 
+            Acceleration.from_speed_and_time(Speed.from_ms(10.0), Time.from_seconds(0.0))
+
+    def test_speed_mul_time(self):
+        d = Speed.from_ms(10.0) * Time.from_seconds(5.0)
+        self.assertEqual(d.to_meters, 50.0)
+
+    def test_guards(self):
+        with self.assertRaises(ValueError):
+            Speed.from_ms(10.0) * Time.from_seconds(-1.0)
+        with self.assertRaises(ValueError):
+            Speed.from_ms(10.0) * Time.from_seconds(float('nan'))
+
 
 if __name__ == '__main__':
     unittest.main()
