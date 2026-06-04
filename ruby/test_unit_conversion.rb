@@ -21,6 +21,11 @@ class TestSpeed < Minitest::Test
     @epsilon = 0.001
   end
 
+  def test_ms_to_kmh
+    speed = Speed.from_ms(16.6666)
+    assert_in_delta(60.0, speed.to_kmh, @epsilon)
+  end
+
   def test_kmh_to_mph
     speed = Speed.from_kmh(60.0)
     assert_in_delta(60.0, speed.to_kmh, @epsilon)
@@ -378,5 +383,18 @@ class TestTime < Minitest::Test
     assert_in_delta(60.0, t_h.to_seconds)
     assert_in_delta(1.0, t_h.to_minutes)
     assert_in_delta(1.0/60.0, t_h.to_hours)
+  end
+end
+
+
+class TestAcceleration < Minitest::Test
+  def test_full_coverage
+    a = Acceleration.new(9.8)
+    s = a * Time.from_seconds(2.0)
+    assert_in_delta(19.6, s.to_ms)
+    
+    assert_raises(ArgumentError) { Acceleration.new(Float::NAN) }
+    assert_raises(ArgumentError) { Acceleration.new(Float::INFINITY) }
+    assert_raises(ArgumentError) { a * Time.from_seconds(-1.0) }
   end
 end

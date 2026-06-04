@@ -23,6 +23,10 @@ class Speed
     @ms = ms.to_f
   end
 
+  def self.from_ms(value)
+    return new(value)
+  end
+
   def self.from_kmh(value)
     return new(value / KMH_TO_MS)
   end
@@ -41,6 +45,10 @@ class Speed
 
   def to_ms
     return @ms
+  end
+
+  def *(other)
+    return Distance.from_meters(self.to_ms * other.to_seconds)
   end
 end
 
@@ -484,5 +492,26 @@ class Time
 
   def to_hours
     return @s / 3600.0
+  end
+end
+
+
+class Acceleration
+  def initialize(a)
+    val = a.to_f
+    raise ArgumentError if val.nan? || val.infinite?
+    @a = val
+  end
+
+  def self.from_speed_and_time(s, t)
+    return new(s.to_ms / t.to_seconds)
+  end
+
+  def to_ms2
+    return @a
+  end
+
+  def *(other)
+    return Speed.from_ms(self.to_ms2 * other.to_seconds)
   end
 end
