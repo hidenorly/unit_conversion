@@ -436,18 +436,32 @@ TEST(TimeTest, exception) {
 }
 
 
+// --- test case for Acceleration
+
 TEST(AccelerationTest, FullCoverage) {
     auto a = Acceleration::fromMs2(9.8);
     auto s = a * Time::fromSeconds(2.0);
     EXPECT_NEAR(s.toMs(), 19.6, 1e-9);
 
-    auto speed = Speed::Speed::fromKmH(100.0);
-    auto time = Time::fromSeconds(9.5);
-    auto accel = Acceleration::fromSpeedAndTime(speed, time);
-    EXPECT_NEAR(accel.toMs2(), 2.9239, 1e-4);
-
     EXPECT_NO_THROW(Acceleration::fromMs2(0.0));
 
     EXPECT_THROW(Acceleration::fromMs2(NAN), std::invalid_argument);
     EXPECT_THROW(a * Time::fromSeconds(-1.0), std::invalid_argument);
+}
+
+
+// --- test case for cross operation
+
+TEST(PhysicsOpsTest, AccelMulTime) {
+    auto speed = Speed::Speed::fromKmH(100.0);
+    auto time = Time::fromSeconds(9.5);
+    auto accel = Acceleration::fromSpeedAndTime(speed, time);
+    EXPECT_NEAR(accel.toMs2(), 2.9239, 1e-4);
+}
+
+TEST(PhysicsOpsTest, SpeedMulTime) {
+    auto d = Speed::fromMs(10.0) * Time::fromSeconds(5.0);
+    EXPECT_NEAR(d.toMeters(), 50.0, 1e-9);
+
+    EXPECT_THROW(Speed::fromMs(10.0) * Time::fromSeconds(-1.0), std::invalid_argument);
 }
