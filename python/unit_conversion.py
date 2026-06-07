@@ -468,7 +468,10 @@ class Acceleration:
 
     @classmethod
     def from_speed_and_time(cls, s, t):
-        return cls(s.to_ms / t.to_seconds)
+        seconds = t.to_seconds
+        if seconds == 0:
+            raise ValueError("Time cannot be zero for acceleration calculation")
+        return cls(s.to_ms / seconds)
 
     @property
     def to_ms2(self):
