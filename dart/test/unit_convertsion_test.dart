@@ -397,4 +397,10 @@ group('EvEfficiency Tests', () {
       expect(() => a * Time.fromSeconds(-1.0), throwsArgumentError);
     });
   });
+
+  test('Speed * Time', () {
+    final d = Speed.fromMs(10.0) * Time.fromSeconds(5.0);
+    expect(d.toMeters, closeTo(50.0, 1e-9));
+    expect(() => Speed.fromMs(10.0) * Time.fromSeconds(-1.0), throwsArgumentError);
+  });
 }
