@@ -497,7 +497,7 @@ mod tests {
         let a = Acceleration::new(9.8);
         let s = a * Time::from_seconds(2.0);
         assert!((s.to_ms() - 19.6).abs() < 1e-9);
-        Acceleration::new(0.0); // 境界値
+        Acceleration::new(0.0);
     }
 
     #[test]
@@ -516,5 +516,19 @@ mod tests {
     #[should_panic]
     fn test_time_guard() {
         let _ = Acceleration::new(9.8) * Time::from_seconds(-1.0);
+    }
+
+    // -- operator
+
+    #[test]
+    fn test_speed_mul_time() {
+        let d = Speed::from_ms(10.0) * Time::from_seconds(5.0);
+        assert!((d.to_meters() - 50.0).abs() < 1e-9); // C0
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_speed_mul_time_guard() {
+        let _ = Speed::from_ms(10.0) * Time::from_seconds(-1.0);
     }
 }
