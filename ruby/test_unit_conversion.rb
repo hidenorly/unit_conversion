@@ -398,3 +398,15 @@ class TestAcceleration < Minitest::Test
     assert_raises(ArgumentError) { a * Time.from_seconds(-1.0) }
   end
 end
+
+
+
+class TestOperation < Minitest::Test
+  def test_speed_mul_time
+    d = Speed.from_ms(10.0) * Time.from_seconds(5.0)
+    assert_in_delta 50.0, d.to_meters
+    assert_raises(ArgumentError) {
+      Speed.from_ms(10.0) * Time.from_seconds(-1.0)
+    }
+  end
+end
