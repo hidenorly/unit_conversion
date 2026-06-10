@@ -21,14 +21,21 @@
 #include <stdexcept>
 #include <limits>
 
+#define NO_NEGATIVE_ALLOWED
+
 
 class Speed {
 private:
     double m_ms; // internal value is based on m/s
     explicit Speed(double ms) : m_ms(ms) {
-        if (std::isnan(ms) || ms < 0.0 || std::isinf(ms)) {
-            throw std::invalid_argument("Speed must be non-negative and finite");
+        if (std::isnan(ms) || std::isinf(ms)) {
+            throw std::invalid_argument("Speed must be finite");
         }        
+#ifdef NO_NEGATIVE_ALLOWED
+        if (ms<0.0f) {
+            throw std::invalid_argument("Speed must be non-negative");
+        }        
+#endif // NO_NEGATIVE_ALLOWED
     }
     static constexpr double convert_kmh_ms = 3.6f;
     static constexpr double convert_mph_ms = 0.44704f;
@@ -101,9 +108,14 @@ private:
     static constexpr double MM_TO_M = 0.001;
 
     explicit Distance(double meters) : m_meters(meters) {
-        if (std::isnan(meters) || meters < 0.0 || std::isinf(meters)) {
-            throw std::invalid_argument("Distance must be non-negative and finite");
+        if (std::isnan(meters) || std::isinf(meters)) {
+            throw std::invalid_argument("Distance must be finite");
         }
+#ifdef NO_NEGATIVE_ALLOWED
+        if (meters < 0.0) {
+            throw std::invalid_argument("Distance must be non-negative");
+        }        
+#endif // NO_NEGATIVE_ALLOWED
     }
 
 public:
@@ -149,9 +161,14 @@ private:
     static constexpr double HP_TO_KW = 0.74569987;
 
     explicit Power(double kw) : m_kw(kw) {
-        if (std::isnan(kw) || kw < 0.0 || std::isinf(kw)) {
-            throw std::invalid_argument("Power must be a non-negative finite number");
+        if (std::isnan(kw) || std::isinf(kw)) {
+            throw std::invalid_argument("Power must be a finite number");
         }
+#ifdef NO_NEGATIVE_ALLOWED
+        if (kw < 0.0) {
+            throw std::invalid_argument("Power must be non-negative");
+        }        
+#endif // NO_NEGATIVE_ALLOWED
     }
 
 public:
@@ -172,7 +189,14 @@ private:
     static constexpr double LBFT_TO_NM = 1.355817948;
 
     explicit Torque(double nm) : m_nm(nm) {
-    if (std::isnan(nm) || nm < 0.0 || std::isinf(nm)) throw std::invalid_argument("Invalid torque");
+        if (std::isnan(nm) || std::isinf(nm)){
+            throw std::invalid_argument("Invalid torque");
+        }
+#ifdef NO_NEGATIVE_ALLOWED
+        if (nm < 0.0) {
+            throw std::invalid_argument("Torque must be non-negative");
+        }        
+#endif // NO_NEGATIVE_ALLOWED
     }
 
 public:
@@ -306,9 +330,20 @@ inline Speed operator*(const Acceleration& a, const Time& t) {
     return Speed::fromMs(a.toMs2() * t.toSeconds());
 }
 
+// Speed / Time = Acceleration
+Acceleration operator/(const Speed& s, const Time& t) {
+    if (t.toSeconds() == 0.0) throw std::invalid_argument("Time cannot be zero");
+    return Acceleration::fromMs2(s.toMs() / t.toSeconds());
+}
+
 // Speed * Time = Distance
 Distance operator*(const Speed& s, const Time& t) {
     return Distance::fromMeters(s.toMs() * t.toSeconds());
+}
+
+// Speed - Speed
+Speed operator-(const Speed& a, const Speed& b) {
+    return Speed::fromMs(a.toMs() - b.toMs());
 }
 
 #endif // __UNIT_CONVERSION_HPP__

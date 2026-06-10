@@ -449,6 +449,17 @@ TEST(AccelerationTest, FullCoverage) {
     EXPECT_THROW(a * Time::fromSeconds(-1.0), std::invalid_argument);
 }
 
+TEST(AccelerationTest, DerivedFromDeltaSpeed) {
+    // (20m/s - 0m/s) / 5s = 4m/s^2
+    auto v1 = Speed::fromMs(20.0);
+    auto v2 = Speed::fromMs(0.0);
+    auto t = Time::fromSeconds(5.0);
+    auto a = (v1 - v2) / t;
+    EXPECT_NEAR(a.toMs2(), 4.0, 1e-9);
+
+    // Time=0 (divide by zero)
+    EXPECT_THROW((v1 - v2) / Time::fromSeconds(0.0), std::invalid_argument);
+}
 
 // --- test case for cross operation
 
@@ -465,3 +476,4 @@ TEST(PhysicsOpsTest, SpeedMulTime) {
 
     EXPECT_THROW(Speed::fromMs(10.0) * Time::fromSeconds(-1.0), std::invalid_argument);
 }
+
