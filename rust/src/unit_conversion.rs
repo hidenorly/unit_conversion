@@ -324,13 +324,36 @@ impl Acceleration {
     pub fn to_ms2(&self) -> f64 { self.a }
 }
 
+
+// --- operators
+
 impl std::ops::Mul<Time> for Acceleration {
     type Output = Speed;
-    fn mul(self, rhs: Time) -> Self::Output { Speed::from_ms(self.to_ms2() * rhs.to_seconds()) }
+    fn mul(self, rhs: Time) -> Self::Output {
+        Speed::from_ms(self.to_ms2() * rhs.to_seconds())
+    }
 }
-
 
 impl std::ops::Mul<Time> for Speed {
     type Output = Distance;
-    fn mul(self, rhs: Time) -> Self::Output { Distance::from_meters(self.to_ms() * rhs.to_seconds()) }
+    fn mul(self, rhs: Time) -> Self::Output {
+        Distance::from_meters(self.to_ms() * rhs.to_seconds())
+    }
+}
+
+impl std::ops::Sub for Speed {
+    type Output = Speed;
+    fn sub(self, rhs: Speed) -> Self::Output {
+        Speed::from_ms(self.to_ms() - rhs.to_ms())
+    }
+}
+
+impl std::ops::Div<Time> for Speed {
+    type Output = Acceleration;
+    fn div(self, rhs: Time) -> Self::Output {
+        if rhs.to_seconds() == 0.0 {
+            panic!("Division by zero");
+        }
+        Acceleration::new(self.to_ms() / rhs.to_seconds())
+    }
 }

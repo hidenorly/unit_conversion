@@ -531,4 +531,20 @@ mod tests {
     fn test_speed_mul_time_guard() {
         let _ = Speed::from_ms(10.0) * Time::from_seconds(-1.0);
     }
+
+    #[test]
+    fn test_accel_from_delta_speed() {
+        let v1 = Speed::from_ms(20.0);
+        let v2 = Speed::from_ms(0.0);
+        let t = Time::from_seconds(5.0);
+        let a = (v1 - v2) / t;
+        assert!((a.to_ms2() - 4.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_accel_div_zero() {
+        let _ = Speed::from_ms(20.0) / Time::from_seconds(0.0);
+    }
+
 }
