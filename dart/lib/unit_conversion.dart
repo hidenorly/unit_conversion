@@ -272,3 +272,14 @@ extension AccelOps on Acceleration {
 extension PhysicsOps on Speed {
   Distance operator *(Time t) => Distance.fromMeters(this.toMs * t.toSeconds);
 }
+
+extension SpeedSub on Speed {
+  Speed operator -(Speed other) => Speed.fromMs(this.toMs - other.toMs);
+}
+
+extension SpeedDiv on Speed {
+  Acceleration operator /(Time t) {
+    if (t.toSeconds == 0.0) throw ArgumentError('Division by zero');
+    return Acceleration.fromMs2(this.toMs / t.toSeconds);
+  }
+}

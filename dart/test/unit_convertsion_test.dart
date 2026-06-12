@@ -403,4 +403,15 @@ group('EvEfficiency Tests', () {
     expect(d.toMeters, closeTo(50.0, 1e-9));
     expect(() => Speed.fromMs(10.0) * Time.fromSeconds(-1.0), throwsArgumentError);
   });
+
+
+  test('Acceleration derived from Delta Speed', () {
+    final v1 = Speed.fromMs(20.0);
+    final v2 = Speed.fromMs(0.0);
+    final t = Time.fromSeconds(5.0);
+    final a = (v1 - v2) / t;
+    expect(a.toMs2, closeTo(4.0, 1e-9));
+
+    expect(() => (v1 - v2) / Time.fromSeconds(0.0), throwsArgumentError);
+  });
 }
