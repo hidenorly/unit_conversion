@@ -50,6 +50,14 @@ class Speed:
     def __mul__(self, other: 'Time') -> 'Distance':
         return Distance.from_meters(self.to_ms * other.to_seconds)
 
+    def __sub__(self, other: 'Speed') -> 'Speed':
+        return Speed.from_ms(self.to_ms - other.to_ms)
+
+    def __truediv__(self, other: 'Time') -> 'Acceleration':
+        if other.to_seconds == 0:
+            raise ValueError("Time cannot be zero")
+        return Acceleration(self.to_ms / other.to_seconds)
+
 
 class Temperature:
     _F_OFFSET = 32.0

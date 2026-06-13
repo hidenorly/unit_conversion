@@ -396,6 +396,15 @@ class TestOperation(unittest.TestCase):
         with self.assertRaises(ValueError):
             Speed.from_ms(10.0) * Time.from_seconds(float('nan'))
 
+    def test_speed_sub(self):
+        v1 = Speed.from_ms(20.0)
+        v2 = Speed.from_ms(10.0)
+        dv = v1 - v2
+        self.assertEqual(dv.to_ms, 10.0)
+
+        dv_neg = v2 - v1
+        self.assertEqual(dv_neg.to_ms, -10.0)
+
 
 if __name__ == '__main__':
     unittest.main()
