@@ -346,4 +346,9 @@ Speed operator-(const Speed& a, const Speed& b) {
     return Speed::fromMs(a.toMs() - b.toMs());
 }
 
+// Speed + Speed
+Speed operator+(const Speed& a, const Speed& b) {
+    return Speed::fromMs(a.toMs() + b.toMs());
+}
+
 #endif // __UNIT_CONVERSION_HPP__

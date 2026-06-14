@@ -477,3 +477,9 @@ TEST(PhysicsOpsTest, SpeedMulTime) {
     EXPECT_THROW(Speed::fromMs(10.0) * Time::fromSeconds(-1.0), std::invalid_argument);
 }
 
+TEST(PhysicsOpsTest, VelocityChange) {
+    auto v = Speed::fromMs(10.0);
+    auto v_delta = Acceleration::fromMs2(2.0) * Time::fromSeconds(5.0);
+    auto v2 = v + v_delta;
+    EXPECT_NEAR(v2.toMs(), 20.0, 1e-9);
+}
