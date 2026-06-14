@@ -409,4 +409,16 @@ class TestOperation < Minitest::Test
       Speed.from_ms(10.0) * Time.from_seconds(-1.0)
     }
   end
+
+  def test_accel_from_delta_speed
+    v_f = Speed.from_ms(20.0)
+    v_i = Speed.from_ms(0.0)
+    t = Time.from_seconds(5.0)
+    a = (v_f - v_i) / t
+    assert_in_delta 4.0, a.to_ms2
+
+    assert_raises(ArgumentError) do
+      (v_f - v_i) / Time.from_seconds(0.0)
+    end
+  end
 end
