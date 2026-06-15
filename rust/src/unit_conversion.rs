@@ -348,6 +348,13 @@ impl std::ops::Sub for Speed {
     }
 }
 
+impl std::ops::Add for Speed {
+    type Output = Speed;
+    fn add(self, rhs: Speed) -> Self::Output {
+        Speed::from_ms(self.to_ms() + rhs.to_ms())
+    }
+}
+
 impl std::ops::Div<Time> for Speed {
     type Output = Acceleration;
     fn div(self, rhs: Time) -> Self::Output {

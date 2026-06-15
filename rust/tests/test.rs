@@ -547,4 +547,11 @@ mod tests {
         let _ = Speed::from_ms(20.0) / Time::from_seconds(0.0);
     }
 
+    #[test]
+    fn test_velocity_change() {
+        let v = Speed::from_ms(10.0);
+        let v_delta = Acceleration::new(2.0) * Time::from_seconds(5.0);
+        let v2 = v + v_delta;
+        assert!((v2.to_ms() - 20.0).abs() < 1e-9);
+    }
 }
