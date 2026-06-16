@@ -277,6 +277,10 @@ extension SpeedSub on Speed {
   Speed operator -(Speed other) => Speed.fromMs(this.toMs - other.toMs);
 }
 
+extension SpeedAdd on Speed {
+  Speed operator +(Speed other) => Speed.fromMs(this.toMs + other.toMs);
+}
+
 extension SpeedDiv on Speed {
   Acceleration operator /(Time t) {
     if (t.toSeconds == 0.0) throw ArgumentError('Division by zero');

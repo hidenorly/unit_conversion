@@ -404,6 +404,12 @@ group('EvEfficiency Tests', () {
     expect(() => Speed.fromMs(10.0) * Time.fromSeconds(-1.0), throwsArgumentError);
   });
 
+  test('Speed += delta of speed, deta of speed = a*t', () {
+    final v = Speed.fromMs(10.0);
+    final vDelta = Acceleration.fromMs2(2.0) * Time.fromSeconds(5.0);
+    final v2 = v + vDelta;
+    expect(v2.toMs, closeTo(20.0, 1e-9));
+  });
 
   test('Acceleration derived from Delta Speed', () {
     final v1 = Speed.fromMs(20.0);
