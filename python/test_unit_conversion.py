@@ -384,6 +384,7 @@ class TestAcceleration(unittest.TestCase):
         with self.assertRaises(ValueError): 
             Acceleration.from_speed_and_time(Speed.from_ms(10.0), Time.from_seconds(0.0))
 
+
 class TestOperation(unittest.TestCase):
     # Distance
     def test_speed_mul_time(self):
@@ -404,6 +405,12 @@ class TestOperation(unittest.TestCase):
 
         dv_neg = v2 - v1
         self.assertEqual(dv_neg.to_ms, -10.0)
+
+    def test_velocity_change(self):
+        v = Speed.from_ms(10.0)
+        v_delta = Acceleration(2.0) * Time.from_seconds(5.0)
+        v2 = v + v_delta
+        self.assertEqual(v2.to_ms, 20.0)
 
 
 if __name__ == '__main__':

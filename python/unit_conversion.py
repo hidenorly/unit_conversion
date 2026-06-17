@@ -53,6 +53,9 @@ class Speed:
     def __sub__(self, other: 'Speed') -> 'Speed':
         return Speed.from_ms(self.to_ms - other.to_ms)
 
+    def __add__(self, other: 'Speed') -> 'Speed':
+        return Speed.from_ms(self.to_ms + other.to_ms)
+
     def __truediv__(self, other: 'Time') -> 'Acceleration':
         if other.to_seconds == 0:
             raise ValueError("Time cannot be zero")
