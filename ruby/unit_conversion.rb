@@ -52,12 +52,16 @@ class Speed
   end
 
   def -(other)
-    Speed.from_ms(self.to_ms - other.to_ms)
+    return Speed.from_ms(self.to_ms - other.to_ms)
   end
 
   def /(other)
     raise ArgumentError if other.to_seconds == 0
-    Acceleration.new(self.to_ms / other.to_seconds)
+    return Acceleration.new(self.to_ms / other.to_seconds)
+  end
+
+  def +(other)
+    return Speed.from_ms(self.to_ms + other.to_ms)
   end
 end
 
