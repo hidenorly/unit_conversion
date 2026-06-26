@@ -420,4 +420,20 @@ group('EvEfficiency Tests', () {
 
     expect(() => (v1 - v2) / Time.fromSeconds(0.0), throwsArgumentError);
   });
+
+  test('Scalar Multiplication', () {
+    final v = Speed.fromMs(10.0) * 0.5;
+    expect(v.toMs, closeTo(5.0, 1e-9));
+
+    final zero = Speed.fromMs(10.0) * 0.0;
+    expect(zero.toMs, closeTo(0.0, 1e-9));
+  });
+
+  test('Acceleration Scalar Multiplication', () {
+    final a = Acceleration.fromMs2(9.8) * 0.5;
+    expect(a.toMs2, closeTo(4.9, 1e-9));
+
+    final zero = Acceleration.fromMs2(9.8) * 0.0;
+    expect(zero.toMs2, closeTo(0.0, 1e-9));
+  });
 }

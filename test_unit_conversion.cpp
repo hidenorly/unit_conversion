@@ -483,3 +483,17 @@ TEST(PhysicsOpsTest, VelocityChange) {
     auto v2 = v + v_delta;
     EXPECT_NEAR(v2.toMs(), 20.0, 1e-9);
 }
+
+TEST(ScalarOpsTest, ScalarMultiplication) {
+    auto v = Speed::fromMs(10.0) * 0.5;
+    EXPECT_NEAR(v.toMs(), 5.0, 1e-9);
+    EXPECT_NEAR((Speed::fromMs(10.0) * 0.0).toMs(), 0.0, 1e-9);
+}
+
+TEST(AccelerationTest, ScalarMultiplication) {
+    auto a = Acceleration::fromMs2(9.8) * 0.5;
+    EXPECT_NEAR(a.toMs2(), 4.9, 1e-9);
+    
+    auto zero = Acceleration::fromMs2(9.8) * 0.0;
+    EXPECT_NEAR(zero.toMs2(), 0.0, 1e-9);
+}

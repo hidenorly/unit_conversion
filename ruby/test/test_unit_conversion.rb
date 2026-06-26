@@ -14,7 +14,7 @@
 # limitations under the License.
 
 require 'minitest/autorun'
-require_relative 'unit_conversion'
+require 'unit_conversion'
 
 class TestSpeed < Minitest::Test
   def setup
@@ -427,5 +427,21 @@ class TestOperation < Minitest::Test
     v_delta = Acceleration.new(2.0) * Time.from_seconds(5.0)
     v2 = v + v_delta
     assert_in_delta(20.0, v2.to_ms)
+  end
+
+  def test_scalar_mul
+    v = Speed.from_ms(10.0) * 0.5
+    assert_in_delta(5.0, v.to_ms)
+
+    zero = Speed.from_ms(10.0) * 0.0
+    assert_in_delta(0.0, zero.to_ms)
+  end
+
+  def test_acceleration_scalar_mul
+    a = Acceleration.new(9.8) * 0.5
+    assert_in_delta(4.9, a.to_ms2)
+
+    zero = Acceleration.new(9.8) * 0.0
+    assert_in_delta(0.0, zero.to_ms2)
   end
 end

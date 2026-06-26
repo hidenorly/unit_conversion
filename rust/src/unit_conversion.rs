@@ -364,3 +364,17 @@ impl std::ops::Div<Time> for Speed {
         Acceleration::new(self.to_ms() / rhs.to_seconds())
     }
 }
+
+impl std::ops::Mul<f64> for Speed {
+    type Output = Speed;
+    fn mul(self, rhs: f64) -> Self::Output {
+        Speed::from_ms(self.to_ms() * rhs)
+    }
+}
+
+impl std::ops::Mul<f64> for Acceleration {
+    type Output = Acceleration;
+    fn mul(self, rhs: f64) -> Self::Output {
+        Acceleration::new(self.to_ms2() * rhs)
+    }
+}

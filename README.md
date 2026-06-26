@@ -107,7 +107,15 @@ print(s1.to_mph)
 
 ```
 cd python
-python test_unit_conversion.py
+PYTHONPATH=src python3 tests/test_unit_conversion.py
+```
+
+### install & test
+
+```
+cd python
+pip install -e ".[dev]"
+pytest
 ```
 
 
@@ -126,5 +134,13 @@ puts speed.to_mph + " MPH"
 
 ```
 cd ruby
-ruby test_unit_conversion.rb
+ruby -Ilib test/test_unit_conversion.rb
+```
+
+### install
+
+```
+cd ruby
+gem build unit_conversion.gemspec
+gem install ./unit_conversion-0.1.0.gem
 ```

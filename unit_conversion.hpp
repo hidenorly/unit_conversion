@@ -351,4 +351,14 @@ Speed operator+(const Speed& a, const Speed& b) {
     return Speed::fromMs(a.toMs() + b.toMs());
 }
 
+// Speed * scalar
+Speed operator*(const Speed& s, double scalar) {
+    return Speed::fromMs(s.toMs() * scalar);
+}
+
+// Acceleration * scalar
+Acceleration operator*(const Acceleration& a, double scalar) {
+    return Acceleration::fromMs2(a.toMs2() * scalar);
+}
+
 #endif // __UNIT_CONVERSION_HPP__

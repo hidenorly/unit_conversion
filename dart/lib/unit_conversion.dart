@@ -259,18 +259,29 @@ class Acceleration {
   }
 
   double get toMs2 => _ms2;
+}
 
-  Speed operator *(Time t) {
-    return Speed.fromMs(_ms2 * t.toSeconds);
+
+extension AccelMul on Acceleration {
+  dynamic operator *(dynamic other) {
+    if (other is Time) {
+      return Speed.fromMs(this.toMs2 * other.toSeconds);
+    } else if (other is num) {
+      return Acceleration.fromMs2(this.toMs2 * other.toDouble());
+    }
+    throw ArgumentError('Unsupported type for multiplication');
   }
 }
 
-extension AccelOps on Acceleration {
-  Speed operator *(Time t) => Speed.fromMs(this.toMs2 * t.toSeconds);
-}
-
-extension PhysicsOps on Speed {
-  Distance operator *(Time t) => Distance.fromMeters(this.toMs * t.toSeconds);
+extension SpeedMul on Speed {
+  dynamic operator *(dynamic other) {
+    if (other is Time) {
+      return Distance.fromMeters(this.toMs * other.toSeconds);
+    } else if (other is num) { // scalar (double, int)
+      return Speed.fromMs(this.toMs * other.toDouble());
+    }
+    throw ArgumentError('Unsupported type for multiplication');
+  }
 }
 
 extension SpeedSub on Speed {

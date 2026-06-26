@@ -47,9 +47,6 @@ class Speed:
     def to_ms(self) -> float:
         return self._ms
 
-    def __mul__(self, other: 'Time') -> 'Distance':
-        return Distance.from_meters(self.to_ms * other.to_seconds)
-
     def __sub__(self, other: 'Speed') -> 'Speed':
         return Speed.from_ms(self.to_ms - other.to_ms)
 
@@ -60,6 +57,16 @@ class Speed:
         if other.to_seconds == 0:
             raise ValueError("Time cannot be zero")
         return Acceleration(self.to_ms / other.to_seconds)
+
+    def __mul__(self, other):
+        if isinstance(other, Time):
+            return Distance.from_meters(self.to_ms * other.to_seconds)
+        elif isinstance(other, (int, float)):
+            return Speed.from_ms(self.to_ms * other)
+        return NotImplemented
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
 
 
 class Temperature:
@@ -474,9 +481,6 @@ class Acceleration:
         if math.isnan(a) or math.isinf(a): raise ValueError("Invalid Acceleration")
         self._a = a
 
-    def __mul__(self, other: Time) -> Speed:
-        return Speed.from_ms(self.to_ms2 * other.to_seconds)
-
     @classmethod
     def from_speed_and_time(cls, s, t):
         seconds = t.to_seconds
@@ -487,3 +491,13 @@ class Acceleration:
     @property
     def to_ms2(self):
         return self._a
+
+    def __mul__(self, other):
+        if isinstance(other, Time):
+            return Speed.from_ms(self.to_ms2 * other.to_seconds)
+        elif isinstance(other, (int, float)):
+            return Acceleration(self.to_ms2 * other)
+        return NotImplemented
+
+    def __rmul__(self, other):
+        return self.__mul__(other)

@@ -412,6 +412,19 @@ class TestOperation(unittest.TestCase):
         v2 = v + v_delta
         self.assertEqual(v2.to_ms, 20.0)
 
+    def test_scalar_mul(self):
+        v = Speed.from_ms(10.0) * 0.5
+        self.assertEqual(v.to_ms, 5.0)
+        zero = Speed.from_ms(10.0) * 0.0
+        self.assertEqual(zero.to_ms, 0.0)
+
+    def test_acceleration_scalar_mul(self):
+        a = Acceleration(9.8) * 0.5
+        self.assertEqual(a.to_ms2, 4.9)
+
+        zero = Acceleration(9.8) * 0.0
+        self.assertEqual(zero.to_ms2, 0.0)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -48,7 +48,14 @@ class Speed
   end
 
   def *(other)
-    return Distance.from_meters(self.to_ms * other.to_seconds)
+    case other
+    when Time
+      return Distance.from_meters(self.to_ms * other.to_seconds)
+    when Numeric
+      return Speed.from_ms(self.to_ms * other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
   end
 
   def -(other)
@@ -525,6 +532,13 @@ class Acceleration
   end
 
   def *(other)
-    return Speed.from_ms(self.to_ms2 * other.to_seconds)
+    case other
+    when Time
+      return Speed.from_ms(self.to_ms2 * other.to_seconds)
+    when Numeric
+      return Acceleration.new(self.to_ms2 * other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
   end
 end
