@@ -1,5 +1,5 @@
 name: unit_conversion
-description: unit_conversion
+description: A robust unit conversion library for Dart, covering speed, mass, distance, etc.
 version: 1.0.0
 repository: https://github.com/hidenorly/unit_conversion
 
