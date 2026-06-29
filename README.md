@@ -144,3 +144,10 @@ cd ruby
 gem build unit_conversion.gemspec
 gem install ./unit_conversion-0.1.0.gem
 ```
+
+
+# all test
+
+```
+make test
+```
