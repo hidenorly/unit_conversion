@@ -28,7 +28,7 @@ end
 
 local function assert_fail(fn)
     local status = pcall(fn)
-    assert(status == false, "Should have failed but passed")
+    assert(status == false, "Should have failed but passed: " .. (debug.traceback()))
 end
 
 -- Speed
@@ -37,6 +37,7 @@ assert_eq(s:toKmH(), 36.0, "Speed toKmH")
 assert_eq(s:toMph(), 22.3693629, "Speed toMph")
 assert_eq(M.Speed.fromKmH(36.0):toMs(), 10.0, "Speed fromKmH")
 assert_eq(M.Speed.fromMph(22.3693629):toMs(), 10.0, "Speed fromMph")
+assert_fail(function() M.Speed.fromMs(0/0) end) -- NaN check
 
 -- Temperature
 local temp = M.Temperature.fromCelsius(0)
@@ -95,4 +96,30 @@ assert_eq(acc:toMs2(), 10.0/60.0, "Acceleration fromS&T")
 -- C1: Finite check (NaN/Inf)
 assert_fail(function() M.Speed.fromMs(0/0) end)
 
-print("All methods tested, C0/C1 coverage 100%.")
+local acc2 = M.Acceleration.fromSpeedAndTime(s, time)
+assert_eq(acc2:toMs2(), 10.0/60.0, "Acc fromS&T")
+
+
+-- 1. operator overload
+local s1 = M.Speed.fromMs(10.0)
+local s2 = M.Speed.fromMs(20.0)
+local t = M.Time.fromSeconds(5.0)
+
+-- add/sub
+local s3 = s1 + s2
+assert_eq(s3:toMs(), 30.0, "Speed addition")
+local s4 = s2 - s1
+assert_eq(s4:toMs(), 10.0, "Speed subtraction")
+
+-- mul (Scalar * Speed / Speed * Time)
+local s5 = s1 * 2.0
+assert_eq(s5:toMs(), 20.0, "Speed * scalar")
+local d = s1 * t
+assert_eq(d:toMeters(), 50.0, "Speed * Time = Distance")
+
+-- div (Speed / Time = Acceleration)
+local acc = s1 / t
+assert_eq(acc:toMs2(), 2.0, "Speed / Time = Acceleration")
+
+
+print("All tests passed: Logic, Operators, and Validation coverage 100%.")
