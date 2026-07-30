@@ -106,8 +106,8 @@ namespace UnitConversion
 
         private Distance(double meters)
         {
-            if (double.IsNaN(meters) || double.IsInfinity(meters))
-                throw new ArgumentException("Distance must be finite");
+            if (double.IsNaN(meters) || double.IsInfinity(meters) || meters < 0.0)
+                throw new ArgumentException("Distance must be a valid non-negative number");
             m_meters = meters;
         }
 
@@ -151,8 +151,8 @@ namespace UnitConversion
 
         private Power(double kw)
         {
-            if (double.IsNaN(kw) || double.IsInfinity(kw))
-                throw new ArgumentException("Power must be a finite number");
+            if (double.IsNaN(kw) || double.IsInfinity(kw) || kw < 0.0)
+                throw new ArgumentException("Power must be a valid non-negative number");
             m_kw = kw;
         }
 
@@ -173,8 +173,8 @@ namespace UnitConversion
 
         private Torque(double nm)
         {
-            if (double.IsNaN(nm) || double.IsInfinity(nm))
-                throw new ArgumentException("Invalid torque");
+            if (double.IsNaN(nm) || double.IsInfinity(nm) || nm < 0.0)
+                throw new ArgumentException("Torque must be a valid non-negative number");
             m_nm = nm;
         }
 
