@@ -1,6 +1,6 @@
 .PHONY: test-rust test-python test-dart test-ruby test-cpp test
 
-test: test-cpp test-rust test-python test-dart test-ruby test-lua
+test: test-cpp test-rust test-python test-dart test-ruby test-lua test-csharp
 
 test-cpp:
 	mkdir -p build && cd build && cmake .. && make && ./unit_tests
@@ -19,3 +19,6 @@ test-ruby:
 
 test-lua:
 	cd lua && lua test_unit_conversion.lua
+
+test-csharp:
+	cd csharp && dotnet build && dotnet test
