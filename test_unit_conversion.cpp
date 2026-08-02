@@ -497,3 +497,12 @@ TEST(AccelerationTest, ScalarMultiplication) {
     auto zero = Acceleration::fromMs2(9.8) * 0.0;
     EXPECT_NEAR(zero.toMs2(), 0.0, 1e-9);
 }
+
+TEST(PhysicsOpsTest, DistanceDivTimeEqualsSpeed) {
+    auto d = Distance::fromMeters(100.0);
+    auto t = Time::fromSeconds(10.0);
+    auto speed = d / t;
+    EXPECT_NEAR(speed.toMs(), 10.0, 1e-9);
+
+    EXPECT_THROW(d / Time::fromSeconds(0.0), std::invalid_argument);
+}

@@ -341,6 +341,22 @@ Distance operator*(const Speed& s, const Time& t) {
     return Distance::fromMeters(s.toMs() * t.toSeconds());
 }
 
+inline Distance operator*(const Time& t, const Speed& s) {
+    return s * t;
+}
+
+// Distance / Time = Speed
+inline Speed operator/(const Distance& d, const Time& t) {
+    if (t.toSeconds() == 0.0) throw std::invalid_argument("Time cannot be zero");
+    return Speed::fromMs(d.toMeters() / t.toSeconds());
+}
+
+// Distance / Speed = Time
+inline Time operator/(const Distance& d, const Speed& s) {
+    if (s.toMs() == 0.0) throw std::invalid_argument("Speed cannot be zero");
+    return Time::fromSeconds(d.toMeters() / s.toMs());
+}
+
 // Speed - Speed
 Speed operator-(const Speed& a, const Speed& b) {
     return Speed::fromMs(a.toMs() - b.toMs());
