@@ -367,14 +367,51 @@ Speed operator+(const Speed& a, const Speed& b) {
     return Speed::fromMs(a.toMs() + b.toMs());
 }
 
+// Distance - Distance
+inline Distance operator-(const Distance& a, const Distance& b) {
+    return Distance::fromMeters(a.toMeters() - b.toMeters());
+}
+
+// Distance + Distance
+inline Distance operator+(const Distance& a, const Distance& b) {
+    return Distance::fromMeters(a.toMeters() + b.toMeters());
+}
+
+// Time - Time
+inline Time operator-(const Time& a, const Time& b) {
+    return Time::fromSeconds(a.toSeconds() - b.toSeconds());
+}
+
+// Time + Time
+inline Time operator+(const Time& a, const Time& b) {
+    return Time::fromSeconds(a.toSeconds() + b.toSeconds());
+}
+
 // Speed * scalar
 Speed operator*(const Speed& s, double scalar) {
     return Speed::fromMs(s.toMs() * scalar);
 }
 
+inline Speed operator*(double scalar, const Speed& s) {
+    return s * scalar;
+}
+
+// Distance * scalar / scalar * Distance
+inline Distance operator*(const Distance& d, double scalar) {
+    return Distance::fromMeters(d.toMeters() * scalar);
+}
+
+inline Distance operator*(double scalar, const Distance& d) {
+    return d * scalar;
+}
+
 // Acceleration * scalar
 Acceleration operator*(const Acceleration& a, double scalar) {
     return Acceleration::fromMs2(a.toMs2() * scalar);
+}
+
+inline Acceleration operator*(double scalar, const Acceleration& a) {
+    return a * scalar;
 }
 
 #endif // __UNIT_CONVERSION_HPP__

@@ -506,3 +506,41 @@ TEST(PhysicsOpsTest, DistanceDivTimeEqualsSpeed) {
 
     EXPECT_THROW(d / Time::fromSeconds(0.0), std::invalid_argument);
 }
+
+TEST(PhysicsOpsTest, DistanceDivSpeedEqualsTime) {
+    auto d = Distance::fromMeters(100.0);
+    auto s = Speed::fromMs(20.0);
+    auto time = d / s;
+    EXPECT_NEAR(time.toSeconds(), 5.0, 1e-9);
+
+    // ゼロ除算例外のテスト
+    EXPECT_THROW(d / Speed::fromMs(0.0), std::invalid_argument);
+}
+
+TEST(PhysicsOpsTest, ArithmeticOperationsAddSub) {
+    auto v1 = Speed::fromMs(30.0);
+    auto v2 = Speed::fromMs(10.0);
+    EXPECT_NEAR((v1 - v2).toMs(), 20.0, 1e-9);
+    EXPECT_NEAR((v1 + v2).toMs(), 40.0, 1e-9);
+
+    auto d1 = Distance::fromMeters(150.0);
+    auto d2 = Distance::fromMeters(50.0);
+    EXPECT_NEAR((d1 - d2).toMeters(), 100.0, 1e-9);
+    EXPECT_NEAR((d1 + d2).toMeters(), 200.0, 1e-9);
+
+    auto t1 = Time::fromSeconds(40.0);
+    auto t2 = Time::fromSeconds(15.0);
+    EXPECT_NEAR((t1 - t2).toSeconds(), 25.0, 1e-9);
+    EXPECT_NEAR((t1 + t2).toSeconds(), 55.0, 1e-9);
+}
+
+TEST(ScalarOpsTest, SymmetricMultiplication) {
+    auto v = 2.0 * Speed::fromMs(5.0);
+    EXPECT_NEAR(v.toMs(), 10.0, 1e-9);
+
+    auto d = 3.0 * Distance::fromMeters(10.0);
+    EXPECT_NEAR(d.toMeters(), 30.0, 1e-9);
+
+    auto a = 1.5 * Acceleration::fromMs2(2.0);
+    EXPECT_NEAR(a.toMs2(), 3.0, 1e-9);
+}
