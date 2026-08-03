@@ -14,9 +14,9 @@
    limitations under the License.
 */
 
-
 // --- Speed
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Speed {
     ms: f64,
 }
@@ -25,16 +25,23 @@ impl Speed {
     const KMH_TO_MS: f64 = 3.6;
     const MPH_TO_MS: f64 = 0.44704;
 
-    pub fn from_ms(value: f64) -> Self {
+    fn new(value: f64) -> Self {
+        if value.is_nan() || value < 0.0 || value.is_infinite() {
+            panic!("Speed must be a non-negative finite number");
+        }
         Self { ms: value }
     }
 
+    pub fn from_ms(value: f64) -> Self {
+        Self::new(value)
+    }
+
     pub fn from_kmh(value: f64) -> Self {
-        Self { ms: value / Self::KMH_TO_MS }
+        Self::new(value / Self::KMH_TO_MS)
     }
 
     pub fn from_mph(value: f64) -> Self {
-        Self { ms: value * Self::MPH_TO_MS }
+        Self::new(value * Self::MPH_TO_MS)
     }
 
     pub fn to_kmh(&self) -> f64 {
@@ -53,6 +60,7 @@ impl Speed {
 
 // --- Temperature
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Temperature {
     celsius: f64,
 }
@@ -67,8 +75,7 @@ impl Temperature {
         if c.is_nan() || c < Self::ABSOLUTE_ZERO_C || c.is_infinite() {
             panic!("Below absolute zero or invalid value");
         }
-
-    Self { celsius: c }
+        Self { celsius: c }
     }
 
     pub fn from_celsius(v: f64) -> Self { Self::new(v) }
@@ -81,8 +88,9 @@ impl Temperature {
 }
 
 
-// --- Weight
+// --- Mass
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Mass {
     kg: f64,
 }
@@ -92,10 +100,17 @@ impl Mass {
     const LB_TO_KG: f64 = 0.45359237;
     const OZ_TO_KG: f64 = 0.0283495231;
 
-    pub fn from_kg(v: f64) -> Self { Self { kg: v } }
-    pub fn from_gram(v: f64) -> Self { Self { kg: v * Self::G_TO_KG } }
-    pub fn from_lb(v: f64) -> Self { Self { kg: v * Self::LB_TO_KG } }
-    pub fn from_oz(v: f64) -> Self { Self { kg: v * Self::OZ_TO_KG } }
+    fn new(kg: f64) -> Self {
+        if kg.is_nan() || kg < 0.0 || kg.is_infinite() {
+            panic!("Mass must be a non-negative finite number");
+        }
+        Self { kg }
+    }
+
+    pub fn from_kg(v: f64) -> Self { Self::new(v) }
+    pub fn from_gram(v: f64) -> Self { Self::new(v * Self::G_TO_KG) }
+    pub fn from_lb(v: f64) -> Self { Self::new(v * Self::LB_TO_KG) }
+    pub fn from_oz(v: f64) -> Self { Self::new(v * Self::OZ_TO_KG) }
 
     pub fn to_kg(&self) -> f64 { self.kg }
     pub fn to_gram(&self) -> f64 { self.kg / Self::G_TO_KG }
@@ -106,6 +121,7 @@ impl Mass {
 
 // --- Distance
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Distance {
     meters: f64,
 }
@@ -140,6 +156,7 @@ impl Distance {
 
 // --- Pressure
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Pressure {
     kpa: f64
 }
@@ -148,9 +165,16 @@ impl Pressure {
     const BAR_TO_KPA: f64 = 100.0;
     const PSI_TO_KPA: f64 = 6.89476;
 
-    pub fn from_kpa(v: f64) -> Self { Self { kpa: v } }
-    pub fn from_bar(v: f64) -> Self { Self { kpa: v * Self::BAR_TO_KPA } }
-    pub fn from_psi(v: f64) -> Self { Self { kpa: v * Self::PSI_TO_KPA } }
+    fn new(kpa: f64) -> Self {
+        if kpa.is_nan() || kpa < 0.0 || kpa.is_infinite() {
+            panic!("Pressure must be a non-negative finite number");
+        }
+        Self { kpa }
+    }
+
+    pub fn from_kpa(v: f64) -> Self { Self::new(v) }
+    pub fn from_bar(v: f64) -> Self { Self::new(v * Self::BAR_TO_KPA) }
+    pub fn from_psi(v: f64) -> Self { Self::new(v * Self::PSI_TO_KPA) }
 
     pub fn to_kpa(&self) -> f64 { self.kpa }
     pub fn to_bar(&self) -> f64 { self.kpa / Self::BAR_TO_KPA }
@@ -160,6 +184,7 @@ impl Pressure {
 
 // --- Power
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Power { kw: f64 }
 
 impl Power {
@@ -185,6 +210,7 @@ impl Power {
 
 // --- Torque
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Torque { nm: f64 }
 
 impl Torque {
@@ -208,6 +234,7 @@ impl Torque {
 
 // --- Angle
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Angle { rad: f64 }
 
 impl Angle {
@@ -223,6 +250,7 @@ impl Angle {
 
 // -- Efficiency
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Efficiency { kml: f64 }
 
 impl Efficiency {
@@ -247,6 +275,7 @@ impl Efficiency {
 
 // -- EvEfficiency
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct EvEfficiency { km_per_kwh: f64 }
 
 impl EvEfficiency {
@@ -270,18 +299,27 @@ impl EvEfficiency {
     pub fn to_miles_per_kwh(&self) -> f64 { self.km_per_kwh / Self::MILE_TO_KM }
 }
 
+
 // --- Volume
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Volume { liters: f64 }
 
 impl Volume {
     const US_GAL: f64 = 3.785411784;
     const IMP_GAL: f64 = 4.54609;
 
-    pub fn from_liters(v: f64) -> Self { Self { liters: v } }
-    pub fn from_ml(v: f64) -> Self { Self { liters: v / 1000.0 } }
-    pub fn from_us_gallons(v: f64) -> Self { Self { liters: v * Self::US_GAL } }
-    pub fn from_imp_gallons(v: f64) -> Self { Self { liters: v * Self::IMP_GAL } }
+    fn new(liters: f64) -> Self {
+        if liters.is_nan() || liters < 0.0 || liters.is_infinite() {
+            panic!("Volume must be a non-negative finite number");
+        }
+        Self { liters }
+    }
+
+    pub fn from_liters(v: f64) -> Self { Self::new(v) }
+    pub fn from_ml(v: f64) -> Self { Self::new(v / 1000.0) }
+    pub fn from_us_gallons(v: f64) -> Self { Self::new(v * Self::US_GAL) }
+    pub fn from_imp_gallons(v: f64) -> Self { Self::new(v * Self::IMP_GAL) }
 
     pub fn to_liters(&self) -> f64 { self.liters }
     pub fn to_ml(&self) -> f64 { self.liters * 1000.0 }
@@ -292,6 +330,7 @@ impl Volume {
 
 // --- Time
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Time { s: f64 }
 
 impl Time {
@@ -309,8 +348,9 @@ impl Time {
 }
 
 
-// --- Accelerarion
+// --- Acceleration
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Acceleration { a: f64 }
 
 impl Acceleration {
@@ -319,13 +359,17 @@ impl Acceleration {
         Self { a }
     }
     pub fn from_speed_and_time(s: Speed, t: Time) -> Self {
+        if t.to_seconds() == 0.0 { panic!("Time cannot be zero"); }
         Self::new(s.to_ms() / t.to_seconds())
+    }
+    pub fn from_ms2(a: f64) -> Self {
+        Self::new(a)
     }
     pub fn to_ms2(&self) -> f64 { self.a }
 }
 
 
-// --- operators
+// --- Operators
 
 impl std::ops::Mul<Time> for Acceleration {
     type Output = Speed;
@@ -334,10 +378,46 @@ impl std::ops::Mul<Time> for Acceleration {
     }
 }
 
+impl std::ops::Mul<Acceleration> for Time {
+    type Output = Speed;
+    fn mul(self, rhs: Acceleration) -> Self::Output {
+        rhs * self
+    }
+}
+
 impl std::ops::Mul<Time> for Speed {
     type Output = Distance;
     fn mul(self, rhs: Time) -> Self::Output {
         Distance::from_meters(self.to_ms() * rhs.to_seconds())
+    }
+}
+
+impl std::ops::Mul<Speed> for Time {
+    type Output = Distance;
+    fn mul(self, rhs: Speed) -> Self::Output {
+        rhs * self
+    }
+}
+
+// Distance / Time = Speed
+impl std::ops::Div<Time> for Distance {
+    type Output = Speed;
+    fn div(self, rhs: Time) -> Self::Output {
+        if rhs.to_seconds() == 0.0 {
+            panic!("Time cannot be zero");
+        }
+        Speed::from_ms(self.to_meters() / rhs.to_seconds())
+    }
+}
+
+// Distance / Speed = Time
+impl std::ops::Div<Speed> for Distance {
+    type Output = Time;
+    fn div(self, rhs: Speed) -> Self::Output {
+        if rhs.to_ms() == 0.0 {
+            panic!("Speed cannot be zero");
+        }
+        Time::new(self.to_meters() / rhs.to_ms())
     }
 }
 
@@ -352,6 +432,34 @@ impl std::ops::Add for Speed {
     type Output = Speed;
     fn add(self, rhs: Speed) -> Self::Output {
         Speed::from_ms(self.to_ms() + rhs.to_ms())
+    }
+}
+
+impl std::ops::Sub for Distance {
+    type Output = Distance;
+    fn sub(self, rhs: Distance) -> Self::Output {
+        Distance::from_meters(self.to_meters() - rhs.to_meters())
+    }
+}
+
+impl std::ops::Add for Distance {
+    type Output = Distance;
+    fn add(self, rhs: Distance) -> Self::Output {
+        Distance::from_meters(self.to_meters() + rhs.to_meters())
+    }
+}
+
+impl std::ops::Sub for Time {
+    type Output = Time;
+    fn sub(self, rhs: Time) -> Self::Output {
+        Time::new(self.to_seconds() - rhs.to_seconds())
+    }
+}
+
+impl std::ops::Add for Time {
+    type Output = Time;
+    fn add(self, rhs: Time) -> Self::Output {
+        Time::new(self.to_seconds() + rhs.to_seconds())
     }
 }
 
@@ -372,9 +480,37 @@ impl std::ops::Mul<f64> for Speed {
     }
 }
 
+impl std::ops::Mul<Speed> for f64 {
+    type Output = Speed;
+    fn mul(self, rhs: Speed) -> Self::Output {
+        rhs * self
+    }
+}
+
+impl std::ops::Mul<f64> for Distance {
+    type Output = Distance;
+    fn mul(self, rhs: f64) -> Self::Output {
+        Distance::from_meters(self.to_meters() * rhs)
+    }
+}
+
+impl std::ops::Mul<Distance> for f64 {
+    type Output = Distance;
+    fn mul(self, rhs: Distance) -> Self::Output {
+        rhs * self
+    }
+}
+
 impl std::ops::Mul<f64> for Acceleration {
     type Output = Acceleration;
     fn mul(self, rhs: f64) -> Self::Output {
         Acceleration::new(self.to_ms2() * rhs)
+    }
+}
+
+impl std::ops::Mul<Acceleration> for f64 {
+    type Output = Acceleration;
+    fn mul(self, rhs: Acceleration) -> Self::Output {
+        rhs * self
     }
 }

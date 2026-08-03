@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-
-
 #[cfg(test)]
 mod tests {
     const EPSILON: f64 = 0.001;
@@ -91,7 +89,6 @@ mod tests {
         Temperature::from_celsius(-274.0);
     }
 
-
     use unit_conversion::Mass;
 
     #[test]
@@ -117,6 +114,11 @@ mod tests {
         assert!((w4.to_oz() - 16.0).abs() < EPSILON);
     }
 
+    #[test]
+    #[should_panic]
+    fn test_mass_negative_guard() {
+        Mass::from_kg(-1.0);
+    }
 
     use unit_conversion::Distance;
 
@@ -165,7 +167,6 @@ mod tests {
         Distance::from_km(f64::INFINITY);
     }
 
-
     #[test]
     #[should_panic]
     fn test_distance_mile_guard() {
@@ -192,6 +193,11 @@ mod tests {
         assert!((p3.to_psi() - 36.2594).abs() < EPSILON);
     }
 
+    #[test]
+    #[should_panic]
+    fn test_pressure_negative_guard() {
+        Pressure::from_bar(-0.1);
+    }
 
     use unit_conversion::Power;
 
@@ -261,7 +267,6 @@ mod tests {
     fn test_power_conversion_neg_guard_hp() {
         Power::from_hp(f64::NEG_INFINITY);
     }
-
 
     use unit_conversion::Torque;
 
@@ -337,9 +342,9 @@ mod tests {
         Torque::from_lbft(f64::NEG_INFINITY);
     }
 
-
     use unit_conversion::Angle;
     use std::f64::consts::PI;
+
     #[test]
     fn test_angle_conversion() {
         let a = Angle::from_degrees(180.0);
@@ -351,8 +356,8 @@ mod tests {
         assert!((a2.to_degrees() - 90.0).abs() < EPSILON);
     }
 
-
     use unit_conversion::Efficiency;
+
     #[test]
     fn test_efficiency_conversion() {
         let e_l100km = Efficiency::from_l100km(10.0);
@@ -370,6 +375,7 @@ mod tests {
         assert!((e_kml.to_mpg() - 23.5215).abs() < EPSILON);
         assert!((e_kml.to_l100km() - 10.0).abs() < EPSILON);
     }
+
     #[test]
     #[should_panic(expected = "Must be positive")]
     fn test_efficiency_panic() {
@@ -382,8 +388,8 @@ mod tests {
         let _ = Efficiency::from_mpg(f64::NAN);
     }
 
-
     use unit_conversion::EvEfficiency;
+
     #[test]
     fn test_ev_conversion() {
         let e = EvEfficiency::from_km_per_kwh(5.0);
@@ -430,8 +436,8 @@ mod tests {
         let _ = EvEfficiency::from_km_per_kwh(f64::NAN);
     }
 
-
     use unit_conversion::Volume;
+
     #[test]
     fn test_volume_conversion() {
         let v_l = Volume::from_liters(1.0);
@@ -454,12 +460,16 @@ mod tests {
 
         let v_imp = Volume::from_imp_gallons(1.0);
         assert!((v_imp.to_imp_gallons() - 1.0).abs() < EPSILON);
-
         assert!((v_imp.to_us_gallons() - 1.20095).abs() < EPSILON);
         assert!((v_imp.to_liters() - 4.54609).abs() < EPSILON);
         assert!((v_imp.to_ml() - 4546.09).abs() < EPSILON);
     }
 
+    #[test]
+    #[should_panic]
+    fn test_volume_negative_guard() {
+        Volume::from_liters(-1.0);
+    }
 
     use unit_conversion::Time;
 
@@ -519,7 +529,6 @@ mod tests {
     }
 
     // -- operator
-
     #[test]
     fn test_speed_mul_time() {
         let d = Speed::from_ms(10.0) * Time::from_seconds(5.0);
@@ -553,5 +562,67 @@ mod tests {
         let v_delta = Acceleration::new(2.0) * Time::from_seconds(5.0);
         let v2 = v + v_delta;
         assert!((v2.to_ms() - 20.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_distance_div_time_equals_speed() {
+        let d = Distance::from_meters(100.0);
+        let t = Time::from_seconds(10.0);
+        let speed = d / t;
+        assert!((speed.to_ms() - 10.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_distance_div_zero_time() {
+        let d = Distance::from_meters(100.0);
+        let t = Time::from_seconds(0.0);
+        let _ = d / t;
+    }
+
+    #[test]
+    fn test_distance_div_speed_equals_time() {
+        let d = Distance::from_meters(100.0);
+        let s = Speed::from_ms(20.0);
+        let time = d / s;
+        assert!((time.to_seconds() - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_distance_div_zero_speed() {
+        let d = Distance::from_meters(100.0);
+        let s = Speed::from_ms(0.0);
+        let _ = d / s;
+    }
+
+    #[test]
+    fn test_arithmetic_operations_add_sub() {
+        let v1 = Speed::from_ms(30.0);
+        let v2 = Speed::from_ms(10.0);
+        assert!(((v1 - v2).to_ms() - 20.0).abs() < 1e-9);
+        assert!(((v1 + v2).to_ms() - 40.0).abs() < 1e-9);
+
+        let d1 = Distance::from_meters(150.0);
+        let d2 = Distance::from_meters(50.0);
+        assert!(((d1 - d2).to_meters() - 100.0).abs() < 1e-9);
+        assert!(((d1 + d2).to_meters() - 200.0).abs() < 1e-9);
+
+        let t1 = Time::from_seconds(40.0);
+        let t2 = Time::from_seconds(15.0);
+        assert!(((t1 - t2).to_seconds() - 25.0).abs() < 1e-9);
+        assert!(((t1 + t2).to_seconds() - 55.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_symmetric_multiplication() {
+        let v = 2.0 * Speed::from_ms(5.0);
+        assert!((v.to_ms() - 10.0).abs() < 1e-9);
+
+        let d = 3.0 * Distance::from_meters(10.0);
+        assert!((d.to_meters() - 30.0).abs() < 1e-9);
+
+        let a = 1.5 * Acceleration::new(2.0);
+        assert!((a.to_ms2() - 3.0).abs() < 1e-9);
     }
 }
