@@ -56,6 +56,14 @@ void main() {
       final speed = Speed.fromKmH(original);
       expect(speed.toKmH, closeTo(original, epsilon));
     });
+
+    test('Speed Invalid Guards', () {
+      expect(() => Speed.fromMs(-1.0), throwsArgumentError);
+      expect(() => Speed.fromKmH(-10.0), throwsArgumentError);
+      expect(() => Speed.fromMph(-5.0), throwsArgumentError);
+      expect(() => Speed.fromMs(double.nan), throwsArgumentError);
+      expect(() => Speed.fromMs(double.infinity), throwsArgumentError);
+    });
   });
 
 
@@ -90,6 +98,9 @@ void main() {
       
       final t = Temperature.fromFahrenheit(-459.67); // Absolute Zero
       expect(t.toCelsius, closeTo(-273.15, 0.001));
+
+      expect(() => Temperature.fromCelsius(double.nan), throwsArgumentError);
+      expect(() => Temperature.fromCelsius(double.infinity), throwsArgumentError);
     });
   });
 
@@ -125,6 +136,14 @@ void main() {
       expect(m.toKg, closeTo(0.453592, epsilon));
     });
 
+    test('Mass Invalid Guards', () {
+      expect(() => Mass.fromKg(-1.0), throwsArgumentError);
+      expect(() => Mass.fromGram(-100.0), throwsArgumentError);
+      expect(() => Mass.fromLb(-1.0), throwsArgumentError);
+      expect(() => Mass.fromOz(-1.0), throwsArgumentError);
+      expect(() => Mass.fromKg(double.nan), throwsArgumentError);
+      expect(() => Mass.fromKg(double.infinity), throwsArgumentError);
+    });
   });
 
 
@@ -159,6 +178,12 @@ void main() {
       expect(d.toMm, 1000.0);
       expect(d.toMeters, 1.0);
     });
+
+    test('Distance Invalid Guards', () {
+      expect(() => Distance.fromMeters(-1.0), throwsArgumentError);
+      expect(() => Distance.fromKm(double.nan), throwsArgumentError);
+      expect(() => Distance.fromMile(double.infinity), throwsArgumentError);
+    });
   });
 
 
@@ -180,6 +205,14 @@ void main() {
       expect(p.toKpa, closeTo(250.0, epsilon));
       expect(p.toPsi, closeTo(36.2594, epsilon));
       expect(p.toBar, closeTo(2.5, epsilon));
+    });
+
+    test('Pressure Invalid Guards', () {
+      expect(() => Pressure.fromKpa(-1.0), throwsArgumentError);
+      expect(() => Pressure.fromBar(-0.1), throwsArgumentError);
+      expect(() => Pressure.fromPsi(-1.0), throwsArgumentError);
+      expect(() => Pressure.fromKpa(double.nan), throwsArgumentError);
+      expect(() => Pressure.fromKpa(double.infinity), throwsArgumentError);
     });
   });
 
@@ -242,7 +275,7 @@ void main() {
       expect(() => Torque.fromKgfm(double.infinity), throwsArgumentError);
       expect(() => Torque.fromLbft(-5.0), throwsArgumentError);
    });
-  });
+ });
 
   test('Angle Conversion test', () {
     final a = Angle.fromDegrees(180.0);
@@ -252,6 +285,9 @@ void main() {
     final a2 = Angle.fromRadians(math.pi / 2);
     expect(a2.toRadians, closeTo(math.pi / 2, epsilon));
     expect(a2.toDegrees, closeTo(90.0, epsilon));
+
+    expect(() => Angle.fromDegrees(double.nan), throwsArgumentError);
+    expect(() => Angle.fromRadians(double.infinity), throwsArgumentError);
   });
 
 
@@ -361,6 +397,12 @@ group('EvEfficiency Tests', () {
       expect(v4.toLiters, equals(4.54609));
       expect(v4.toMl, closeTo(4546.09, 0.000001));
       expect(v4.toUsGallons, closeTo(1.20095, 0.000001));
+    });
+
+    test('Volume Invalid Guards', () {
+      expect(() => Volume.fromLiters(-1.0), throwsArgumentError);
+      expect(() => Volume.fromMl(double.nan), throwsArgumentError);
+      expect(() => Volume.fromUsGallons(double.infinity), throwsArgumentError);
     });
   });
 

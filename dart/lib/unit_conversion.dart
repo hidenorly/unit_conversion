@@ -3,7 +3,7 @@
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
-   You may obtGain a copy of the License at
+   You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -21,11 +21,15 @@ class Speed {
   static const double convert_kmh_ms = 3.6;
   static const double convert_mph_ms = 0.44704;
 
-  Speed._(this._ms);
+  Speed._(this._ms) {
+    if (_ms.isNaN || _ms < 0 || _ms.isInfinite) {
+      throw ArgumentError('Speed must be a non-negative finite number');
+    }
+  }
 
-  Speed.fromMs(double value) : _ms = value;
-  Speed.fromKmH(double value) : _ms = value / convert_kmh_ms;
-  Speed.fromMph(double value) : _ms = value * convert_mph_ms;
+  Speed.fromMs(double value) : this._(value);
+  Speed.fromKmH(double value) : this._(value / convert_kmh_ms);
+  Speed.fromMph(double value) : this._(value * convert_mph_ms);
 
   double get toKmH => _ms * convert_kmh_ms;
   double get toMph => _ms / convert_mph_ms;
@@ -62,12 +66,16 @@ class Mass {
   static const double _lbToKg = 0.45359237;
   static const double _ozToKg = 0.0283495231;
 
-  Mass._(this._kg);
+  Mass._(this._kg) {
+    if (_kg.isNaN || _kg < 0 || _kg.isInfinite) {
+      throw ArgumentError('Mass must be a non-negative finite number');
+    }
+  }
 
-  Mass.fromKg(double v) : _kg = v;
-  Mass.fromGram(double v) : _kg = v * _gToKg;
-  Mass.fromLb(double v) : _kg = v * _lbToKg;
-  Mass.fromOz(double v) : _kg = v * _ozToKg;
+  Mass.fromKg(double v) : this._(v);
+  Mass.fromGram(double v) : this._(v * _gToKg);
+  Mass.fromLb(double v) : this._(v * _lbToKg);
+  Mass.fromOz(double v) : this._(v * _ozToKg);
 
   double get toKg => _kg;
   double get toGram => _kg / _gToKg;
@@ -109,11 +117,15 @@ class Pressure {
   static const double _barToKpa = 100.0;
   static const double _psiToKpa = 6.89476;
 
-  Pressure._(this._kpa);
+  Pressure._(this._kpa) {
+    if (_kpa.isNaN || _kpa < 0 || _kpa.isInfinite) {
+      throw ArgumentError('Pressure must be a non-negative finite number');
+    }
+  }
 
-  Pressure.fromKpa(double v) : _kpa = v;
-  Pressure.fromBar(double v) : _kpa = v * _barToKpa;
-  Pressure.fromPsi(double v) : _kpa = v * _psiToKpa;
+  Pressure.fromKpa(double v) : this._(v);
+  Pressure.fromBar(double v) : this._(v * _barToKpa);
+  Pressure.fromPsi(double v) : this._(v * _psiToKpa);
 
   double get toKpa => _kpa;
   double get toBar => _kpa / _barToKpa;
@@ -148,9 +160,9 @@ class Torque {
   static const double _lbftToNm = 1.355817948;
 
   Torque._(this._nm) {
-  if (_nm.isNaN || _nm < 0 || _nm.isInfinite) throw ArgumentError("Invalid torque");
+    if (_nm.isNaN || _nm < 0 || _nm.isInfinite) throw ArgumentError("Invalid torque");
   }
-  Torque.fromNm(v) : this._( v );
+  Torque.fromNm(double v) : this._( v );
   Torque.fromKgfm(double v) : this._( v * _kgfmToNm );
   Torque.fromLbft(double v) : this._( v * _lbftToNm );
 
@@ -164,10 +176,14 @@ class Angle {
   final double _rad;
   static const double _degToRad = math.pi / 180.0;
 
-  Angle._(this._rad);
+  Angle._(this._rad) {
+    if (_rad.isNaN || _rad.isInfinite) {
+      throw ArgumentError('Angle must be finite');
+    }
+  }
 
-  Angle.fromRadians(double v) : _rad = v;
-  Angle.fromDegrees(double v) : _rad = v * _degToRad;
+  Angle.fromRadians(double v) : this._(v);
+  Angle.fromDegrees(double v) : this._(v * _degToRad);
 
   double get toRadians => _rad;
   double get toDegrees => _rad / _degToRad;
@@ -217,11 +233,16 @@ class Volume {
   static const double _usGal = 3.785411784;
   static const double _impGal = 4.54609;
 
-  Volume._(this._l);
-  Volume.fromLiters(double v) : _l = v;
-  Volume.fromMl(double v) : _l = v / 1000.0;
-  Volume.fromUsGallons(double v) : _l = v * _usGal;
-  Volume.fromImpGallons(double v) : _l = v * _impGal;
+  Volume._(this._l) {
+    if (_l.isNaN || _l < 0 || _l.isInfinite) {
+      throw ArgumentError('Volume must be a non-negative finite number');
+    }
+  }
+
+  Volume.fromLiters(double v) : this._(v);
+  Volume.fromMl(double v) : this._(v / 1000.0);
+  Volume.fromUsGallons(double v) : this._(v * _usGal);
+  Volume.fromImpGallons(double v) : this._(v * _impGal);
 
   double get toLiters => _l;
   double get toMl => _l * 1000.0;
