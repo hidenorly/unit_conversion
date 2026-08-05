@@ -83,7 +83,16 @@ private:
     static constexpr double LB_TO_KG = 0.45359237;
     static constexpr double OZ_TO_KG = 0.0283495231;
 
-    explicit Mass(double kg) : mWeightKg(kg) {}
+    explicit Mass(double kg) : mWeightKg(kg) {
+        if (std::isnan(kg) || std::isinf(kg)) {
+            throw std::invalid_argument("Mass must be finite");
+        }
+#ifdef NO_NEGATIVE_ALLOWED
+        if (kg < 0.0) {
+            throw std::invalid_argument("Mass must be non-negative");
+        }
+#endif // NO_NEGATIVE_ALLOWED
+    }
 
 public:
     static Mass fromKg(double v) { return Mass(v); }
@@ -141,7 +150,16 @@ private:
     static constexpr double BAR_TO_KPA = 100.0;
     static constexpr double PSI_TO_KPA = 6.89476;
 
-    explicit Pressure(double kpa) : m_kpa(kpa) {}
+explicit Pressure(double kpa) : m_kpa(kpa) {
+        if (std::isnan(kpa) || std::isinf(kpa)) {
+            throw std::invalid_argument("Pressure must be finite");
+        }
+#ifdef NO_NEGATIVE_ALLOWED
+        if (kpa < 0.0) {
+            throw std::invalid_argument("Pressure must be non-negative");
+        }
+#endif // NO_NEGATIVE_ALLOWED
+    }
 
 public:
     static Pressure fromKpa(double v) { return Pressure(v); }
@@ -278,7 +296,16 @@ private:
     double m_liters;
     static constexpr double US_GAL_TO_L = 3.785411784;
     static constexpr double IMP_GAL_TO_L = 4.54609;
-    explicit Volume(double l) : m_liters(l) {}
+    explicit Volume(double l) : m_liters(l) {
+        if (std::isnan(l) || std::isinf(l)) {
+            throw std::invalid_argument("Volume must be finite");
+        }
+#ifdef NO_NEGATIVE_ALLOWED
+        if (l < 0.0) {
+            throw std::invalid_argument("Volume must be non-negative");
+        }
+#endif // NO_NEGATIVE_ALLOWED
+    }
 
 public:
     static Volume fromLiters(double v) { return Volume(v); }

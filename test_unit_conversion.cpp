@@ -23,8 +23,8 @@
 
 int main(int argc, char **argv)
 {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
 
 
@@ -134,6 +134,18 @@ TEST(MassTest, OzToOz) {
     EXPECT_NEAR(m4.toKg(), 0.453592, 0.000001);
 }
 
+TEST(MassTest, Invalid) {
+    EXPECT_THROW(Mass::fromKg(-1.0), std::invalid_argument);
+    EXPECT_THROW(Mass::fromGram(-100.0), std::invalid_argument);
+    EXPECT_THROW(Mass::fromLb(-1.0), std::invalid_argument);
+    EXPECT_THROW(Mass::fromOz(-1.0), std::invalid_argument);
+
+    EXPECT_THROW(Mass::fromKg(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(Mass::fromKg(std::numeric_limits<double>::infinity()), std::invalid_argument);
+
+    EXPECT_NO_THROW(Mass::fromKg(0.0));
+}
+
 
 // --- test case for distance
 
@@ -193,6 +205,17 @@ TEST(PressureTest, PsiToPsi) {
     auto p = Pressure::fromPsi(36.2594);
     EXPECT_NEAR(p.toPsi(), 36.2594, 0.001);
     EXPECT_NEAR(p.toKpa(), 250.0, 0.001);
+}
+
+TEST(PressureTest, Invalid) {
+    EXPECT_THROW(Pressure::fromKpa(-1.0), std::invalid_argument);
+    EXPECT_THROW(Pressure::fromBar(-0.1), std::invalid_argument);
+    EXPECT_THROW(Pressure::fromPsi(-1.0), std::invalid_argument);
+
+    EXPECT_THROW(Pressure::fromKpa(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(Pressure::fromKpa(std::numeric_limits<double>::infinity()), std::invalid_argument);
+
+    EXPECT_NO_THROW(Pressure::fromKpa(0.0));
 }
 
 
@@ -395,6 +418,17 @@ TEST(VolumeTest, VolumeFromImpGallons) {
     EXPECT_NEAR(v.toUsGallons(), 12.0095, 0.0001);
     EXPECT_NEAR(v.toLiters(), 45.4609, 0.0001);
     EXPECT_NEAR(v.toMl(), 45460.9, 0.1);
+}
+
+TEST(VolumeTest, Invalid) {
+    EXPECT_THROW(Volume::fromLiters(-1.0), std::invalid_argument);
+    EXPECT_THROW(Volume::fromMl(-100.0), std::invalid_argument);
+    EXPECT_THROW(Volume::fromUsGallons(-1.0), std::invalid_argument);
+
+    EXPECT_THROW(Volume::fromLiters(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(Volume::fromLiters(std::numeric_limits<double>::infinity()), std::invalid_argument);
+
+    EXPECT_NO_THROW(Volume::fromLiters(0.0));
 }
 
 
