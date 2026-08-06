@@ -111,6 +111,17 @@ public class UnitConversionTests
         Assert.Equal(0.453592, m5.ToKg(), 0.000001);
     }
 
+    [Fact]
+    public void TestMassExceptions()
+    {
+        Assert.Throws<ArgumentException>(() => Mass.FromKg(-1.0));
+        Assert.Throws<ArgumentException>(() => Mass.FromGram(double.NaN));
+        Assert.Throws<ArgumentException>(() => Mass.FromLb(double.PositiveInfinity));
+
+        var ex = Record.Exception(() => Mass.FromKg(0.0));
+        Assert.Null(ex);
+    }
+
     // --- Distance Tests ---
 
     [Fact]
@@ -138,6 +149,7 @@ public class UnitConversionTests
         Assert.Equal(1.0, d6.ToMeters(), 0.000001);
 
         Assert.Throws<ArgumentException>(() => Distance.FromMm(-1.0));
+        Assert.Throws<ArgumentException>(() => Distance.FromMeters(double.NaN));
     }
 
     // --- Pressure Tests ---
@@ -156,6 +168,17 @@ public class UnitConversionTests
         var p3 = Pressure.FromPsi(36.2594);
         Assert.Equal(36.2594, p3.ToPsi(), 0.001);
         Assert.Equal(250.0, p3.ToKpa(), 0.001);
+    }
+
+    [Fact]
+    public void TestPressureExceptions()
+    {
+        Assert.Throws<ArgumentException>(() => Pressure.FromBar(-1.0));
+        Assert.Throws<ArgumentException>(() => Pressure.FromKpa(double.NaN));
+        Assert.Throws<ArgumentException>(() => Pressure.FromPsi(double.PositiveInfinity));
+
+        var ex = Record.Exception(() => Pressure.FromKpa(0.0));
+        Assert.Null(ex);
     }
 
     // --- Power Tests ---
@@ -228,6 +251,16 @@ public class UnitConversionTests
         var a2 = Angle.FromRadians(Math.PI / 2.0);
         Assert.Equal(Math.PI / 2.0, a2.ToRadians(), 0.000001);
         Assert.Equal(90.0, a2.ToDegrees(), 0.000001);
+    }
+
+    [Fact]
+    public void TestAngleExceptions()
+    {
+        Assert.Throws<ArgumentException>(() => Angle.FromRadians(double.NaN));
+        Assert.Throws<ArgumentException>(() => Angle.FromDegrees(double.PositiveInfinity));
+
+        var ex = Record.Exception(() => Angle.FromDegrees(0.0));
+        Assert.Null(ex);
     }
 
     // --- Efficiency Tests ---
@@ -314,6 +347,17 @@ public class UnitConversionTests
         var v4 = Volume.FromImpGallons(10.0);
         Assert.Equal(10.0, v4.ToImpGallons(), 1e-9);
         Assert.Equal(45.4609, v4.ToLiters(), 0.0001);
+    }
+
+    [Fact]
+    public void TestVolumeExceptions()
+    {
+        Assert.Throws<ArgumentException>(() => Volume.FromLiters(-1.0));
+        Assert.Throws<ArgumentException>(() => Volume.FromMl(double.NaN));
+        Assert.Throws<ArgumentException>(() => Volume.FromUsGallons(double.PositiveInfinity));
+
+        var ex = Record.Exception(() => Volume.FromLiters(0.0));
+        Assert.Null(ex);
     }
 
     // --- Time Tests ---

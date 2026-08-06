@@ -26,8 +26,8 @@ namespace UnitConversion
 
         private Speed(double ms)
         {
-            if (double.IsNaN(ms) || double.IsInfinity(ms))
-                throw new ArgumentException("Speed must be finite");
+            if (double.IsNaN(ms) || double.IsInfinity(ms) || ms < 0.0)
+                throw new ArgumentException("Speed must be a non-negative finite number");
             m_ms = ms;
         }
 
@@ -82,7 +82,12 @@ namespace UnitConversion
         private const double LbToKg = 0.45359237;
         private const double OzToKg = 0.0283495231;
 
-        private Mass(double kg) => mWeightKg = kg;
+        private Mass(double kg)
+        {
+            if (double.IsNaN(kg) || double.IsInfinity(kg) || kg < 0.0)
+                throw new ArgumentException("Mass must be a non-negative finite number");
+            mWeightKg = kg;
+        }
 
         public static Mass FromKg(double v) => new Mass(v);
         public static Mass FromGram(double v) => new Mass(v * GToKg);
@@ -132,7 +137,12 @@ namespace UnitConversion
         private const double BarToKpa = 100.0;
         private const double PsiToKpa = 6.89476;
 
-        private Pressure(double kpa) => m_kpa = kpa;
+        private Pressure(double kpa)
+        {
+            if (double.IsNaN(kpa) || double.IsInfinity(kpa) || kpa < 0.0)
+                throw new ArgumentException("Pressure must be a non-negative finite number");
+            m_kpa = kpa;
+        }
 
         public static Pressure FromKpa(double v) => new Pressure(v);
         public static Pressure FromBar(double v) => new Pressure(v * BarToKpa);
@@ -192,7 +202,12 @@ namespace UnitConversion
         private readonly double m_rad;
         private const double DegToRad = Math.PI / 180.0;
 
-        private Angle(double rad) => m_rad = rad;
+        private Angle(double rad)
+        {
+            if (double.IsNaN(rad) || double.IsInfinity(rad))
+                throw new ArgumentException("Angle must be finite");
+            m_rad = rad;
+        }
 
         public static Angle FromRadians(double v) => new Angle(v);
         public static Angle FromDegrees(double v) => new Angle(v * DegToRad);
@@ -251,7 +266,12 @@ namespace UnitConversion
         private const double UsGalToL = 3.785411784;
         private const double ImpGalToL = 4.54609;
 
-        private Volume(double l) => m_liters = l;
+        private Volume(double l)
+        {
+            if (double.IsNaN(l) || double.IsInfinity(l) || l < 0.0)
+                throw new ArgumentException("Volume must be a non-negative finite number");
+            m_liters = l;
+        }
 
         public static Volume FromLiters(double v) => new Volume(v);
         public static Volume FromMl(double v) => new Volume(v / 1000.0);
