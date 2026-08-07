@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # coding: utf-8
-#   Copyright 2025, 2026 hidenorly
+#   Copyright 2026 hidenorly
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -44,6 +44,14 @@ class TestSpeed(unittest.TestCase):
         original = 120.5
         s4 = Speed.from_kmh(original);
         self.assertAlmostEqual(s4.to_kmh, original, places = 3)
+
+    def test_guards(self):
+        with self.assertRaises(ValueError):
+            Speed.from_kmh(float('nan'))
+        with self.assertRaises(ValueError):
+            Speed.from_mph(float('inf'))
+        with self.assertRaises(ValueError):
+            Speed.from_ms(float('-inf'))
 
 
 class TestTemperature(unittest.TestCase):
@@ -109,6 +117,14 @@ class TestMass(unittest.TestCase):
         w4 = Mass.from_oz(8.0)
         self.assertEqual(w4.to_oz, 8.0)
 
+    def test_guards(self):
+        with self.assertRaises(ValueError):
+            Mass.from_kg(-1.0)
+        with self.assertRaises(ValueError):
+            Mass.from_gram(float('nan'))
+        with self.assertRaises(ValueError):
+            Mass.from_lb(float('inf'))
+
 
 class TestDistance(unittest.TestCase):
     def test_conversion(self):
@@ -147,6 +163,8 @@ class TestDistance(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             Distance.from_mm(-1.0)
+        with self.assertRaises(ValueError):
+            Distance.from_meters(float('nan'))
 
 
 class TestPressure(unittest.TestCase):
@@ -162,6 +180,14 @@ class TestPressure(unittest.TestCase):
         p_psi = Pressure.from_psi(36.2594)
         self.assertAlmostEqual(p_psi.to_psi, 36.2594, places=3)
         self.assertAlmostEqual(p_psi.to_kpa, 250.0, places=3)
+
+    def test_guards(self):
+        with self.assertRaises(ValueError):
+            Pressure.from_bar(-1.0)
+        with self.assertRaises(ValueError):
+            Pressure.from_kpa(float('nan'))
+        with self.assertRaises(ValueError):
+            Pressure.from_psi(float('inf'))
 
 
 class TestPower(unittest.TestCase):
@@ -245,6 +271,12 @@ class TestAngle(unittest.TestCase):
         a2 = Angle.from_radians(math.pi / 2)
         self.assertAlmostEqual(a2.to_radians, math.pi / 2, places=6)
         self.assertAlmostEqual(a2.to_degrees, 90.0, places=6)
+
+    def test_guards(self):
+        with self.assertRaises(ValueError):
+            Angle.from_radians(float('nan'))
+        with self.assertRaises(ValueError):
+            Angle.from_degrees(float('inf'))
 
 
 class TestEfficiency(unittest.TestCase):
@@ -345,6 +377,14 @@ class TestVolume(unittest.TestCase):
         self.assertAlmostEqual(v4.to_liters, 45.4609, places=4)
         self.assertAlmostEqual(v4.to_ml, 45460.9, places=1)
 
+    def test_guards(self):
+        with self.assertRaises(ValueError):
+            Volume.from_liters(-1.0)
+        with self.assertRaises(ValueError):
+            Volume.from_ml(float('nan'))
+        with self.assertRaises(ValueError):
+            Volume.from_us_gallons(float('inf'))
+
 
 class TestTime(unittest.TestCase):
     def test_conversion_matrix(self):
@@ -367,6 +407,14 @@ class TestTime(unittest.TestCase):
         self.assertAlmostEqual(t0.to_seconds, 0)
         self.assertAlmostEqual(t0.to_minutes, 0)
         self.assertAlmostEqual(t0.to_hours, 0)
+
+    def test_guards(self):
+        with self.assertRaises(ValueError):
+            Time.from_seconds(float('nan'))
+        with self.assertRaises(ValueError):
+            Time.from_seconds(-1.0)
+        with self.assertRaises(ValueError):
+            Time.from_seconds(float('inf'))
 
 
 class TestAcceleration(unittest.TestCase):

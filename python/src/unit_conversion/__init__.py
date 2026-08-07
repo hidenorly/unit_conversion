@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # coding: utf-8
-#   Copyright 2025, 2026 hidenorly
+#   Copyright 2026 hidenorly
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ class Speed:
     MPH_TO_MS = 0.44704
 
     def __init__(self, ms: float):
+        if math.isnan(ms) or math.isinf(ms):
+            raise ValueError("Speed must be a finite number")
         self._ms = ms
 
     @classmethod
@@ -107,6 +109,8 @@ class Mass:
     _OZ_TO_KG = 0.0283495231
 
     def __init__(self, kg: float):
+        if math.isnan(kg) or kg < 0 or math.isinf(kg):
+            raise ValueError("Mass must be a non-negative finite number")
         self._kg = kg
 
     @classmethod
@@ -143,16 +147,16 @@ class Mass:
 
 
 class Distance:
-    _kmToM = 1000.0;
-    _mileToM = 1609.344;
-    _ftToM = 0.3048;
-    _inToM = 0.0254;
+    _kmToM = 1000.0
+    _mileToM = 1609.344
+    _ftToM = 0.3048
+    _inToM = 0.0254
     _MM_TO_M = 0.001
 
     def __init__(self, meter: float):
         if math.isnan(meter) or meter < 0 or math.isinf(meter):
             raise ValueError("Invalid")
-        self._meters = meter;
+        self._meters = meter
 
     @classmethod
     def from_meters(cls, v: float):
@@ -180,23 +184,23 @@ class Distance:
 
     @property
     def to_meters(self):
-        return self._meters;
+        return self._meters
 
     @property
     def to_km(self):
-        return self._meters/ self._kmToM;
+        return self._meters / self._kmToM
 
     @property
     def to_mile(self):
-        return self._meters/ self._mileToM;
+        return self._meters / self._mileToM
 
     @property
     def to_feet(self):
-        return self._meters/ self._ftToM;
+        return self._meters / self._ftToM
 
     @property
     def to_inch(self):
-        return self._meters/ self._inToM;
+        return self._meters / self._inToM
 
     @property
     def to_mm(self):
@@ -208,6 +212,8 @@ class Pressure:
     _PSI_TO_KPA = 6.89476
 
     def __init__(self, kpa: float):
+        if math.isnan(kpa) or kpa < 0 or math.isinf(kpa):
+            raise ValueError("Pressure must be a non-negative finite number")
         self._kpa = kpa
 
     @classmethod
@@ -306,6 +312,8 @@ class Angle:
     _DEG_TO_RAD = math.pi / 180.0
 
     def __init__(self, rad: float):
+        if math.isnan(rad) or math.isinf(rad):
+            raise ValueError("Angle must be finite")
         self._rad = rad
 
     @classmethod
@@ -410,6 +418,8 @@ class Volume:
     _IMP_GAL = 4.54609
 
     def __init__(self, liters: float):
+        if math.isnan(liters) or liters < 0 or math.isinf(liters):
+            raise ValueError("Volume must be a non-negative finite number")
         self._l = liters
 
     @classmethod
