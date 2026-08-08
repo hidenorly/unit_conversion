@@ -20,7 +20,9 @@ class Speed
   private_class_method :new
 
   def initialize(ms)
-    @ms = ms.to_f
+    val = ms.to_f
+    raise ArgumentError if val.nan? || val.infinite?
+    @ms = val
   end
 
   def self.from_ms(value)
@@ -121,7 +123,9 @@ class Mass
 
   private_class_method :new
   def initialize(kg)
-    @kg = kg.to_f
+    val = kg.to_f
+    raise ArgumentError if val.nan? || val < 0 || val.infinite?
+    @kg = val
   end
 
   def self.from_kg(v)
@@ -159,7 +163,7 @@ end
 
 
 class Distance
-  KM_TO_M   = 1000.0
+  KM_TO_M  = 1000.0
   MILE_TO_M = 1609.344
   FT_TO_M   = 0.3048
   IN_TO_M   = 0.0254
@@ -230,7 +234,9 @@ class Pressure
   private_class_method :new
 
   def initialize(kpa)
-    @kpa = kpa
+    val = kpa.to_f
+    raise ArgumentError if val.nan? || val < 0 || val.infinite?
+    @kpa = val
   end
 
   def self.from_kpa(v)
@@ -339,7 +345,9 @@ class Angle
   private_class_method :new
 
   def initialize(rad)
-    @rad = rad.to_f
+    val = rad.to_f
+    raise ArgumentError if val.nan? || val.infinite?
+    @rad = val
   end
 
   def self.from_radians(v)
@@ -366,8 +374,9 @@ class Efficiency
   private_class_method :new
 
   def initialize(v)
-    raise ArgumentError, "Must be positive" if v <= 0 || v.nan? ||  v.infinite?
-    @kml = v.to_f
+    val = v.to_f
+    raise ArgumentError, "Must be positive" if val <= 0 || val.nan? || val.infinite?
+    @kml = val
   end
 
   def self.from_kml(v)
@@ -375,6 +384,7 @@ class Efficiency
   end
 
   def self.from_l100km(v)
+    raise ArgumentError, "Must be positive" if v == 0
     return new(100.0 / v)
   end
 
@@ -401,8 +411,9 @@ class EvEfficiency
 
   private_class_method :new
   def initialize(v)
-    raise ArgumentError, "Must be positive" if v <= 0 || v.nan? ||  v.infinite?
-    @v = v.to_f
+    val = v.to_f
+    raise ArgumentError, "Must be positive" if val <= 0 || val.nan? || val.infinite?
+    @v = val
   end
 
   def self.from_km_per_kwh(v)
@@ -410,10 +421,12 @@ class EvEfficiency
   end
 
   def self.from_wh_per_km(v)
+    raise ArgumentError, "Must be positive" if v == 0
     return new(1000.0 / v)
   end
 
   def self.from_kwh_per_100km(v)
+    raise ArgumentError, "Must be positive" if v == 0
     return new(100.0 / v)
   end
 
@@ -445,7 +458,9 @@ class Volume
 
   private_class_method :new
   def initialize(l)
-    @l = l.to_f
+    val = l.to_f
+    raise ArgumentError if val.nan? || val < 0 || val.infinite?
+    @l = val
   end
 
   def self.from_liters(v)
@@ -524,6 +539,7 @@ class Acceleration
   end
 
   def self.from_speed_and_time(s, t)
+    raise ArgumentError if t.to_seconds == 0
     return new(s.to_ms / t.to_seconds)
   end
 

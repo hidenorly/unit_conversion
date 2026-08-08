@@ -5,7 +5,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+#       http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -52,6 +52,20 @@ class TestSpeed < Minitest::Test
     speed = Speed.from_kmh(original)
     assert_in_delta(original, speed.to_kmh, 0.000001)
   end
+
+  def test_guards
+    assert_raises(ArgumentError) { Speed.from_kmh(Float::NAN) }
+    assert_raises(ArgumentError) { Speed.from_mph(Float::NAN) }
+    assert_raises(ArgumentError) { Speed.from_ms(Float::NAN) }
+
+    assert_raises(ArgumentError) { Speed.from_kmh(Float::INFINITY) }
+    assert_raises(ArgumentError) { Speed.from_mph(Float::INFINITY) }
+    assert_raises(ArgumentError) { Speed.from_ms(Float::INFINITY) }
+
+    assert_raises(ArgumentError) { Speed.from_kmh(-Float::INFINITY) }
+    assert_raises(ArgumentError) { Speed.from_mph(-Float::INFINITY) }
+    assert_raises(ArgumentError) { Speed.from_ms(-Float::INFINITY) }
+  end
 end
 
 
@@ -94,6 +108,12 @@ class TestTemperature < Minitest::Test
     assert_in_delta(-273.15, t.to_celsius, 0.001)
   end
 
+  def test_guards
+    assert_raises(ArgumentError) { Temperature.from_celsius(Float::NAN) }
+    assert_raises(ArgumentError) { Temperature.from_celsius(Float::INFINITY) }
+    assert_raises(ArgumentError) { Temperature.from_fahrenheit(Float::NAN) }
+    assert_raises(ArgumentError) { Temperature.from_kelvin(Float::NAN) }
+  end
 end
 
 
@@ -131,6 +151,12 @@ class TestMass < Minitest::Test
     w = Mass.from_oz(16.0)
     assert_in_delta(16.0, w.to_oz, 0.000001)
     assert_in_delta(1.0, w.to_lb, 0.000001)
+  end
+
+  def test_guards
+    assert_raises(ArgumentError) { Mass.from_kg(Float::NAN) }
+    assert_raises(ArgumentError) { Mass.from_kg(Float::INFINITY) }
+    assert_raises(ArgumentError) { Mass.from_kg(-1.0) }
   end
 end
 
@@ -174,6 +200,12 @@ class TestDistance < Minitest::Test
     assert_in_delta(1000.0, Distance.from_mm(1000.0).to_mm, 0.001)
     assert_raises(ArgumentError) { Distance.from_mm(-1.0) }
   end
+
+  def test_guards
+    assert_raises(ArgumentError) { Distance.from_meters(Float::NAN) }
+    assert_raises(ArgumentError) { Distance.from_meters(Float::INFINITY) }
+    assert_raises(ArgumentError) { Distance.from_meters(-1.0) }
+  end
 end
 
 
@@ -194,6 +226,12 @@ class TestPressure < Minitest::Test
     p = Pressure.from_psi(36.2594)
     assert_in_delta(36.2594, p.to_psi, 0.001)
     assert_in_delta(250.0, p.to_kpa, 0.001)
+  end
+
+  def test_guards
+    assert_raises(ArgumentError) { Pressure.from_kpa(Float::NAN) }
+    assert_raises(ArgumentError) { Pressure.from_kpa(Float::INFINITY) }
+    assert_raises(ArgumentError) { Pressure.from_kpa(-1.0) }
   end
 end
 
@@ -252,6 +290,7 @@ class TestTorque < Minitest::Test
     assert_raises(ArgumentError) { Torque.from_nm(-Float::INFINITY) }
     assert_raises(ArgumentError) { Torque.from_kgfm(-Float::INFINITY) }
     assert_raises(ArgumentError) { Torque.from_lbft(-Float::INFINITY) }
+    assert_raises(ArgumentError) { Torque.from_nm(-1.0) }
   end
 end
 
@@ -265,6 +304,12 @@ class TestAngle < Minitest::Test
     a2 = Angle.from_radians(Math::PI / 2)
     assert_in_delta(Math::PI/2, a2.to_radians, 0.000001)
     assert_in_delta 90.0, a2.to_degrees, 0.000001
+  end
+
+  def test_guards
+    assert_raises(ArgumentError) { Angle.from_radians(Float::NAN) }
+    assert_raises(ArgumentError) { Angle.from_radians(Float::INFINITY) }
+    assert_raises(ArgumentError) { Angle.from_degrees(Float::NAN) }
   end
 end
 
@@ -364,6 +409,12 @@ class TestVolume < Minitest::Test
     assert_in_delta(12.0095, v_imp.to_us_gallons, 0.000001)
     assert_in_delta(10.0, v_imp.to_imp_gallons, 0.000001)
   end
+
+  def test_guards
+    assert_raises(ArgumentError) { Volume.from_liters(Float::NAN) }
+    assert_raises(ArgumentError) { Volume.from_liters(Float::INFINITY) }
+    assert_raises(ArgumentError) { Volume.from_liters(-1.0) }
+  end
 end
 
 
@@ -384,6 +435,12 @@ class TestTime < Minitest::Test
     assert_in_delta(1.0, t_h.to_minutes)
     assert_in_delta(1.0/60.0, t_h.to_hours)
   end
+
+  def test_guards
+    assert_raises(ArgumentError) { Time.from_seconds(Float::NAN) }
+    assert_raises(ArgumentError) { Time.from_seconds(Float::INFINITY) }
+    assert_raises(ArgumentError) { Time.from_seconds(-1.0) }
+  end
 end
 
 
@@ -398,7 +455,6 @@ class TestAcceleration < Minitest::Test
     assert_raises(ArgumentError) { a * Time.from_seconds(-1.0) }
   end
 end
-
 
 
 class TestOperation < Minitest::Test
