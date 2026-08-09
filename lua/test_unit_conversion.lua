@@ -38,6 +38,8 @@ assert_eq(s:toMph(), 22.3693629, "Speed toMph")
 assert_eq(M.Speed.fromKmH(36.0):toMs(), 10.0, "Speed fromKmH")
 assert_eq(M.Speed.fromMph(22.3693629):toMs(), 10.0, "Speed fromMph")
 assert_fail(function() M.Speed.fromMs(0/0) end) -- NaN check
+assert_fail(function() M.Speed.fromMs(math.huge) end) -- Inf check
+assert_fail(function() M.Speed.fromMs(-math.huge) end) -- -Inf check
 
 -- Temperature
 local temp = M.Temperature.fromCelsius(0)
@@ -46,6 +48,8 @@ assert_eq(temp:toKelvin(), 273.15, "Temperature toK")
 assert_eq(M.Temperature.fromFahrenheit(32.0):toCelsius(), 0, "Temperature fromF")
 assert_eq(M.Temperature.fromKelvin(273.15):toCelsius(), 0, "Temperature fromK")
 assert_fail(function() M.Temperature.fromCelsius(-300) end)
+assert_fail(function() M.Temperature.fromCelsius(0/0) end)
+assert_fail(function() M.Temperature.fromCelsius(math.huge) end)
 
 -- Mass
 local mass = M.Mass.fromKg(1.0)
@@ -55,6 +59,9 @@ assert_eq(mass:toOz(), 35.2739619, "Mass toOz")
 assert_eq(M.Mass.fromGram(1000):toKg(), 1.0, "Mass fromG")
 assert_eq(M.Mass.fromLb(2.2046226):toKg(), 1.0, "Mass fromLb")
 assert_eq(M.Mass.fromOz(35.2739619):toKg(), 1.0, "Mass fromOz")
+assert_fail(function() M.Mass.fromKg(-1.0) end)
+assert_fail(function() M.Mass.fromKg(0/0) end)
+assert_fail(function() M.Mass.fromKg(math.huge) end)
 
 -- Distance
 local d = M.Distance.fromMeters(1000.0)
@@ -63,28 +70,45 @@ assert_eq(d:toMile(), 0.62137119, "Distance toMile")
 assert_eq(d:toFeet(), 3280.839895, "Distance toFt")
 assert_eq(d:toInch(), 1000.0 / 0.0254, "Distance toIn")
 assert_eq(d:toMm(), 1000000.0, "Distance toMm")
+assert_fail(function() M.Distance.fromMeters(-1.0) end)
+assert_fail(function() M.Distance.fromMeters(0/0) end)
+assert_fail(function() M.Distance.fromMeters(math.huge) end)
 
 -- Pressure & Power & Torque
 assert_eq(M.Pressure.fromKpa(100):toBar(), 1.0, "Pressure toBar")
 assert_eq(M.Power.fromKw(0.7457):toHp(), 1.0, "Power toHp")
 assert_eq(M.Torque.fromNm(9.80665):toKgfm(), 1.0, "Torque toKgfm")
+assert_fail(function() M.Pressure.fromKpa(-1.0) end)
+assert_fail(function() M.Pressure.fromKpa(0/0) end)
+assert_fail(function() M.Power.fromKw(-1.0) end)
+assert_fail(function() M.Power.fromKw(math.huge) end)
+assert_fail(function() M.Torque.fromNm(-1.0) end)
+assert_fail(function() M.Torque.fromNm(0/0) end)
 
 -- Angle
 assert_eq(M.Angle.fromDegrees(180):toRadians(), math.pi, "Angle toRad")
+assert_fail(function() M.Angle.fromDegrees(0/0) end)
+assert_fail(function() M.Angle.fromDegrees(math.huge) end)
 
 -- Efficiency (C1: Positive check)
 local eff = M.Efficiency.fromKml(10.0)
 assert_eq(eff:toL100km(), 10.0, "Efficiency toL100km")
 assert_fail(function() M.Efficiency.fromKml(0) end)
+assert_fail(function() M.Efficiency.fromKml(-1.0) end)
+assert_fail(function() M.Efficiency.fromKml(0/0) end)
 
 -- EvEfficiency
 local ev = M.EvEfficiency.fromKmkWh(5.0)
 assert_eq(ev:toWhkm(), 200.0, "EvEfficiency toWhkm")
+assert_fail(function() M.EvEfficiency.fromKmkWh(0) end)
+assert_fail(function() M.EvEfficiency.fromKmkWh(0/0) end)
 
 -- Volume
 local vol = M.Volume.fromLiters(1.0)
 assert_eq(vol:toMl(), 1000.0, "Volume toMl")
 assert_eq(M.Volume.fromUsGallons(1):toLiters(), 3.785411784, "Volume fromUs")
+assert_fail(function() M.Volume.fromLiters(-1.0) end)
+assert_fail(function() M.Volume.fromLiters(0/0) end)
 
 -- Time & Acceleration
 local time = M.Time.fromSeconds(60)
@@ -92,6 +116,9 @@ assert_eq(time:toMinutes(), 1.0, "Time toMin")
 assert_eq(time:toHours(), 1.0/60.0, "Time toHour")
 local acc = M.Acceleration.fromSpeedAndTime(s, time)
 assert_eq(acc:toMs2(), 10.0/60.0, "Acceleration fromS&T")
+assert_fail(function() M.Time.fromSeconds(-1.0) end)
+assert_fail(function() M.Time.fromSeconds(0/0) end)
+assert_fail(function() M.Acceleration.fromMs2(0/0) end)
 
 -- C1: Finite check (NaN/Inf)
 assert_fail(function() M.Speed.fromMs(0/0) end)
@@ -114,12 +141,13 @@ assert_eq(s4:toMs(), 10.0, "Speed subtraction")
 -- mul (Scalar * Speed / Speed * Time)
 local s5 = s1 * 2.0
 assert_eq(s5:toMs(), 20.0, "Speed * scalar")
-local d = s1 * t
-assert_eq(d:toMeters(), 50.0, "Speed * Time = Distance")
+local dist = s1 * t
+assert_eq(dist:toMeters(), 50.0, "Speed * Time = Distance")
 
 -- div (Speed / Time = Acceleration)
-local acc = s1 / t
-assert_eq(acc:toMs2(), 2.0, "Speed / Time = Acceleration")
+local acc3 = s1 / t
+assert_eq(acc3:toMs2(), 2.0, "Speed / Time = Acceleration")
+assert_fail(function() local _ = s1 / M.Time.fromSeconds(0.0) end) -- Division by zero time check
 
 
 print("All tests passed: Logic, Operators, and Validation coverage 100%.")
