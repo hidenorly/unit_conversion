@@ -358,13 +358,19 @@ inline Speed operator*(const Acceleration& a, const Time& t) {
 }
 
 // Speed / Time = Acceleration
-Acceleration operator/(const Speed& s, const Time& t) {
+inline Acceleration operator/(const Speed& s, const Time& t) {
     if (t.toSeconds() == 0.0) throw std::invalid_argument("Time cannot be zero");
     return Acceleration::fromMs2(s.toMs() / t.toSeconds());
 }
 
+// Speed / Acceleration = Time
+inline Time operator/(const Speed& s, const Acceleration& a) {
+    if (a.toMs2() == 0.0) throw std::invalid_argument("Acceleration cannot be zero");
+    return Time::fromSeconds(s.toMs() / a.toMs2());
+}
+
 // Speed * Time = Distance
-Distance operator*(const Speed& s, const Time& t) {
+inline Distance operator*(const Speed& s, const Time& t) {
     return Distance::fromMeters(s.toMs() * t.toSeconds());
 }
 
@@ -384,13 +390,19 @@ inline Time operator/(const Distance& d, const Speed& s) {
     return Time::fromSeconds(d.toMeters() / s.toMs());
 }
 
+// Distance / Distance = Scalar (無次元化)
+inline double operator/(const Distance& a, const Distance& b) {
+    if (b.toMeters() == 0.0) throw std::invalid_argument("Distance cannot be zero");
+    return a.toMeters() / b.toMeters();
+}
+
 // Speed - Speed
-Speed operator-(const Speed& a, const Speed& b) {
+inline Speed operator-(const Speed& a, const Speed& b) {
     return Speed::fromMs(a.toMs() - b.toMs());
 }
 
 // Speed + Speed
-Speed operator+(const Speed& a, const Speed& b) {
+inline Speed operator+(const Speed& a, const Speed& b) {
     return Speed::fromMs(a.toMs() + b.toMs());
 }
 
@@ -415,7 +427,7 @@ inline Time operator+(const Time& a, const Time& b) {
 }
 
 // Speed * scalar
-Speed operator*(const Speed& s, double scalar) {
+inline Speed operator*(const Speed& s, double scalar) {
     return Speed::fromMs(s.toMs() * scalar);
 }
 
@@ -433,12 +445,21 @@ inline Distance operator*(double scalar, const Distance& d) {
 }
 
 // Acceleration * scalar
-Acceleration operator*(const Acceleration& a, double scalar) {
+inline Acceleration operator*(const Acceleration& a, double scalar) {
     return Acceleration::fromMs2(a.toMs2() * scalar);
 }
 
 inline Acceleration operator*(double scalar, const Acceleration& a) {
     return a * scalar;
+}
+
+// Time * scalar / scalar * Time
+inline Time operator*(const Time& t, double scalar) {
+    return Time::fromSeconds(t.toSeconds() * scalar);
+}
+
+inline Time operator*(double scalar, const Time& t) {
+    return t * scalar;
 }
 
 #endif // __UNIT_CONVERSION_HPP__

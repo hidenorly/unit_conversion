@@ -547,7 +547,6 @@ TEST(PhysicsOpsTest, DistanceDivSpeedEqualsTime) {
     auto time = d / s;
     EXPECT_NEAR(time.toSeconds(), 5.0, 1e-9);
 
-    // ゼロ除算例外のテスト
     EXPECT_THROW(d / Speed::fromMs(0.0), std::invalid_argument);
 }
 
@@ -577,4 +576,31 @@ TEST(ScalarOpsTest, SymmetricMultiplication) {
 
     auto a = 1.5 * Acceleration::fromMs2(2.0);
     EXPECT_NEAR(a.toMs2(), 3.0, 1e-9);
+}
+
+
+TEST(PhysicsOpsTest, TimeMulScalar) {
+    auto t = Time::fromSeconds(10.0) * 2.5;
+    EXPECT_NEAR(t.toSeconds(), 25.0, 1e-9);
+
+    auto t_sym = 3.0 * Time::fromSeconds(4.0);
+    EXPECT_NEAR(t_sym.toSeconds(), 12.0, 1e-9);
+}
+
+TEST(PhysicsOpsTest, SpeedDivAccelerationEqualsTime) {
+    auto s = Speed::fromMs(20.0);
+    auto a = Acceleration::fromMs2(4.0);
+    auto t = s / a;
+    EXPECT_NEAR(t.toSeconds(), 5.0, 1e-9);
+
+    EXPECT_THROW(s / Acceleration::fromMs2(0.0), std::invalid_argument);
+}
+
+TEST(PhysicsOpsTest, DistanceDivDistanceEqualsScalar) {
+    auto d1 = Distance::fromMeters(250.0);
+    auto d2 = Distance::fromMeters(50.0);
+    double scalar = d1 / d2;
+    EXPECT_NEAR(scalar, 5.0, 1e-9);
+
+    EXPECT_THROW(d1 / Distance::fromMeters(0.0), std::invalid_argument);
 }
