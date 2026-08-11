@@ -314,8 +314,46 @@ extension SpeedAdd on Speed {
 }
 
 extension SpeedDiv on Speed {
-  Acceleration operator /(Time t) {
-    if (t.toSeconds == 0.0) throw ArgumentError('Division by zero');
-    return Acceleration.fromMs2(this.toMs / t.toSeconds);
+  dynamic operator /(dynamic other) {
+    if (other is Time) {
+      if (other.toSeconds == 0.0) throw ArgumentError('Division by zero');
+      return Acceleration.fromMs2(this.toMs / other.toSeconds);
+    } else if (other is Acceleration) {
+      if (other.toMs2 == 0.0) throw ArgumentError('Acceleration cannot be zero');
+      return Time.fromSeconds(this.toMs / other.toMs2);
+    }
+    throw ArgumentError('Unsupported type for division');
+  }
+}
+
+extension DistanceOps on Distance {
+  Distance operator +(Distance other) => Distance.fromMeters(this.toMeters + other.toMeters);
+  Distance operator -(Distance other) => Distance.fromMeters(this.toMeters - other.toMeters);
+
+  dynamic operator *(num scalar) {
+    return Distance.fromMeters(this.toMeters * scalar.toDouble());
+  }
+
+  dynamic operator /(dynamic other) {
+    if (other is Time) {
+      if (other.toSeconds == 0.0) throw ArgumentError('Time cannot be zero');
+      return Speed.fromMs(this.toMeters / other.toSeconds);
+    } else if (other is Speed) {
+      if (other.toMs == 0.0) throw ArgumentError('Speed cannot be zero');
+      return Time.fromSeconds(this.toMeters / other.toMs);
+    } else if (other is Distance) {
+      if (other.toMeters == 0.0) throw ArgumentError('Distance cannot be zero');
+      return this.toMeters / other.toMeters;
+    }
+    throw ArgumentError('Unsupported type for division');
+  }
+}
+
+extension TimeOps on Time {
+  Time operator +(Time other) => Time.fromSeconds(this.toSeconds + other.toSeconds);
+  Time operator -(Time other) => Time.fromSeconds(this.toSeconds - other.toSeconds);
+
+  Time operator *(num scalar) {
+    return Time.fromSeconds(this.toSeconds * scalar.toDouble());
   }
 }

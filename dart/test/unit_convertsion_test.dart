@@ -463,6 +463,15 @@ group('EvEfficiency Tests', () {
     expect(() => (v1 - v2) / Time.fromSeconds(0.0), throwsArgumentError);
   });
 
+  test('Speed derived from Speed / Acceleration', () {
+    final v = Speed.fromMs(20.0);
+    final a = Acceleration.fromMs2(4.0);
+    final t = v / a;
+    expect(t.toSeconds, closeTo(5.0, 1e-9));
+
+    expect(() => v / Acceleration.fromMs2(0.0), throwsArgumentError);
+  });
+
   test('Scalar Multiplication', () {
     final v = Speed.fromMs(10.0) * 0.5;
     expect(v.toMs, closeTo(5.0, 1e-9));
@@ -477,5 +486,60 @@ group('EvEfficiency Tests', () {
 
     final zero = Acceleration.fromMs2(9.8) * 0.0;
     expect(zero.toMs2, closeTo(0.0, 1e-9));
+  });
+
+  group('Distance Operations Tests', () {
+    test('Distance Addition and Subtraction', () {
+      final d1 = Distance.fromMeters(100.0);
+      final d2 = Distance.fromMeters(50.0);
+      expect((d1 + d2).toMeters, closeTo(150.0, 1e-9));
+      expect((d1 - d2).toMeters, closeTo(50.0, 1e-9));
+    });
+
+    test('Distance Scalar Multiplication', () {
+      final d = Distance.fromMeters(100.0) * 2.5;
+      expect(d.toMeters, closeTo(250.0, 1e-9));
+    });
+
+    test('Distance / Time -> Speed', () {
+      final d = Distance.fromMeters(100.0);
+      final t = Time.fromSeconds(10.0);
+      final s = d / t;
+      expect(s.toMs, closeTo(10.0, 1e-9));
+
+      expect(() => Distance.fromMeters(100.0) / Time.fromSeconds(0.0), throwsArgumentError);
+    });
+
+    test('Distance / Speed -> Time', () {
+      final d = Distance.fromMeters(100.0);
+      final s = Speed.fromMs(20.0);
+      final t = d / s;
+      expect(t.toSeconds, closeTo(5.0, 1e-9));
+
+      expect(() => Distance.fromMeters(100.0) / Speed.fromMs(0.0), throwsArgumentError);
+    });
+
+    test('Distance / Distance -> Ratio (double)', () {
+      final d1 = Distance.fromMeters(150.0);
+      final d2 = Distance.fromMeters(50.0);
+      final ratio = d1 / d2;
+      expect(ratio, closeTo(3.0, 1e-9));
+
+      expect(() => Distance.fromMeters(100.0) / Distance.fromMeters(0.0), throwsArgumentError);
+    });
+  });
+
+  group('Time Operations Tests', () {
+    test('Time Addition and Subtraction', () {
+      final t1 = Time.fromSeconds(60.0);
+      final t2 = Time.fromSeconds(30.0);
+      expect((t1 + t2).toSeconds, closeTo(90.0, 1e-9));
+      expect((t1 - t2).toSeconds, closeTo(30.0, 1e-9));
+    });
+
+    test('Time Scalar Multiplication', () {
+      final t = Time.fromSeconds(60.0) * 1.5;
+      expect(t.toSeconds, closeTo(90.0, 1e-9));
+    });
   });
 }
