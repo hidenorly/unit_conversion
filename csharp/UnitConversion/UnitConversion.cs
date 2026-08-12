@@ -49,6 +49,11 @@ namespace UnitConversion
             if (t.ToSeconds() == 0.0) throw new ArgumentException("Time cannot be zero");
             return Acceleration.FromMs2(s.m_ms / t.ToSeconds());
         }
+        public static Time operator /(Speed s, Acceleration a)
+        {
+            if (a.ToMs2() == 0.0) throw new ArgumentException("Acceleration cannot be zero");
+            return Time.FromSeconds(s.m_ms / a.ToMs2());
+        }
     }
 
     public readonly struct Temperature
@@ -129,6 +134,26 @@ namespace UnitConversion
         public double ToFeet() => m_meters / FtToM;
         public double ToInch() => m_meters / InToM;
         public double ToMm() => m_meters / MmToM;
+
+        public static Distance operator +(Distance a, Distance b) => FromMeters(a.m_meters + b.m_meters);
+        public static Distance operator -(Distance a, Distance b) => FromMeters(a.m_meters - b.m_meters);
+        public static Distance operator *(Distance d, double scalar) => FromMeters(d.m_meters * scalar);
+        public static Distance operator *(double scalar, Distance d) => FromMeters(d.m_meters * scalar);
+        public static Speed operator /(Distance d, Time t)
+        {
+            if (t.ToSeconds() == 0.0) throw new ArgumentException("Time cannot be zero");
+            return Speed.FromMs(d.m_meters / t.ToSeconds());
+        }
+        public static Time operator /(Distance d, Speed s)
+        {
+            if (s.ToMs() == 0.0) throw new ArgumentException("Speed cannot be zero");
+            return Time.FromSeconds(d.m_meters / s.ToMs());
+        }
+        public static double operator /(Distance a, Distance b)
+        {
+            if (b.ToMeters() == 0.0) throw new ArgumentException("Distance cannot be zero");
+            return a.m_meters / b.m_meters;
+        }
     }
 
     public readonly struct Pressure
@@ -302,6 +327,11 @@ namespace UnitConversion
         public double ToSeconds() => m_sec;
         public double ToMinutes() => m_sec / 60.0;
         public double ToHours() => m_sec / 3600.0;
+
+        public static Time operator +(Time a, Time b) => FromSeconds(a.m_sec + b.m_sec);
+        public static Time operator -(Time a, Time b) => FromSeconds(a.m_sec - b.m_sec);
+        public static Time operator *(Time t, double scalar) => FromSeconds(t.m_sec * scalar);
+        public static Time operator *(double scalar, Time t) => FromSeconds(t.m_sec * scalar);
     }
 
     public readonly struct Acceleration

@@ -432,6 +432,45 @@ public class UnitConversionTests
         var v_delta = Acceleration.FromMs2(2.0) * Time.FromSeconds(5.0);
         var v2 = v + v_delta;
         Assert.Equal(20.0, v2.ToMs(), 1e-9);
+
+        // Additional operators support verification tests
+        var t_calc = Speed.FromMs(20.0) / Acceleration.FromMs2(2.0);
+        Assert.Equal(10.0, t_calc.ToSeconds(), 1e-9);
+
+        var d1 = Distance.FromMeters(100.0);
+        var d2 = Distance.FromMeters(50.0);
+        var d_sum = d1 + d2;
+        Assert.Equal(150.0, d_sum.ToMeters(), 1e-9);
+
+        var d_sub = d1 - d2;
+        Assert.Equal(50.0, d_sub.ToMeters(), 1e-9);
+
+        var d_mul = Distance.FromMeters(10.0) * 2.0;
+        Assert.Equal(20.0, d_mul.ToMeters(), 1e-9);
+
+        var d_mul_left = 2.0 * Distance.FromMeters(10.0);
+        Assert.Equal(20.0, d_mul_left.ToMeters(), 1e-9);
+
+        var speed_calc = Distance.FromMeters(100.0) / Time.FromSeconds(10.0);
+        Assert.Equal(10.0, speed_calc.ToMs(), 1e-9);
+
+        var time_calc = Distance.FromMeters(100.0) / Speed.FromMs(10.0);
+        Assert.Equal(10.0, time_calc.ToSeconds(), 1e-9);
+
+        var ratio = Distance.FromMeters(100.0) / Distance.FromMeters(25.0);
+        Assert.Equal(4.0, ratio, 1e-9);
+
+        var t_sum = Time.FromSeconds(10.0) + Time.FromSeconds(20.0);
+        Assert.Equal(30.0, t_sum.ToSeconds(), 1e-9);
+
+        var t_sub = Time.FromSeconds(20.0) - Time.FromSeconds(10.0);
+        Assert.Equal(10.0, t_sub.ToSeconds(), 1e-9);
+
+        var t_mul = Time.FromSeconds(10.0) * 2.0;
+        Assert.Equal(20.0, t_mul.ToSeconds(), 1e-9);
+
+        var t_mul_left = 2.0 * Time.FromSeconds(10.0);
+        Assert.Equal(20.0, t_mul_left.ToSeconds(), 1e-9);
     }
 
     [Fact]
