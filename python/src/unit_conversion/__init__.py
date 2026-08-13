@@ -55,10 +55,16 @@ class Speed:
     def __add__(self, other: 'Speed') -> 'Speed':
         return Speed.from_ms(self.to_ms + other.to_ms)
 
-    def __truediv__(self, other: 'Time') -> 'Acceleration':
-        if other.to_seconds == 0:
-            raise ValueError("Time cannot be zero")
-        return Acceleration(self.to_ms / other.to_seconds)
+    def __truediv__(self, other):
+        if isinstance(other, Time):
+            if other.to_seconds == 0:
+                raise ValueError("Time cannot be zero")
+            return Acceleration(self.to_ms / other.to_seconds)
+        elif isinstance(other, Acceleration):
+            if other.to_ms2 == 0:
+                raise ValueError("Acceleration cannot be zero")
+            return Time.from_seconds(self.to_ms / other.to_ms2)
+        return NotImplemented
 
     def __mul__(self, other):
         if isinstance(other, Time):
@@ -205,6 +211,35 @@ class Distance:
     @property
     def to_mm(self):
         return self._meters / self._MM_TO_M
+
+    def __add__(self, other: 'Distance') -> 'Distance':
+        return Distance.from_meters(self.to_meters + other.to_meters)
+
+    def __sub__(self, other: 'Distance') -> 'Distance':
+        return Distance.from_meters(self.to_meters - other.to_meters)
+
+    def __mul__(self, other):
+        if isinstance(other, (int, float)):
+            return Distance.from_meters(self.to_meters * other)
+        return NotImplemented
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def __truediv__(self, other):
+        if isinstance(other, Time):
+            if other.to_seconds == 0:
+                raise ValueError("Time cannot be zero")
+            return Speed.from_ms(self.to_meters / other.to_seconds)
+        elif isinstance(other, Speed):
+            if other.to_ms == 0:
+                raise ValueError("Speed cannot be zero")
+            return Time.from_seconds(self.to_meters / other.to_ms)
+        elif isinstance(other, Distance):
+            if other.to_meters == 0:
+                raise ValueError("Distance cannot be zero")
+            return self.to_meters / other.to_meters
+        return NotImplemented
 
 
 class Pressure:
@@ -484,6 +519,20 @@ class Time:
     @property
     def to_hours(self):
         return self._s / 3600.0
+
+    def __add__(self, other: 'Time') -> 'Time':
+        return Time.from_seconds(self.to_seconds + other.to_seconds)
+
+    def __sub__(self, other: 'Time') -> 'Time':
+        return Time.from_seconds(self.to_seconds - other.to_seconds)
+
+    def __mul__(self, other):
+        if isinstance(other, (int, float)):
+            return Time.from_seconds(self.to_seconds * other)
+        return NotImplemented
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
 
 
 class Acceleration:

@@ -158,6 +158,7 @@ class TestDistance(unittest.TestCase):
         d5 = Distance.from_inch(16.0)
         self.assertEqual(d5.to_inch, 16.0)
 
+    def test_guards(self):
         d6 = Distance.from_mm(1000.0)
         self.assertEqual(d6.to_meters, 1.0)
 
@@ -204,6 +205,7 @@ class TestPower(unittest.TestCase):
         with self.assertRaises(ValueError):
             Power.from_hp(float('nan'))
 
+    def test_guards(self):
         with self.assertRaises(ValueError):
             Power.from_kw(-0.00001)
 
@@ -472,6 +474,49 @@ class TestOperation(unittest.TestCase):
 
         zero = Acceleration(9.8) * 0.0
         self.assertEqual(zero.to_ms2, 0.0)
+
+    def test_distance_div(self):
+        d1 = Distance.from_meters(100.0)
+        d2 = Distance.from_meters(20.0)
+        
+        # Distance / Distance = scalar (比率)
+        ratio = d1 / d2
+        self.assertEqual(ratio, 5.0)
+
+        # Distance / Speed = Time
+        t = Distance.from_meters(100.0) / Speed.from_ms(10.0)
+        self.assertEqual(t.to_seconds, 10.0)
+
+        # Distance / Time = Speed
+        v = Distance.from_meters(100.0) / Time.from_seconds(10.0)
+        self.assertEqual(v.to_ms, 10.0)
+
+    def test_rmul_operations(self):
+        # Speed * scalar
+        v = 2.0 * Speed.from_ms(10.0)
+        self.assertEqual(v.to_ms, 20.0)
+
+        # Acceleration * scalar
+        a = 0.5 * Acceleration(10.0)
+        self.assertEqual(a.to_ms2, 5.0)
+        
+        # Time * scalar
+        t = 3.0 * Time.from_seconds(10.0)
+        self.assertEqual(t.to_seconds, 30.0)
+        
+        # Distance * scalar
+        d = 4.0 * Distance.from_meters(10.0)
+        self.assertEqual(d.to_meters, 40.0)
+
+    def test_guards(self):
+        # ... (既存のガードテスト)
+        # 新たに追加した除算のガードテスト
+        with self.assertRaises(ValueError):
+            Distance.from_meters(10.0) / Distance.from_meters(0.0)
+        with self.assertRaises(ValueError):
+            Distance.from_meters(10.0) / Speed.from_ms(0.0)
+        with self.assertRaises(ValueError):
+            Distance.from_meters(10.0) / Time.from_seconds(0.0)
 
 
 if __name__ == '__main__':
