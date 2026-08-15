@@ -113,6 +113,22 @@ function M.Distance:toFeet() return self.val / 0.3048 end
 function M.Distance:toInch() return self.val / 0.0254 end
 function M.Distance:toMm() return self.val / 0.001 end
 
+M.Distance.__div = function(a, b)
+    local meta_a = getmetatable(a)
+    local meta_b = getmetatable(b)
+    if meta_a == M.Distance and meta_b == M.Distance then
+        if b.val == 0 then error("Division by zero distance") end
+        return a.val / b.val
+    elseif meta_a == M.Distance and meta_b == M.Speed then
+        if b.val == 0 then error("Division by zero speed") end
+        return M.Time.fromSeconds(a.val / b.val)
+    elseif meta_a == M.Distance and meta_b == M.Time then
+        if b.val == 0 then error("Division by zero time") end
+        return M.Speed.fromMs(a.val / b.val)
+    end
+    error("Invalid division")
+end
+
 -- Pressure
 M.Pressure = setup_meta(create_class("Pressure"))
 function M.Pressure.fromKpa(v)
@@ -225,6 +241,17 @@ function M.Acceleration.fromSpeedAndTime(s, t)
     return M.Acceleration.fromMs2(s:toMs() / t:toSeconds()) 
 end
 function M.Acceleration:toMs2() return self.val end
+
+M.Acceleration.__mul = function(a, b)
+    local meta_a = getmetatable(a)
+    local meta_b = getmetatable(b)
+    if meta_a == M.Acceleration and meta_b == M.Time then return M.Speed.fromMs(a.val * b.val) end
+    if meta_b == M.Acceleration and meta_a == M.Time then return M.Speed.fromMs(b.val * a.val) end
+
+    local val_a = (type(a) == "number") and a or a.val
+    local val_b = (type(b) == "number") and b or b.val
+    return setmetatable({val = val_a * val_b}, M.Acceleration)
+end
 
 local classes = {}
 for _, name in ipairs(classes) do

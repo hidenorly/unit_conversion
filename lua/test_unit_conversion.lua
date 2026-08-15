@@ -149,5 +149,34 @@ local acc3 = s1 / t
 assert_eq(acc3:toMs2(), 2.0, "Speed / Time = Acceleration")
 assert_fail(function() local _ = s1 / M.Time.fromSeconds(0.0) end) -- Division by zero time check
 
+-- 2. Extended operator overload (Distance div & Numeric * Object / Object * Numeric)
+local d1 = M.Distance.fromMeters(100.0)
+local d2 = M.Distance.fromMeters(20.0)
+
+local ratio = d1 / d2
+assert_eq(ratio, 5.0, "Distance / Distance")
+
+local time_res = d1 / M.Speed.fromMs(10.0)
+assert_eq(time_res:toSeconds(), 10.0, "Distance / Speed = Time")
+
+local speed_res = d1 / M.Time.fromSeconds(10.0)
+assert_eq(speed_res:toMs(), 10.0, "Distance / Time = Speed")
+
+assert_fail(function() local _ = d1 / M.Distance.fromMeters(0.0) end)
+assert_fail(function() local _ = d1 / M.Speed.fromMs(0.0) end)
+assert_fail(function() local _ = d1 / M.Time.fromSeconds(0.0) end)
+
+local rmul_speed = 2.0 * M.Speed.fromMs(10.0)
+assert_eq(rmul_speed:toMs(), 20.0, "Number * Speed")
+
+local rmul_acc = 0.5 * M.Acceleration.fromMs2(10.0)
+assert_eq(rmul_acc:toMs2(), 5.0, "Number * Acceleration")
+
+local rmul_time = 3.0 * M.Time.fromSeconds(10.0)
+assert_eq(rmul_time:toSeconds(), 30.0, "Number * Time")
+
+local rmul_dist = 4.0 * M.Distance.fromMeters(10.0)
+assert_eq(rmul_dist:toMeters(), 40.0, "Number * Distance")
+
 
 print("All tests passed: Logic, Operators, and Validation coverage 100%.")
