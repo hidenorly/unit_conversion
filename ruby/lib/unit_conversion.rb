@@ -72,6 +72,10 @@ class Speed
   def +(other)
     return Speed.from_ms(self.to_ms + other.to_ms)
   end
+
+  def coerce(other)
+    [Speed.from_ms(other), self]
+  end
 end
 
 
@@ -223,6 +227,31 @@ class Distance
 
   def to_mm
     return @meters / MM_TO_M
+  end
+
+  def /(other)
+    case other
+    when Distance
+      raise ArgumentError, "Division by zero" if other.to_meters == 0
+      return self.to_meters / other.to_meters
+    when Speed
+      raise ArgumentError, "Division by zero" if other.to_ms == 0
+      return Time.from_seconds(self.to_meters / other.to_ms)
+    when Time
+      raise ArgumentError, "Division by zero" if other.to_seconds == 0
+      return Speed.from_ms(self.to_meters / other.to_seconds)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def *(other)
+    return Distance.from_meters(self.to_meters * other) if other.is_a?(Numeric)
+    raise ArgumentError, "Unsupported type: #{other.class}"
+  end
+
+  def coerce(other)
+    [other, self]
   end
 end
 
@@ -528,6 +557,15 @@ class Time
   def to_hours
     return @s / 3600.0
   end
+
+  def *(other)
+    return Time.from_seconds(self.to_seconds * other) if other.is_a?(Numeric)
+    raise ArgumentError, "Unsupported type: #{other.class}"
+  end
+ 
+  def coerce(other)
+    [other, self]
+  end
 end
 
 
@@ -556,5 +594,9 @@ class Acceleration
     else
       raise ArgumentError, "Unsupported type: #{other.class}"
     end
+  end
+
+  def coerce(other)
+    [other, self]
   end
 end

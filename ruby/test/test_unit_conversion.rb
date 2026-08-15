@@ -500,4 +500,45 @@ class TestOperation < Minitest::Test
     zero = Acceleration.new(9.8) * 0.0
     assert_in_delta(0.0, zero.to_ms2)
   end
+
+  def test_distance_div
+    d1 = Distance.from_meters(100.0)
+    d2 = Distance.from_meters(20.0)
+
+    # Distance / Distance = scalar
+    ratio = d1 / d2
+    assert_in_delta(5.0, ratio)
+
+    # Distance / Speed = Time
+    t = Distance.from_meters(100.0) / Speed.from_ms(10.0)
+    assert_in_delta(10.0, t.to_seconds)
+
+    # Distance / Time = Speed
+    v = Distance.from_meters(100.0) / Time.from_seconds(10.0)
+    assert_in_delta(10.0, v.to_ms)
+  end
+
+def test_scalar_mul_operations
+    # Speed * scalar
+    v = Speed.from_ms(10.0) * 2.0
+    assert_in_delta(20.0, v.to_ms)
+
+    # Acceleration * scalar
+    a = Acceleration.new(10.0) * 0.5
+    assert_in_delta(5.0, a.to_ms2)
+
+    # Time * scalar
+    t = Time.from_seconds(10.0) * 3.0
+    assert_in_delta(30.0, t.to_seconds)
+
+    # Distance * scalar
+    d = Distance.from_meters(10.0) * 4.0
+    assert_in_delta(40.0, d.to_meters)
+  end
+
+  def test_div_guards
+    assert_raises(ArgumentError) { Distance.from_meters(10.0) / Distance.from_meters(0.0) }
+    assert_raises(ArgumentError) { Distance.from_meters(10.0) / Speed.from_ms(0.0) }
+    assert_raises(ArgumentError) { Distance.from_meters(10.0) / Time.from_seconds(0.0) }
+  end
 end
