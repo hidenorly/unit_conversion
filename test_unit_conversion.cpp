@@ -305,6 +305,20 @@ TEST(AngleTest, RadiansToDegrees) {
     EXPECT_NEAR(a.toDegrees(), 90.0, 0.000001);
 }
 
+TEST(AngleTest, ValidationAndNormalization) {
+    EXPECT_THROW(Angle::fromRadians(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(Angle::fromDegrees(std::numeric_limits<double>::infinity()), std::invalid_argument);
+
+    auto a1 = Angle::fromDegrees(370.0).normalized();
+    EXPECT_NEAR(a1.toDegrees(), 10.0, 0.0001);
+
+    auto a2 = Angle::fromDegrees(-90.0).normalized();
+    EXPECT_NEAR(a2.toDegrees(), 270.0, 0.0001);
+
+    auto a3 = Angle::fromDegrees(270.0).normalizedSigned();
+    EXPECT_NEAR(a3.toDegrees(), -90.0, 0.0001);
+}
+
 
 // -- test case for Efficiency
 

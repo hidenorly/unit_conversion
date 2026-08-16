@@ -150,7 +150,7 @@ private:
     static constexpr double BAR_TO_KPA = 100.0;
     static constexpr double PSI_TO_KPA = 6.89476;
 
-explicit Pressure(double kpa) : m_kpa(kpa) {
+    explicit Pressure(double kpa) : m_kpa(kpa) {
         if (std::isnan(kpa) || std::isinf(kpa)) {
             throw std::invalid_argument("Pressure must be finite");
         }
@@ -231,10 +231,13 @@ public:
 class Angle {
 private:
     double m_rad;
-    // π / 180
     static constexpr double DEG_TO_RAD = 3.14159265358979323846 / 180.0;
 
-    explicit Angle(double rad) : m_rad(rad) {}
+    explicit Angle(double rad) : m_rad(rad) {
+        if (std::isnan(rad) || std::isinf(rad)) {
+            throw std::invalid_argument("Angle must be finite");
+        }
+    }
 
 public:
     static Angle fromRadians(double v) { return Angle(v); }
@@ -242,6 +245,22 @@ public:
 
     double toRadians() const { return m_rad; }
     double toDegrees() const { return m_rad / DEG_TO_RAD; }
+
+    Angle normalized() const {
+        double r = std::fmod(m_rad, 2.0 * 3.14159265358979323846);
+        if (r < 0.0) {
+            r += 2.0 * 3.14159265358979323846;
+        }
+        return Angle(r);
+    }
+
+    Angle normalizedSigned() const {
+        double r = std::fmod(m_rad + 3.14159265358979323846, 2.0 * 3.14159265358979323846);
+        if (r < 0.0) {
+            r += 2.0 * 3.14159265358979323846;
+        }
+        return Angle(r - 3.14159265358979323846);
+    }
 };
 
 
