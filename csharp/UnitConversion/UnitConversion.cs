@@ -226,6 +226,7 @@ namespace UnitConversion
     {
         private readonly double m_rad;
         private const double DegToRad = Math.PI / 180.0;
+        private const double TwoPi = Math.PI * 2.0;
 
         private Angle(double rad)
         {
@@ -239,6 +240,26 @@ namespace UnitConversion
 
         public double ToRadians() => m_rad;
         public double ToDegrees() => m_rad / DegToRad;
+
+        public Angle NormalizeRadians()
+        {
+            double normalized = m_rad % TwoPi;
+            if (normalized < 0.0)
+            {
+                normalized += TwoPi;
+            }
+            return new Angle(normalized);
+        }
+
+        public Angle NormalizeDegrees()
+        {
+            double deg = ToDegrees() % 360.0;
+            if (deg < 0.0)
+            {
+                deg += 360.0;
+            }
+            return FromDegrees(deg);
+        }
     }
 
     public readonly struct Efficiency

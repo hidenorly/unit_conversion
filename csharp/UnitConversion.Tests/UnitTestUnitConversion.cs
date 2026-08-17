@@ -254,6 +254,27 @@ public class UnitConversionTests
     }
 
     [Fact]
+    public void TestAngleNormalization()
+    {
+        // Degrees normalization (0 to 360)
+        var a1 = Angle.FromDegrees(450.0).NormalizeDegrees();
+        Assert.Equal(90.0, a1.ToDegrees(), 0.000001);
+
+        var a2 = Angle.FromDegrees(-90.0).NormalizeDegrees();
+        Assert.Equal(270.0, a2.ToDegrees(), 0.000001);
+
+        var a3 = Angle.FromDegrees(360.0).NormalizeDegrees();
+        Assert.Equal(0.0, a3.ToDegrees(), 0.000001);
+
+        // Radians normalization (0 to 2π)
+        var r1 = Angle.FromRadians(Math.PI * 2.5).NormalizeRadians();
+        Assert.Equal(Math.PI * 0.5, r1.ToRadians(), 0.000001);
+
+        var r2 = Angle.FromRadians(-Math.PI * 0.5).NormalizeRadians();
+        Assert.Equal(Math.PI * 1.5, r2.ToRadians(), 0.000001);
+    }
+
+    [Fact]
     public void TestAngleExceptions()
     {
         Assert.Throws<ArgumentException>(() => Angle.FromRadians(double.NaN));
