@@ -277,17 +277,36 @@ void main() {
    });
  });
 
-  test('Angle Conversion test', () {
-    final a = Angle.fromDegrees(180.0);
-    expect(a.toDegrees, closeTo(180.0, epsilon));
-    expect(a.toRadians, closeTo(math.pi, epsilon));
+  group('Angle Conversion Tests', () {
+    test('Angle Conversion test', () {
+      final a = Angle.fromDegrees(180.0);
+      expect(a.toDegrees, closeTo(180.0, epsilon));
+      expect(a.toRadians, closeTo(math.pi, epsilon));
 
-    final a2 = Angle.fromRadians(math.pi / 2);
-    expect(a2.toRadians, closeTo(math.pi / 2, epsilon));
-    expect(a2.toDegrees, closeTo(90.0, epsilon));
+      final a2 = Angle.fromRadians(math.pi / 2);
+      expect(a2.toRadians, closeTo(math.pi / 2, epsilon));
+      expect(a2.toDegrees, closeTo(90.0, epsilon));
 
-    expect(() => Angle.fromDegrees(double.nan), throwsArgumentError);
-    expect(() => Angle.fromRadians(double.infinity), throwsArgumentError);
+      expect(() => Angle.fromDegrees(double.nan), throwsArgumentError);
+      expect(() => Angle.fromRadians(double.infinity), throwsArgumentError);
+    });
+
+    test('Angle Normalization test', () {
+      final a1 = Angle.fromDegrees(450.0).normalizeDegrees();
+      expect(a1.toDegrees, closeTo(90.0, epsilon));
+
+      final a2 = Angle.fromDegrees(-90.0).normalizeDegrees();
+      expect(a2.toDegrees, closeTo(270.0, epsilon));
+
+      final a3 = Angle.fromDegrees(360.0).normalizeDegrees();
+      expect(a3.toDegrees, closeTo(0.0, epsilon));
+
+      final r1 = Angle.fromRadians(math.pi * 2.5).normalizeRadians();
+      expect(r1.toRadians, closeTo(math.pi * 0.5, epsilon));
+
+      final r2 = Angle.fromRadians(-math.pi * 0.5).normalizeRadians();
+      expect(r2.toRadians, closeTo(math.pi * 1.5, epsilon));
+    });
   });
 
 

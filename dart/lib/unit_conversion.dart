@@ -175,6 +175,7 @@ class Torque {
 class Angle {
   final double _rad;
   static const double _degToRad = math.pi / 180.0;
+  static const double _twoPi = math.pi * 2.0;
 
   Angle._(this._rad) {
     if (_rad.isNaN || _rad.isInfinite) {
@@ -187,6 +188,22 @@ class Angle {
 
   double get toRadians => _rad;
   double get toDegrees => _rad / _degToRad;
+
+  Angle normalizeRadians() {
+    double normalized = _rad % _twoPi;
+    if (normalized < 0.0) {
+      normalized += _twoPi;
+    }
+    return Angle._(normalized);
+  }
+
+  Angle normalizeDegrees() {
+    double deg = toDegrees % 360.0;
+    if (deg < 0.0) {
+      deg += 360.0;
+    }
+    return Angle.fromDegrees(deg);
+  }
 }
 
 
