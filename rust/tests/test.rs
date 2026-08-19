@@ -52,6 +52,18 @@ mod tests {
         assert!((s5.to_mph() - 37.2823).abs() < EPSILON);
     }
 
+    #[test]
+    #[should_panic]
+    fn test_speed_negative_guard() {
+        Speed::from_kmh(-1.0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_speed_nan_guard() {
+        Speed::from_ms(f64::NAN);
+    }
+
     use unit_conversion::Temperature;
 
     #[test]
@@ -81,12 +93,25 @@ mod tests {
     fn test_absolute_zero() {
         let t = Temperature::from_kelvin(0.0);
         assert!((t.to_celsius() - (-273.15)).abs() < 1e-9);
+        assert!((t.to_fahrenheit() - (-459.67)).abs() < EPSILON);
     }
 
     #[test]
     #[should_panic]
-    fn test_below_absolute_zero() {
+    fn test_below_absolute_zero_celsius() {
         Temperature::from_celsius(-274.0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_below_absolute_zero_fahrenheit() {
+        Temperature::from_fahrenheit(-500.0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_temperature_nan_guard() {
+        Temperature::from_kelvin(f64::NAN);
     }
 
     use unit_conversion::Mass;
@@ -118,6 +143,12 @@ mod tests {
     #[should_panic]
     fn test_mass_negative_guard() {
         Mass::from_kg(-1.0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_mass_nan_guard() {
+        Mass::from_gram(f64::NAN);
     }
 
     use unit_conversion::Distance;
@@ -197,6 +228,12 @@ mod tests {
     #[should_panic]
     fn test_pressure_negative_guard() {
         Pressure::from_bar(-0.1);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_pressure_nan_guard() {
+        Pressure::from_psi(f64::NAN);
     }
 
     use unit_conversion::Power;
@@ -356,6 +393,12 @@ mod tests {
         assert!((a2.to_degrees() - 90.0).abs() < EPSILON);
     }
 
+    #[test]
+    #[should_panic]
+    fn test_angle_nan_guard() {
+        Angle::from_degrees(f64::NAN);
+    }
+
     use unit_conversion::Efficiency;
 
     #[test]
@@ -469,6 +512,12 @@ mod tests {
     #[should_panic]
     fn test_volume_negative_guard() {
         Volume::from_liters(-1.0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_volume_nan_guard() {
+        Volume::from_us_gallons(f64::NAN);
     }
 
     use unit_conversion::Time;
@@ -624,5 +673,43 @@ mod tests {
 
         let a = 1.5 * Acceleration::new(2.0);
         assert!((a.to_ms2() - 3.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_time_mul_scalar() {
+        let t = Time::from_seconds(10.0);
+        let t_mul = t * 2.0;
+        assert!((t_mul.to_seconds() - 20.0).abs() < 1e-9);
+
+        let t_sym = 2.0 * Time::from_seconds(10.0);
+        assert!((t_sym.to_seconds() - 20.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_speed_div_acceleration() {
+        let v = Speed::from_ms(20.0);
+        let a = Acceleration::new(5.0);
+        let t = v / a;
+        assert!((t.to_seconds() - 4.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Acceleration cannot be zero")]
+    fn test_speed_div_zero_acceleration() {
+        let _ = Speed::from_ms(20.0) / Acceleration::new(0.0);
+    }
+
+    #[test]
+    fn test_distance_div_distance() {
+        let d1 = Distance::from_meters(100.0);
+        let d2 = Distance::from_meters(20.0);
+        let ratio = d1 / d2;
+        assert!((ratio - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Distance cannot be zero")]
+    fn test_distance_div_zero_distance() {
+        let _ = Distance::from_meters(100.0) / Distance::from_meters(0.0);
     }
 }

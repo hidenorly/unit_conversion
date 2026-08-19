@@ -240,11 +240,37 @@ pub struct Angle { rad: f64 }
 impl Angle {
     const DEG_TO_RAD: f64 = std::f64::consts::PI / 180.0;
 
-    pub fn from_radians(v: f64) -> Self { Self { rad: v } }
-    pub fn from_degrees(v: f64) -> Self { Self { rad: v * Self::DEG_TO_RAD } }
+    fn new(rad: f64) -> Self {
+        if rad.is_nan() || rad.is_infinite() {
+            panic!("Invalid Angle");
+        }
+        Self { rad }
+    }
+
+    pub fn from_radians(v: f64) -> Self { Self::new(v) }
+    pub fn from_degrees(v: f64) -> Self { Self::new(v * Self::DEG_TO_RAD) }
 
     pub fn to_radians(&self) -> f64 { self.rad }
     pub fn to_degrees(&self) -> f64 { self.rad / Self::DEG_TO_RAD }
+
+    pub fn normalized(&self) -> Self {
+        let two_pi = 2.0 * std::f64::consts::PI;
+        let mut r = self.rad % two_pi;
+        if r < 0.0 {
+            r += two_pi;
+        }
+        Self::new(r)
+    }
+
+    pub fn normalized_signed(&self) -> Self {
+        let two_pi = 2.0 * std::f64::consts::PI;
+        let mut r = (self.rad + std::f64::consts::PI) % two_pi;
+        if r < 0.0 {
+            r += two_pi;
+        }
+        r -= std::f64::consts::PI;
+        Self::new(r)
+    }
 }
 
 
@@ -512,5 +538,42 @@ impl std::ops::Mul<Acceleration> for f64 {
     type Output = Acceleration;
     fn mul(self, rhs: Acceleration) -> Self::Output {
         rhs * self
+    }
+}
+
+// Time * Scalar
+impl std::ops::Mul<f64> for Time {
+    type Output = Time;
+    fn mul(self, rhs: f64) -> Self::Output {
+        Time::new(self.to_seconds() * rhs)
+    }
+}
+
+impl std::ops::Mul<Time> for f64 {
+    type Output = Time;
+    fn mul(self, rhs: Time) -> Self::Output {
+        rhs * self
+    }
+}
+
+// Speed / Acceleration = Time
+impl std::ops::Div<Acceleration> for Speed {
+    type Output = Time;
+    fn div(self, rhs: Acceleration) -> Self::Output {
+        if rhs.to_ms2() == 0.0 {
+            panic!("Acceleration cannot be zero");
+        }
+        Time::new(self.to_ms() / rhs.to_ms2())
+    }
+}
+
+// Distance / Distance = Scalar (f64)
+impl std::ops::Div<Distance> for Distance {
+    type Output = f64;
+    fn div(self, rhs: Distance) -> Self::Output {
+        if rhs.to_meters() == 0.0 {
+            panic!("Distance cannot be zero");
+        }
+        self.to_meters() / rhs.to_meters()
     }
 }
