@@ -274,6 +274,21 @@ class TestAngle(unittest.TestCase):
         self.assertAlmostEqual(a2.to_radians, math.pi / 2, places=6)
         self.assertAlmostEqual(a2.to_degrees, 90.0, places=6)
 
+    def test_normalization(self):
+        # Test normalize degrees (e.g. 450° -> 90°, -90° -> 270°)
+        a_deg1 = Angle.from_degrees(450.0).normalize_degrees()
+        self.assertAlmostEqual(a_deg1.to_degrees, 90.0, places=6)
+
+        a_deg2 = Angle.from_degrees(-90.0).normalize_degrees()
+        self.assertAlmostEqual(a_deg2.to_degrees, 270.0, places=6)
+
+        # Test normalize radians (e.g. 3 * pi -> pi, -pi/2 -> 3*pi/2)
+        a_rad1 = Angle.from_radians(3.0 * math.pi).normalize_radians()
+        self.assertAlmostEqual(a_rad1.to_radians, math.pi, places=6)
+
+        a_rad2 = Angle.from_radians(-math.pi / 2.0).normalize_radians()
+        self.assertAlmostEqual(a_rad2.to_radians, 1.5 * math.pi, places=6)
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Angle.from_radians(float('nan'))
@@ -509,8 +524,6 @@ class TestOperation(unittest.TestCase):
         self.assertEqual(d.to_meters, 40.0)
 
     def test_guards(self):
-        # ... (既存のガードテスト)
-        # 新たに追加した除算のガードテスト
         with self.assertRaises(ValueError):
             Distance.from_meters(10.0) / Distance.from_meters(0.0)
         with self.assertRaises(ValueError):

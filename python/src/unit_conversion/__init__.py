@@ -367,6 +367,13 @@ class Angle:
     def to_degrees(self):
         return self._rad / self._DEG_TO_RAD
 
+    def normalize_radians(self) -> 'Angle':
+        two_pi = 2.0 * math.pi
+        return Angle.from_radians(self._rad % two_pi)
+
+    def normalize_degrees(self) -> 'Angle':
+        return Angle.from_degrees(self.to_degrees % 360.0)
+
 
 class Efficiency:
     _MPG_TO_KML = 0.425143707
