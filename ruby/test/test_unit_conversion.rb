@@ -306,6 +306,22 @@ class TestAngle < Minitest::Test
     assert_in_delta 90.0, a2.to_degrees, 0.000001
   end
 
+  def test_normalization
+    # Test normalize degrees (e.g. 450° -> 90°, -90° -> 270°)
+    a_deg1 = Angle.from_degrees(450.0).normalize_degrees
+    assert_in_delta(90.0, a_deg1.to_degrees, 0.000001)
+
+    a_deg2 = Angle.from_degrees(-90.0).normalize_degrees
+    assert_in_delta(270.0, a_deg2.to_degrees, 0.000001)
+
+    # Test normalize radians (e.g. 3 * pi -> pi, -pi/2 -> 3*pi/2)
+    a_rad1 = Angle.from_radians(3.0 * Math::PI).normalize_radians
+    assert_in_delta(Math::PI, a_rad1.to_radians, 0.000001)
+
+    a_rad2 = Angle.from_radians(-Math::PI / 2.0).normalize_radians
+    assert_in_delta(1.5 * Math::PI, a_rad2.to_radians, 0.000001)
+  end
+
   def test_guards
     assert_raises(ArgumentError) { Angle.from_radians(Float::NAN) }
     assert_raises(ArgumentError) { Angle.from_radians(Float::INFINITY) }
@@ -518,7 +534,7 @@ class TestOperation < Minitest::Test
     assert_in_delta(10.0, v.to_ms)
   end
 
-def test_scalar_mul_operations
+  def test_scalar_mul_operations
     # Speed * scalar
     v = Speed.from_ms(10.0) * 2.0
     assert_in_delta(20.0, v.to_ms)

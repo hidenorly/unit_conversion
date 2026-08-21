@@ -394,6 +394,15 @@ class Angle
   def to_degrees
     return @rad / DEG_TO_RAD
   end
+
+  def normalize_radians
+    two_pi = 2.0 * Math::PI
+    return Angle.from_radians(@rad % two_pi)
+  end
+
+  def normalize_degrees
+    return Angle.from_degrees(to_degrees % 360.0)
+  end
 end
 
 
