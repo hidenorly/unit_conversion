@@ -176,6 +176,16 @@ end
 function M.Angle.fromDegrees(v) return M.Angle.fromRadians(v * (math.pi / 180.0)) end
 function M.Angle:toRadians() return self.val end
 function M.Angle:toDegrees() return self.val / (math.pi / 180.0) end
+function M.Angle:normalizeDegrees()
+    local deg = self:toDegrees() % 360.0
+    if deg < 0 then deg = deg + 360.0 end
+    return M.Angle.fromDegrees(deg)
+end
+function M.Angle:normalizeRadians()
+    local rad = self.val % (2.0 * math.pi)
+    if rad < 0 then rad = rad + (2.0 * math.pi) end
+    return M.Angle.fromRadians(rad)
+end
 
 -- Efficiency
 M.Efficiency = setup_meta(create_class("Efficiency"))

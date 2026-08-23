@@ -87,6 +87,9 @@ assert_fail(function() M.Torque.fromNm(0/0) end)
 
 -- Angle
 assert_eq(M.Angle.fromDegrees(180):toRadians(), math.pi, "Angle toRad")
+assert_eq(M.Angle.fromDegrees(450):normalizeDegrees():toDegrees(), 90.0, "Angle normalizeDegrees (positive overflow)")
+assert_eq(M.Angle.fromDegrees(-90):normalizeDegrees():toDegrees(), 270.0, "Angle normalizeDegrees (negative)")
+assert_eq(M.Angle.fromRadians(3 * math.pi):normalizeRadians():toRadians(), math.pi, "Angle normalizeRadians")
 assert_fail(function() M.Angle.fromDegrees(0/0) end)
 assert_fail(function() M.Angle.fromDegrees(math.huge) end)
 
