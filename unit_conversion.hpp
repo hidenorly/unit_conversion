@@ -45,9 +45,9 @@ public:
     static Speed fromMph(double value) { return Speed(value * convert_mph_ms); }
     static Speed fromMs(double value) { return Speed(value); }
 
-    double toKmH() const { return m_ms * convert_kmh_ms; }
-    double toMph() const { return m_ms / convert_mph_ms; }
-    double toMs() const { return m_ms; }
+    constexpr double toKmH() const noexcept { return m_ms * convert_kmh_ms; }
+    constexpr double toMph() const noexcept { return m_ms / convert_mph_ms; }
+    constexpr double toMs() const noexcept { return m_ms; }
 };
 
 
@@ -70,9 +70,9 @@ public:
     static Temperature fromFahrenheit(double v) { return Temperature((v - F_OFFSET) / F_FACTOR); }
     static Temperature fromKelvin(double v) { return Temperature(v - K_OFFSET); }
 
-    double toCelsius() const { return m_celsius; }
-    double toFahrenheit() const { return m_celsius * F_FACTOR + F_OFFSET; }
-    double toKelvin() const { return m_celsius + K_OFFSET; }
+    constexpr double toCelsius() const noexcept { return m_celsius; }
+    constexpr double toFahrenheit() const noexcept { return m_celsius * F_FACTOR + F_OFFSET; }
+    constexpr double toKelvin() const noexcept { return m_celsius + K_OFFSET; }
 };
 
 
@@ -100,10 +100,10 @@ public:
     static Mass fromLb(double v) { return Mass(v * LB_TO_KG); }
     static Mass fromOz(double v) { return Mass(v * OZ_TO_KG); }
 
-    double toKg() const { return mWeightKg; }
-    double toGram() const { return mWeightKg / G_TO_KG; }
-    double toLb() const { return mWeightKg / LB_TO_KG; }
-    double toOz() const { return mWeightKg / OZ_TO_KG; }
+    constexpr double toKg() const noexcept { return mWeightKg; }
+    constexpr double toGram() const noexcept { return mWeightKg / G_TO_KG; }
+    constexpr double toLb() const noexcept { return mWeightKg / LB_TO_KG; }
+    constexpr double toOz() const noexcept { return mWeightKg / OZ_TO_KG; }
 };
 
 
@@ -133,14 +133,14 @@ public:
     static Distance fromMile(double v) { return Distance(v * MILE_TO_M); }
     static Distance fromFeet(double v) { return Distance(v * FT_TO_M); }
     static Distance fromInch(double v) { return Distance(v * IN_TO_M); }
-    static Distance fromMm(double v)     { return Distance(v * MM_TO_M); }
+    static Distance fromMm(double v) { return Distance(v * MM_TO_M); }
 
-    double toMeters() const { return m_meters; }
-    double toKm() const { return m_meters / KM_TO_M; }
-    double toMile() const { return m_meters / MILE_TO_M; }
-    double toFeet() const { return m_meters / FT_TO_M; }
-    double toInch() const { return m_meters / IN_TO_M; }
-    double toMm() const     { return m_meters / MM_TO_M; }
+    constexpr double toMeters() const noexcept { return m_meters; }
+    constexpr double toKm() const noexcept { return m_meters / KM_TO_M; }
+    constexpr double toMile() const noexcept { return m_meters / MILE_TO_M; }
+    constexpr double toFeet() const noexcept { return m_meters / FT_TO_M; }
+    constexpr double toInch() const noexcept { return m_meters / IN_TO_M; }
+    constexpr double toMm() const noexcept { return m_meters / MM_TO_M; }
 };
 
 
@@ -166,9 +166,9 @@ public:
     static Pressure fromBar(double v) { return Pressure(v * BAR_TO_KPA); }
     static Pressure fromPsi(double v) { return Pressure(v * PSI_TO_KPA); }
 
-    double toKpa() const { return m_kpa; }
-    double toBar() const { return m_kpa / BAR_TO_KPA; }
-    double toPsi() const { return m_kpa / PSI_TO_KPA; }
+    constexpr double toKpa() const noexcept { return m_kpa; }
+    constexpr double toBar() const noexcept { return m_kpa / BAR_TO_KPA; }
+    constexpr double toPsi() const noexcept { return m_kpa / PSI_TO_KPA; }
 };
 
 
@@ -194,9 +194,9 @@ public:
     static Power fromPs(double v) { return Power(v * PS_TO_KW); }
     static Power fromHp(double v) { return Power(v * HP_TO_KW); }
 
-    double toKw() const { return m_kw; }
-    double toPs() const { return m_kw / PS_TO_KW; }
-    double toHp() const { return m_kw / HP_TO_KW; }
+    constexpr double toKw() const noexcept { return m_kw; }
+    constexpr double toPs() const noexcept { return m_kw / PS_TO_KW; }
+    constexpr double toHp() const noexcept { return m_kw / HP_TO_KW; }
 };
 
 
@@ -222,9 +222,9 @@ public:
     static Torque fromKgfm(double v) { return Torque(v * KGFM_TO_NM); }
     static Torque fromLbft(double v) { return Torque(v * LBFT_TO_NM); }
 
-    double toNm() const { return m_nm; }
-    double toKgfm() const { return m_nm / KGFM_TO_NM; }
-    double toLbft() const { return m_nm / LBFT_TO_NM; }
+    constexpr double toNm() const noexcept { return m_nm; }
+    constexpr double toKgfm() const noexcept { return m_nm / KGFM_TO_NM; }
+    constexpr double toLbft() const noexcept { return m_nm / LBFT_TO_NM; }
 };
 
 
@@ -243,8 +243,8 @@ public:
     static Angle fromRadians(double v) { return Angle(v); }
     static Angle fromDegrees(double v) { return Angle(v * DEG_TO_RAD); }
 
-    double toRadians() const { return m_rad; }
-    double toDegrees() const { return m_rad / DEG_TO_RAD; }
+    constexpr double toRadians() const noexcept { return m_rad; }
+    constexpr double toDegrees() const noexcept { return m_rad / DEG_TO_RAD; }
 
     Angle normalized() const {
         double r = std::fmod(m_rad, 2.0 * 3.14159265358979323846);
@@ -280,9 +280,9 @@ public:
     static Efficiency fromL100km(double v) { return Efficiency(100.0 / v); }
     static Efficiency fromMpg(double v) { return Efficiency(v * MPG_TO_KML); }
 
-    double toKml() const { return m_kml; }
-    double toL100km() const { return 100.0 / m_kml; }
-    double toMpg() const { return m_kml / MPG_TO_KML; }
+    constexpr double toKml() const noexcept { return m_kml; }
+    constexpr double toL100km() const noexcept { return 100.0 / m_kml; }
+    constexpr double toMpg() const noexcept { return m_kml / MPG_TO_KML; }
 };
 
 
@@ -303,10 +303,10 @@ public:
     static EvEfficiency fromKwh100km(double v) { return EvEfficiency(100.0 / v); }
     static EvEfficiency fromMpKwh(double v) { return EvEfficiency(v * MILE_TO_KM); }
 
-    double toKmkWh() const { return m_km_per_kwh; }
-    double toWhkm() const { return 1000.0 / m_km_per_kwh; }
-    double toKwh100km() const { return 100.0 / m_km_per_kwh; }
-    double toMpKwh() const { return m_km_per_kwh / MILE_TO_KM; }
+    constexpr double toKmkWh() const noexcept { return m_km_per_kwh; }
+    constexpr double toWhkm() const noexcept { return 1000.0 / m_km_per_kwh; }
+    constexpr double toKwh100km() const noexcept { return 100.0 / m_km_per_kwh; }
+    constexpr double toMpKwh() const noexcept { return m_km_per_kwh / MILE_TO_KM; }
 };
 
 
@@ -332,10 +332,10 @@ public:
     static Volume fromUsGallons(double v) { return Volume(v * US_GAL_TO_L); }
     static Volume fromImpGallons(double v) { return Volume(v * IMP_GAL_TO_L); }
 
-    double toLiters() const { return m_liters; }
-    double toMl() const { return m_liters * 1000.0; }
-    double toUsGallons() const { return m_liters / US_GAL_TO_L; }
-    double toImpGallons() const { return m_liters / IMP_GAL_TO_L; }
+    constexpr double toLiters() const noexcept { return m_liters; }
+    constexpr double toMl() const noexcept { return m_liters * 1000.0; }
+    constexpr double toUsGallons() const noexcept { return m_liters / US_GAL_TO_L; }
+    constexpr double toImpGallons() const noexcept { return m_liters / IMP_GAL_TO_L; }
 };
 
 
@@ -349,11 +349,11 @@ private:
 public:
     static Time fromSeconds(double v) { return Time(v); }
     static Time fromMinutes(double v) { return Time(v * 60.0); }
-    static Time fromHours(double v)   { return Time(v * 3600.0); }
+    static Time fromHours(double v) { return Time(v * 3600.0); }
 
-    double toSeconds() const { return m_sec; }
-    double toMinutes() const { return m_sec / 60.0; }
-    double toHours() const   { return m_sec / 3600.0; }
+    constexpr double toSeconds() const noexcept { return m_sec; }
+    constexpr double toMinutes() const noexcept { return m_sec / 60.0; }
+    constexpr double toHours() const noexcept { return m_sec / 3600.0; }
 };
 
 
@@ -367,12 +367,12 @@ public:
     static Acceleration fromSpeedAndTime(const Speed& s, const Time& t) {
         return Acceleration(s.toMs() / t.toSeconds());
     }
-    double toMs2() const { return m_a; }
+    constexpr double toMs2() const noexcept { return m_a; }
 };
 
 
 // Acceleration * Time = Speed
-inline Speed operator*(const Acceleration& a, const Time& t) {
+inline Speed operator*(const Acceleration& a, const Time& t) noexcept {
     return Speed::fromMs(a.toMs2() * t.toSeconds());
 }
 
@@ -389,11 +389,11 @@ inline Time operator/(const Speed& s, const Acceleration& a) {
 }
 
 // Speed * Time = Distance
-inline Distance operator*(const Speed& s, const Time& t) {
+inline Distance operator*(const Speed& s, const Time& t) noexcept {
     return Distance::fromMeters(s.toMs() * t.toSeconds());
 }
 
-inline Distance operator*(const Time& t, const Speed& s) {
+inline Distance operator*(const Time& t, const Speed& s) noexcept {
     return s * t;
 }
 
@@ -416,68 +416,68 @@ inline double operator/(const Distance& a, const Distance& b) {
 }
 
 // Speed - Speed
-inline Speed operator-(const Speed& a, const Speed& b) {
+inline Speed operator-(const Speed& a, const Speed& b) noexcept {
     return Speed::fromMs(a.toMs() - b.toMs());
 }
 
 // Speed + Speed
-inline Speed operator+(const Speed& a, const Speed& b) {
+inline Speed operator+(const Speed& a, const Speed& b) noexcept {
     return Speed::fromMs(a.toMs() + b.toMs());
 }
 
 // Distance - Distance
-inline Distance operator-(const Distance& a, const Distance& b) {
+inline Distance operator-(const Distance& a, const Distance& b) noexcept {
     return Distance::fromMeters(a.toMeters() - b.toMeters());
 }
 
 // Distance + Distance
-inline Distance operator+(const Distance& a, const Distance& b) {
+inline Distance operator+(const Distance& a, const Distance& b) noexcept {
     return Distance::fromMeters(a.toMeters() + b.toMeters());
 }
 
 // Time - Time
-inline Time operator-(const Time& a, const Time& b) {
+inline Time operator-(const Time& a, const Time& b) noexcept {
     return Time::fromSeconds(a.toSeconds() - b.toSeconds());
 }
 
 // Time + Time
-inline Time operator+(const Time& a, const Time& b) {
+inline Time operator+(const Time& a, const Time& b) noexcept {
     return Time::fromSeconds(a.toSeconds() + b.toSeconds());
 }
 
 // Speed * scalar
-inline Speed operator*(const Speed& s, double scalar) {
+inline Speed operator*(const Speed& s, double scalar) noexcept {
     return Speed::fromMs(s.toMs() * scalar);
 }
 
-inline Speed operator*(double scalar, const Speed& s) {
+inline Speed operator*(double scalar, const Speed& s) noexcept {
     return s * scalar;
 }
 
 // Distance * scalar / scalar * Distance
-inline Distance operator*(const Distance& d, double scalar) {
+inline Distance operator*(const Distance& d, double scalar) noexcept {
     return Distance::fromMeters(d.toMeters() * scalar);
 }
 
-inline Distance operator*(double scalar, const Distance& d) {
+inline Distance operator*(double scalar, const Distance& d) noexcept {
     return d * scalar;
 }
 
 // Acceleration * scalar
-inline Acceleration operator*(const Acceleration& a, double scalar) {
+inline Acceleration operator*(const Acceleration& a, double scalar) noexcept {
     return Acceleration::fromMs2(a.toMs2() * scalar);
 }
 
-inline Acceleration operator*(double scalar, const Acceleration& a) {
+inline Acceleration operator*(double scalar, const Acceleration& a) noexcept {
     return a * scalar;
 }
 
 // Time * scalar / scalar * Time
-inline Time operator*(const Time& t, double scalar) {
+inline Time operator*(const Time& t, double scalar) noexcept {
     return Time::fromSeconds(t.toSeconds() * scalar);
 }
 
-inline Time operator*(double scalar, const Time& t) {
+inline Time operator*(double scalar, const Time& t) noexcept {
     return t * scalar;
 }
 
