@@ -661,6 +661,11 @@ mod tests {
         let t2 = Time::from_seconds(15.0);
         assert!(((t1 - t2).to_seconds() - 25.0).abs() < 1e-9);
         assert!(((t1 + t2).to_seconds() - 55.0).abs() < 1e-9);
+
+        let m1 = Mass::from_kg(10.0);
+        let m2 = Mass::from_kg(4.0);
+        assert!(((m1 - m2).to_kg() - 6.0).abs() < 1e-9);
+        assert!(((m1 + m2).to_kg() - 14.0).abs() < 1e-9);
     }
 
     #[test]
@@ -673,6 +678,20 @@ mod tests {
 
         let a = 1.5 * Acceleration::new(2.0);
         assert!((a.to_ms2() - 3.0).abs() < 1e-9);
+
+        let m = Mass::from_kg(5.0) * 2.0;
+        assert!((m.to_kg() - 10.0).abs() < 1e-9);
+        let m_sym = 2.0 * Mass::from_kg(5.0);
+        assert!((m_sym.to_kg() - 10.0).abs() < 1e-9);
+
+        let v_right = Speed::from_ms(5.0) * 2.0;
+        assert!((v_right.to_ms() - 10.0).abs() < 1e-9);
+
+        let d_right = Distance::from_meters(10.0) * 3.0;
+        assert!((d_right.to_meters() - 30.0).abs() < 1e-9);
+
+        let a_right = Acceleration::new(2.0) * 1.5;
+        assert!((a_right.to_ms2() - 3.0).abs() < 1e-9);
     }
 
     #[test]
@@ -711,5 +730,19 @@ mod tests {
     #[should_panic(expected = "Distance cannot be zero")]
     fn test_distance_div_zero_distance() {
         let _ = Distance::from_meters(100.0) / Distance::from_meters(0.0);
+    }
+
+    #[test]
+    fn test_mass_div_mass() {
+        let m1 = Mass::from_kg(50.0);
+        let m2 = Mass::from_kg(10.0);
+        let ratio = m1 / m2;
+        assert!((ratio - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Mass cannot be zero")]
+    fn test_mass_div_zero_mass() {
+        let _ = Mass::from_kg(50.0) / Mass::from_kg(0.0);
     }
 }

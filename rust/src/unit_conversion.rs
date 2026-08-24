@@ -222,7 +222,7 @@ impl Torque {
         Self { nm }
     }
 
-    pub fn from_nm(v: f64) -> Self { Self::new(v)  }
+    pub fn from_nm(v: f64) -> Self { Self::new(v) }
     pub fn from_kgfm(v: f64) -> Self { Self::new(v * Self::KGFM_TO_NM) }
     pub fn from_lbft(v: f64) -> Self { Self::new(v * Self::LBFT_TO_NM ) }
 
@@ -397,6 +397,7 @@ impl Acceleration {
 
 // --- Operators
 
+// Acceleration * Time = Speed
 impl std::ops::Mul<Time> for Acceleration {
     type Output = Speed;
     fn mul(self, rhs: Time) -> Self::Output {
@@ -411,6 +412,7 @@ impl std::ops::Mul<Acceleration> for Time {
     }
 }
 
+// Speed * Time = Distance
 impl std::ops::Mul<Time> for Speed {
     type Output = Distance;
     fn mul(self, rhs: Time) -> Self::Output {
@@ -447,6 +449,22 @@ impl std::ops::Div<Speed> for Distance {
     }
 }
 
+// Mass Add / Sub
+impl std::ops::Sub for Mass {
+    type Output = Mass;
+    fn sub(self, rhs: Mass) -> Self::Output {
+        Mass::from_kg(self.to_kg() - rhs.to_kg())
+    }
+}
+
+impl std::ops::Add for Mass {
+    type Output = Mass;
+    fn add(self, rhs: Mass) -> Self::Output {
+        Mass::from_kg(self.to_kg() + rhs.to_kg())
+    }
+}
+
+// Speed Add / Sub
 impl std::ops::Sub for Speed {
     type Output = Speed;
     fn sub(self, rhs: Speed) -> Self::Output {
@@ -461,6 +479,7 @@ impl std::ops::Add for Speed {
     }
 }
 
+// Distance Add / Sub
 impl std::ops::Sub for Distance {
     type Output = Distance;
     fn sub(self, rhs: Distance) -> Self::Output {
@@ -475,6 +494,7 @@ impl std::ops::Add for Distance {
     }
 }
 
+// Time Add / Sub
 impl std::ops::Sub for Time {
     type Output = Time;
     fn sub(self, rhs: Time) -> Self::Output {
@@ -489,6 +509,7 @@ impl std::ops::Add for Time {
     }
 }
 
+// Speed / Time = Acceleration
 impl std::ops::Div<Time> for Speed {
     type Output = Acceleration;
     fn div(self, rhs: Time) -> Self::Output {
@@ -498,6 +519,8 @@ impl std::ops::Div<Time> for Speed {
         Acceleration::new(self.to_ms() / rhs.to_seconds())
     }
 }
+
+// --- Scalar multiplication for all types
 
 impl std::ops::Mul<f64> for Speed {
     type Output = Speed;
@@ -523,6 +546,20 @@ impl std::ops::Mul<f64> for Distance {
 impl std::ops::Mul<Distance> for f64 {
     type Output = Distance;
     fn mul(self, rhs: Distance) -> Self::Output {
+        rhs * self
+    }
+}
+
+impl std::ops::Mul<f64> for Mass {
+    type Output = Mass;
+    fn mul(self, rhs: f64) -> Self::Output {
+        Mass::from_kg(self.to_kg() * rhs)
+    }
+}
+
+impl std::ops::Mul<Mass> for f64 {
+    type Output = Mass;
+    fn mul(self, rhs: Mass) -> Self::Output {
         rhs * self
     }
 }
@@ -575,5 +612,16 @@ impl std::ops::Div<Distance> for Distance {
             panic!("Distance cannot be zero");
         }
         self.to_meters() / rhs.to_meters()
+    }
+}
+
+// Mass / Mass = Scalar (f64)
+impl std::ops::Div<Mass> for Mass {
+    type Output = f64;
+    fn div(self, rhs: Mass) -> Self::Output {
+        if rhs.to_kg() == 0.0 {
+            panic!("Mass cannot be zero");
+        }
+        self.to_kg() / rhs.to_kg()
     }
 }
