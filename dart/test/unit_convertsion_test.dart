@@ -105,7 +105,7 @@ void main() {
   });
 
 
- group('Mass Conversion Tests', () {
+  group('Mass Conversion Tests', () {
     test('Gram to Kg', () {
       final m = Mass.fromGram(1000.0);
       expect(m.toGram, equals(1000.0));
@@ -216,8 +216,6 @@ void main() {
     });
   });
 
-
-
   group('Power Conversion tests', () {
     test('Power Matrix and Guards', () {
       final p = Power.fromPs(100);
@@ -275,7 +273,7 @@ void main() {
       expect(() => Torque.fromKgfm(double.infinity), throwsArgumentError);
       expect(() => Torque.fromLbft(-5.0), throwsArgumentError);
    });
- });
+  });
 
   group('Angle Conversion Tests', () {
     test('Angle Conversion test', () {
@@ -342,7 +340,7 @@ void main() {
   });
 
 
-group('EvEfficiency Tests', () {
+  group('EvEfficiency Tests', () {
     test('fromKmkWh', () {
       final e = EvEfficiency.fromKmkWh(6.0);
       expect(e.toKmkWh, equals(6.0));
@@ -559,6 +557,29 @@ group('EvEfficiency Tests', () {
     test('Time Scalar Multiplication', () {
       final t = Time.fromSeconds(60.0) * 1.5;
       expect(t.toSeconds, closeTo(90.0, 1e-9));
+    });
+  });
+
+  group('Mass Operations Tests', () {
+    test('Mass Addition and Subtraction', () {
+      final m1 = Mass.fromKg(10.0);
+      final m2 = Mass.fromKg(5.0);
+      expect((m1 + m2).toKg, closeTo(15.0, 1e-9));
+      expect((m1 - m2).toKg, closeTo(5.0, 1e-9));
+    });
+
+    test('Mass Scalar Multiplication', () {
+      final m = Mass.fromKg(10.0) * 2.0;
+      expect(m.toKg, closeTo(20.0, 1e-9));
+    });
+
+    test('Mass / Mass -> Ratio (double)', () {
+      final m1 = Mass.fromKg(20.0);
+      final m2 = Mass.fromKg(4.0);
+      final ratio = m1 / m2;
+      expect(ratio, closeTo(5.0, 1e-9));
+
+      expect(() => Mass.fromKg(10.0) / Mass.fromKg(0.0), throwsArgumentError);
     });
   });
 }

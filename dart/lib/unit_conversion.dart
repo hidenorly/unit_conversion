@@ -303,6 +303,7 @@ class Acceleration {
 extension AccelMul on Acceleration {
   dynamic operator *(dynamic other) {
     if (other is Time) {
+      if (other.toSeconds < 0) throw ArgumentError('Time cannot be negative');
       return Speed.fromMs(this.toMs2 * other.toSeconds);
     } else if (other is num) {
       return Acceleration.fromMs2(this.toMs2 * other.toDouble());
@@ -311,14 +312,27 @@ extension AccelMul on Acceleration {
   }
 }
 
+extension NumToAccelerationMul on num {
+  Acceleration operator *(Acceleration acc) {
+    return Acceleration.fromMs2(acc.toMs2 * this.toDouble());
+  }
+}
+
 extension SpeedMul on Speed {
   dynamic operator *(dynamic other) {
     if (other is Time) {
+      if (other.toSeconds < 0) throw ArgumentError('Time cannot be negative');
       return Distance.fromMeters(this.toMs * other.toSeconds);
     } else if (other is num) { // scalar (double, int)
       return Speed.fromMs(this.toMs * other.toDouble());
     }
     throw ArgumentError('Unsupported type for multiplication');
+  }
+}
+
+extension NumToSpeedMul on num {
+  Speed operator *(Speed speed) {
+    return Speed.fromMs(speed.toMs * this.toDouble());
   }
 }
 
@@ -366,11 +380,46 @@ extension DistanceOps on Distance {
   }
 }
 
+extension NumToDistanceMul on num {
+  Distance operator *(Distance distance) {
+    return Distance.fromMeters(distance.toMeters * this.toDouble());
+  }
+}
+
 extension TimeOps on Time {
   Time operator +(Time other) => Time.fromSeconds(this.toSeconds + other.toSeconds);
   Time operator -(Time other) => Time.fromSeconds(this.toSeconds - other.toSeconds);
 
   Time operator *(num scalar) {
     return Time.fromSeconds(this.toSeconds * scalar.toDouble());
+  }
+}
+
+extension NumToTimeMul on num {
+  Time operator *(Time time) {
+    return Time.fromSeconds(time.toSeconds * this.toDouble());
+  }
+}
+
+extension MassOps on Mass {
+  Mass operator +(Mass other) => Mass.fromKg(this.toKg + other.toKg);
+  Mass operator -(Mass other) => Mass.fromKg(this.toKg - other.toKg);
+
+  dynamic operator *(num scalar) {
+    return Mass.fromKg(this.toKg * scalar.toDouble());
+  }
+
+  dynamic operator /(dynamic other) {
+    if (other is Mass) {
+      if (other.toKg == 0.0) throw ArgumentError('Mass cannot be zero');
+      return this.toKg / other.toKg;
+    }
+    throw ArgumentError('Unsupported type for division');
+  }
+}
+
+extension NumToMassMul on num {
+  Mass operator *(Mass mass) {
+    return Mass.fromKg(mass.toKg * this.toDouble());
   }
 }
