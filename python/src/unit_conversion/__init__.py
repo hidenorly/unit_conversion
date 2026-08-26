@@ -50,16 +50,20 @@ class Speed:
         return self._ms
 
     def __sub__(self, other: 'Speed') -> 'Speed':
+        if not isinstance(other, Speed):
+            return NotImplemented
         return Speed.from_ms(self.to_ms - other.to_ms)
 
     def __add__(self, other: 'Speed') -> 'Speed':
+        if not isinstance(other, Speed):
+            return NotImplemented
         return Speed.from_ms(self.to_ms + other.to_ms)
 
     def __truediv__(self, other):
         if isinstance(other, Time):
             if other.to_seconds == 0:
                 raise ValueError("Time cannot be zero")
-            return Acceleration(self.to_ms / other.to_seconds)
+            return Acceleration.from_ms2(self.to_ms / other.to_seconds)
         elif isinstance(other, Acceleration):
             if other.to_ms2 == 0:
                 raise ValueError("Acceleration cannot be zero")
@@ -74,7 +78,12 @@ class Speed:
         return NotImplemented
 
     def __rmul__(self, other):
-        return self.__mul__(other)
+        if isinstance(other, (int, float)):
+            return self.__mul__(other)
+        return NotImplemented
+
+    def __repr__(self):
+        return f"{self._ms} m/s"
 
 
 class Temperature:
@@ -107,6 +116,9 @@ class Temperature:
 
     @property
     def to_kelvin(self): return self._celsius + self._K_OFFSET
+
+    def __repr__(self):
+        return f"{self._celsius} °C"
 
 
 class Mass:
@@ -150,6 +162,9 @@ class Mass:
     @property
     def to_oz(self):
         return self._kg / self._OZ_TO_KG
+
+    def __repr__(self):
+        return f"{self._kg} kg"
 
 
 class Distance:
@@ -213,9 +228,13 @@ class Distance:
         return self._meters / self._MM_TO_M
 
     def __add__(self, other: 'Distance') -> 'Distance':
+        if not isinstance(other, Distance):
+            return NotImplemented
         return Distance.from_meters(self.to_meters + other.to_meters)
 
     def __sub__(self, other: 'Distance') -> 'Distance':
+        if not isinstance(other, Distance):
+            return NotImplemented
         return Distance.from_meters(self.to_meters - other.to_meters)
 
     def __mul__(self, other):
@@ -224,7 +243,9 @@ class Distance:
         return NotImplemented
 
     def __rmul__(self, other):
-        return self.__mul__(other)
+        if isinstance(other, (int, float)):
+            return self.__mul__(other)
+        return NotImplemented
 
     def __truediv__(self, other):
         if isinstance(other, Time):
@@ -240,6 +261,9 @@ class Distance:
                 raise ValueError("Distance cannot be zero")
             return self.to_meters / other.to_meters
         return NotImplemented
+
+    def __repr__(self):
+        return f"{self._meters} m"
 
 
 class Pressure:
@@ -275,6 +299,9 @@ class Pressure:
     def to_psi(self):
         return self._kpa / self._PSI_TO_KPA
 
+    def __repr__(self):
+        return f"{self._kpa} kPa"
+
 
 class Power:
     _PS_TO_KW = 0.73549875
@@ -309,6 +336,9 @@ class Power:
     def to_hp(self):
         return self._kw / self._HP_TO_KW
 
+    def __repr__(self):
+        return f"{self._kw} kW"
+
 
 class Torque:
     _KGFM_TO_NM = 9.80665
@@ -342,6 +372,9 @@ class Torque:
     def to_lbft(self):
         return self._nm / self._LBFT_TO_NM
 
+    def __repr__(self):
+        return f"{self._nm} Nm"
+
 
 class Angle:
     _DEG_TO_RAD = math.pi / 180.0
@@ -373,6 +406,9 @@ class Angle:
 
     def normalize_degrees(self) -> 'Angle':
         return Angle.from_degrees(self.to_degrees % 360.0)
+
+    def __repr__(self):
+        return f"{self._rad} rad"
 
 
 class Efficiency:
@@ -408,6 +444,9 @@ class Efficiency:
     @property
     def to_mpg(self):
         return self._kml / self._MPG_TO_KML
+
+    def __repr__(self):
+        return f"{self._kml} km/L"
 
 
 class EvEfficiency:
@@ -454,6 +493,9 @@ class EvEfficiency:
     def to_miles_per_kwh(self):
         return self._v / self._MILE_TO_KM
 
+    def __repr__(self):
+        return f"{self._v} km/kWh"
+
 
 class Volume:
     _US_GAL = 3.785411784
@@ -496,6 +538,9 @@ class Volume:
     def to_imp_gallons(self):
         return self._l / self._IMP_GAL
 
+    def __repr__(self):
+        return f"{self._l} L"
+
 
 class Time:
     def __init__(self, s: float):
@@ -528,24 +573,41 @@ class Time:
         return self._s / 3600.0
 
     def __add__(self, other: 'Time') -> 'Time':
+        if not isinstance(other, Time):
+            return NotImplemented
         return Time.from_seconds(self.to_seconds + other.to_seconds)
 
     def __sub__(self, other: 'Time') -> 'Time':
+        if not isinstance(other, Time):
+            return NotImplemented
         return Time.from_seconds(self.to_seconds - other.to_seconds)
 
     def __mul__(self, other):
         if isinstance(other, (int, float)):
             return Time.from_seconds(self.to_seconds * other)
+        elif isinstance(other, Speed):
+            return other * self
         return NotImplemented
 
     def __rmul__(self, other):
-        return self.__mul__(other)
+        if isinstance(other, (int, float)):
+            return self.__mul__(other)
+        elif isinstance(other, Speed):
+            return other * self
+        return NotImplemented
+
+    def __repr__(self):
+        return f"{self._s} s"
 
 
 class Acceleration:
     def __init__(self, a: float):
         if math.isnan(a) or math.isinf(a): raise ValueError("Invalid Acceleration")
         self._a = a
+
+    @classmethod
+    def from_ms2(cls, a: float):
+        return cls(a)
 
     @classmethod
     def from_speed_and_time(cls, s, t):
@@ -562,8 +624,13 @@ class Acceleration:
         if isinstance(other, Time):
             return Speed.from_ms(self.to_ms2 * other.to_seconds)
         elif isinstance(other, (int, float)):
-            return Acceleration(self.to_ms2 * other)
+            return Acceleration.from_ms2(self.to_ms2 * other)
         return NotImplemented
 
     def __rmul__(self, other):
-        return self.__mul__(other)
+        if isinstance(other, (int, float)):
+            return self.__mul__(other)
+        return NotImplemented
+
+    def __repr__(self):
+        return f"{self._a} m/s^2"

@@ -462,14 +462,38 @@ class TestOperation(unittest.TestCase):
         with self.assertRaises(ValueError):
             Speed.from_ms(10.0) * Time.from_seconds(float('nan'))
 
-    def test_speed_sub(self):
+    def test_speed_add_sub(self):
         v1 = Speed.from_ms(20.0)
         v2 = Speed.from_ms(10.0)
+
+        v_add = v1 + v2
+        self.assertEqual(v_add.to_ms, 30.0)
+
         dv = v1 - v2
         self.assertEqual(dv.to_ms, 10.0)
 
         dv_neg = v2 - v1
         self.assertEqual(dv_neg.to_ms, -10.0)
+
+    def test_distance_arithmetic(self):
+        d1 = Distance.from_meters(50.0)
+        d2 = Distance.from_meters(30.0)
+
+        d_add = d1 + d2
+        self.assertEqual(d_add.to_meters, 80.0)
+
+        d_sub = d1 - d2
+        self.assertEqual(d_sub.to_meters, 20.0)
+
+    def test_time_arithmetic(self):
+        t1 = Time.from_seconds(30.0)
+        t2 = Time.from_seconds(15.0)
+
+        t_add = t1 + t2
+        self.assertEqual(t_add.to_seconds, 45.0)
+
+        t_sub = t1 - t2
+        self.assertEqual(t_sub.to_seconds, 15.0)
 
     def test_velocity_change(self):
         v = Speed.from_ms(10.0)
@@ -522,6 +546,10 @@ class TestOperation(unittest.TestCase):
         # Distance * scalar
         d = 4.0 * Distance.from_meters(10.0)
         self.assertEqual(d.to_meters, 40.0)
+
+        # Time * Speed (rmul check)
+        d2 = Time.from_seconds(5.0) * Speed.from_ms(10.0)
+        self.assertEqual(d2.to_meters, 50.0)
 
     def test_guards(self):
         with self.assertRaises(ValueError):
