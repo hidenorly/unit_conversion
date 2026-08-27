@@ -477,6 +477,10 @@ class TestOperation < Minitest::Test
   def test_speed_mul_time
     d = Speed.from_ms(10.0) * Time.from_seconds(5.0)
     assert_in_delta(50.0, d.to_meters)
+
+    d2 = Time.from_seconds(5.0) * Speed.from_ms(10.0)
+    assert_in_delta(50.0, d2.to_meters)
+
     assert_raises(ArgumentError) {
       Speed.from_ms(10.0) * Time.from_seconds(-1.0)
     }
@@ -505,6 +509,9 @@ class TestOperation < Minitest::Test
     v = Speed.from_ms(10.0) * 0.5
     assert_in_delta(5.0, v.to_ms)
 
+    v_coerced = 0.5 * Speed.from_ms(10.0)
+    assert_in_delta(5.0, v_coerced.to_ms)
+
     zero = Speed.from_ms(10.0) * 0.0
     assert_in_delta(0.0, zero.to_ms)
   end
@@ -512,6 +519,9 @@ class TestOperation < Minitest::Test
   def test_acceleration_scalar_mul
     a = Acceleration.new(9.8) * 0.5
     assert_in_delta(4.9, a.to_ms2)
+
+    a_coerced = 0.5 * Acceleration.new(9.8)
+    assert_in_delta(4.9, a_coerced.to_ms2)
 
     zero = Acceleration.new(9.8) * 0.0
     assert_in_delta(0.0, zero.to_ms2)
@@ -550,6 +560,10 @@ class TestOperation < Minitest::Test
     # Distance * scalar
     d = Distance.from_meters(10.0) * 4.0
     assert_in_delta(40.0, d.to_meters)
+
+    # scalar * Distance
+    d_coerced = 4.0 * Distance.from_meters(10.0)
+    assert_in_delta(40.0, d_coerced.to_meters)
   end
 
   def test_div_guards

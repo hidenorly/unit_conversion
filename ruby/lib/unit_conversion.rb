@@ -49,6 +49,14 @@ class Speed
     return @ms
   end
 
+  def +(other)
+    return Speed.from_ms(self.to_ms + other.to_ms)
+  end
+
+  def -(other)
+    return Speed.from_ms(self.to_ms - other.to_ms)
+  end
+
   def *(other)
     case other
     when Time
@@ -60,21 +68,18 @@ class Speed
     end
   end
 
-  def -(other)
-    return Speed.from_ms(self.to_ms - other.to_ms)
-  end
-
   def /(other)
     raise ArgumentError if other.to_seconds == 0
     return Acceleration.new(self.to_ms / other.to_seconds)
   end
 
-  def +(other)
-    return Speed.from_ms(self.to_ms + other.to_ms)
-  end
-
   def coerce(other)
-    [Speed.from_ms(other), self]
+    case other
+    when Numeric
+      [self, other]
+    else
+      super
+    end
   end
 end
 
@@ -229,6 +234,14 @@ class Distance
     return @meters / MM_TO_M
   end
 
+  def +(other)
+    return Distance.from_meters(self.to_meters + other.to_meters)
+  end
+
+  def -(other)
+    return Distance.from_meters(self.to_meters - other.to_meters)
+  end
+
   def /(other)
     case other
     when Distance
@@ -246,12 +259,21 @@ class Distance
   end
 
   def *(other)
-    return Distance.from_meters(self.to_meters * other) if other.is_a?(Numeric)
-    raise ArgumentError, "Unsupported type: #{other.class}"
+    case other
+    when Numeric
+      return Distance.from_meters(self.to_meters * other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
   end
 
   def coerce(other)
-    [other, self]
+    case other
+    when Numeric
+      [self, other]
+    else
+      super
+    end
   end
 end
 
@@ -567,22 +589,46 @@ class Time
     return @s / 3600.0
   end
 
+  def +(other)
+    return Time.from_seconds(self.to_seconds + other.to_seconds)
+  end
+
+  def -(other)
+    return Time.from_seconds(self.to_seconds - other.to_seconds)
+  end
+
   def *(other)
-    return Time.from_seconds(self.to_seconds * other) if other.is_a?(Numeric)
-    raise ArgumentError, "Unsupported type: #{other.class}"
+    case other
+    when Numeric
+      return Time.from_seconds(self.to_seconds * other)
+    when Speed
+      return Distance.from_meters(self.to_seconds * other.to_ms)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
   end
  
   def coerce(other)
-    [other, self]
+    case other
+    when Numeric
+      [self, other]
+    else
+      super
+    end
   end
 end
 
 
 class Acceleration
+  private_class_method :new
   def initialize(a)
     val = a.to_f
     raise ArgumentError if val.nan? || val.infinite?
     @a = val
+  end
+
+  def self.new(a)
+    super(a)
   end
 
   def self.from_speed_and_time(s, t)
@@ -606,6 +652,11 @@ class Acceleration
   end
 
   def coerce(other)
-    [other, self]
+    case other
+    when Numeric
+      [self, other]
+    else
+      super
+    end
   end
 end
