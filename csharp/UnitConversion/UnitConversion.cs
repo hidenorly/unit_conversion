@@ -39,6 +39,8 @@ namespace UnitConversion
         public double ToKmH() => m_ms * ConvertKmhMs;
         public double ToMph() => m_ms / ConvertMphMs;
 
+        public override string ToString() => $"{ToMs()} m/s";
+
         public static Speed operator +(Speed a, Speed b) => FromMs(a.m_ms + b.m_ms);
         public static Speed operator -(Speed a, Speed b) => FromMs(a.m_ms - b.m_ms);
         public static Speed operator *(Speed s, double scalar) => FromMs(s.m_ms * scalar);
@@ -78,6 +80,8 @@ namespace UnitConversion
         public double ToCelsius() => m_celsius;
         public double ToFahrenheit() => m_celsius * FFactor + FOffset;
         public double ToKelvin() => m_celsius + KOffset;
+
+        public override string ToString() => $"{ToCelsius()} °C";
     }
 
     public readonly struct Mass
@@ -103,6 +107,8 @@ namespace UnitConversion
         public double ToGram() => mWeightKg / GToKg;
         public double ToLb() => mWeightKg / LbToKg;
         public double ToOz() => mWeightKg / OzToKg;
+
+        public override string ToString() => $"{ToKg()} kg";
     }
 
     public readonly struct Distance
@@ -134,6 +140,8 @@ namespace UnitConversion
         public double ToFeet() => m_meters / FtToM;
         public double ToInch() => m_meters / InToM;
         public double ToMm() => m_meters / MmToM;
+
+        public override string ToString() => $"{ToMeters()} m";
 
         public static Distance operator +(Distance a, Distance b) => FromMeters(a.m_meters + b.m_meters);
         public static Distance operator -(Distance a, Distance b) => FromMeters(a.m_meters - b.m_meters);
@@ -176,6 +184,8 @@ namespace UnitConversion
         public double ToKpa() => m_kpa;
         public double ToBar() => m_kpa / BarToKpa;
         public double ToPsi() => m_kpa / PsiToKpa;
+
+        public override string ToString() => $"{ToKpa()} kPa";
     }
 
     public readonly struct Power
@@ -198,6 +208,8 @@ namespace UnitConversion
         public double ToKw() => m_kw;
         public double ToPs() => m_kw / PsToKw;
         public double ToHp() => m_kw / HpToKw;
+
+        public override string ToString() => $"{ToKw()} kW";
     }
 
     public readonly struct Torque
@@ -220,6 +232,8 @@ namespace UnitConversion
         public double ToNm() => m_nm;
         public double ToKgfm() => m_nm / KgfmToNm;
         public double ToLbft() => m_nm / LbftToNm;
+
+        public override string ToString() => $"{ToNm()} Nm";
     }
 
     public readonly struct Angle
@@ -240,6 +254,8 @@ namespace UnitConversion
 
         public double ToRadians() => m_rad;
         public double ToDegrees() => m_rad / DegToRad;
+
+        public override string ToString() => $"{ToRadians()} rad";
 
         public Angle NormalizeRadians()
         {
@@ -281,6 +297,8 @@ namespace UnitConversion
         public double ToKml() => m_kml;
         public double ToL100km() => 100.0 / m_kml;
         public double ToMpg() => m_kml / MpgToKml;
+
+        public override string ToString() => $"{ToKml()} km/L";
     }
 
     public readonly struct EvEfficiency
@@ -304,6 +322,8 @@ namespace UnitConversion
         public double ToWhkm() => 1000.0 / m_km_per_kwh;
         public double ToKwh100km() => 100.0 / m_km_per_kwh;
         public double ToMpKwh() => m_km_per_kwh / MileToKm;
+
+        public override string ToString() => $"{ToKmkWh()} km/kWh";
     }
 
     public readonly struct Volume
@@ -328,6 +348,8 @@ namespace UnitConversion
         public double ToMl() => m_liters * 1000.0;
         public double ToUsGallons() => m_liters / UsGalToL;
         public double ToImpGallons() => m_liters / ImpGalToL;
+
+        public override string ToString() => $"{ToLiters()} L";
     }
 
     public readonly struct Time
@@ -348,6 +370,8 @@ namespace UnitConversion
         public double ToSeconds() => m_sec;
         public double ToMinutes() => m_sec / 60.0;
         public double ToHours() => m_sec / 3600.0;
+
+        public override string ToString() => $"{ToSeconds()} s";
 
         public static Time operator +(Time a, Time b) => FromSeconds(a.m_sec + b.m_sec);
         public static Time operator -(Time a, Time b) => FromSeconds(a.m_sec - b.m_sec);
@@ -370,6 +394,8 @@ namespace UnitConversion
         public static Acceleration FromSpeedAndTime(Speed s, Time t) => new Acceleration(s.ToMs() / t.ToSeconds());
 
         public double ToMs2() => m_a;
+
+        public override string ToString() => $"{ToMs2()} m/s^2";
 
         public static Speed operator *(Acceleration a, Time t) => Speed.FromMs(a.m_a * t.ToSeconds());
         public static Acceleration operator *(Acceleration a, double scalar) => FromMs2(a.m_a * scalar);

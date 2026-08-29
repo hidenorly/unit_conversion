@@ -31,6 +31,7 @@ public class UnitConversionTests
         Assert.Equal(60.0, speed.ToKmH(), Epsilon);
         Assert.Equal(37.2823, speed.ToMph(), 0.001);
         Assert.Equal(60.0 / 3.6, speed.ToMs(), Epsilon);
+        Assert.Equal($"{speed.ToMs()} m/s", speed.ToString());
     }
 
     [Fact]
@@ -62,6 +63,7 @@ public class UnitConversionTests
         var t1 = Temperature.FromFahrenheit(32.0);
         Assert.Equal(32.0, t1.ToFahrenheit(), 0.001);
         Assert.Equal(0.0, t1.ToCelsius(), 0.001);
+        Assert.Equal($"{t1.ToCelsius()} °C", t1.ToString());
 
         var t2 = Temperature.FromCelsius(100.0);
         Assert.Equal(212.0, t2.ToFahrenheit(), 0.001);
@@ -94,6 +96,7 @@ public class UnitConversionTests
         var m1 = Mass.FromGram(1000.0);
         Assert.Equal(1000.0, m1.ToGram(), 0.000001);
         Assert.Equal(1.0, m1.ToKg(), Epsilon);
+        Assert.Equal($"{m1.ToKg()} kg", m1.ToString());
 
         var m2 = Mass.FromLb(1.0);
         Assert.Equal(1.0, m2.ToLb(), 0.000001);
@@ -129,6 +132,7 @@ public class UnitConversionTests
     {
         var d1 = Distance.FromMeters(1.0);
         Assert.Equal(1.0, d1.ToMeters(), Epsilon);
+        Assert.Equal($"{d1.ToMeters()} m", d1.ToString());
 
         var d2 = Distance.FromKm(1.0);
         Assert.Equal(1.0, d2.ToKm(), Epsilon);
@@ -160,6 +164,7 @@ public class UnitConversionTests
         var p1 = Pressure.FromBar(2.5);
         Assert.Equal(2.5, p1.ToBar(), Epsilon);
         Assert.Equal(250.0, p1.ToKpa(), 0.001);
+        Assert.Equal($"{p1.ToKpa()} kPa", p1.ToString());
 
         var p2 = Pressure.FromKpa(250.0);
         Assert.Equal(250.0, p2.ToKpa(), Epsilon);
@@ -190,6 +195,7 @@ public class UnitConversionTests
         Assert.Equal(100.0, p1.ToKw(), 1e-9);
         Assert.Equal(135.962, p1.ToPs(), 0.001);
         Assert.Equal(134.102, p1.ToHp(), 0.001);
+        Assert.Equal($"{p1.ToKw()} kW", p1.ToString());
 
         var p2 = Power.FromPs(135.962);
         Assert.Equal(100.0, p2.ToKw(), 0.01);
@@ -219,6 +225,7 @@ public class UnitConversionTests
     {
         var t1 = Torque.FromNm(10.0);
         Assert.Equal(10.0, t1.ToNm(), Epsilon);
+        Assert.Equal($"{t1.ToNm()} Nm", t1.ToString());
 
         var t2 = Torque.FromKgfm(10.0);
         Assert.Equal(10.0, t2.ToKgfm(), 0.0001);
@@ -247,6 +254,7 @@ public class UnitConversionTests
         var a1 = Angle.FromDegrees(180.0);
         Assert.Equal(180.0, a1.ToDegrees(), 0.000001);
         Assert.Equal(Math.PI, a1.ToRadians(), 0.000001);
+        Assert.Equal($"{a1.ToRadians()} rad", a1.ToString());
 
         var a2 = Angle.FromRadians(Math.PI / 2.0);
         Assert.Equal(Math.PI / 2.0, a2.ToRadians(), 0.000001);
@@ -292,6 +300,7 @@ public class UnitConversionTests
         var e1 = Efficiency.FromL100km(10.0);
         Assert.Equal(10.0, e1.ToL100km(), Epsilon);
         Assert.Equal(10.0, e1.ToKml(), Epsilon);
+        Assert.Equal($"{e1.ToKml()} km/L", e1.ToString());
 
         var e2 = Efficiency.FromMpg(23.5215);
         Assert.Equal(23.5215, e2.ToMpg(), 0.001);
@@ -323,6 +332,7 @@ public class UnitConversionTests
         Assert.Equal(166.666, e1.ToWhkm(), 0.001);
         Assert.Equal(16.666, e1.ToKwh100km(), 0.001);
         Assert.Equal(3.728, e1.ToMpKwh(), 0.001);
+        Assert.Equal($"{e1.ToKmkWh()} km/kWh", e1.ToString());
 
         var e2 = EvEfficiency.FromWhkm(200.0);
         Assert.Equal(200.0, e2.ToWhkm(), 0.001);
@@ -356,6 +366,7 @@ public class UnitConversionTests
         Assert.Equal(1000.0, v1.ToMl(), Epsilon);
         Assert.Equal(0.264172, v1.ToUsGallons(), 0.000001);
         Assert.Equal(0.219969, v1.ToImpGallons(), 0.000001);
+        Assert.Equal($"{v1.ToLiters()} L", v1.ToString());
 
         var v2 = Volume.FromMl(500.0);
         Assert.Equal(500.0, v2.ToMl(), Epsilon);
@@ -390,6 +401,7 @@ public class UnitConversionTests
         Assert.Equal(60.0, t1.ToSeconds(), 1e-9);
         Assert.Equal(1.0, t1.ToMinutes(), 1e-9);
         Assert.Equal(1.0 / 60.0, t1.ToHours(), 1e-9);
+        Assert.Equal($"{t1.ToSeconds()} s", t1.ToString());
 
         var t2 = Time.FromMinutes(1.0);
         Assert.Equal(60.0, t2.ToSeconds(), 1e-9);
@@ -418,6 +430,7 @@ public class UnitConversionTests
         var a = Acceleration.FromMs2(9.8);
         var s = a * Time.FromSeconds(2.0);
         Assert.Equal(19.6, s.ToMs(), 1e-9);
+        Assert.Equal($"{a.ToMs2()} m/s^2", a.ToString());
 
         Record.Exception(() => Acceleration.FromMs2(0.0));
         Assert.Throws<ArgumentException>(() => Acceleration.FromMs2(double.NaN));
