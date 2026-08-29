@@ -24,8 +24,16 @@ end
 local function create_class(name)
     local cls = {__type = name}
     cls.__index = cls
-    cls.__add = function(a, b) return setmetatable({val = a.val + b.val}, cls) end
-    cls.__sub = function(a, b) return setmetatable({val = a.val - b.val}, cls) end
+    cls.__add = function(a, b)
+        local val_a = (type(a) == "number") and a or a.val
+        local val_b = (type(b) == "number") and b or b.val
+        return setmetatable({val = val_a + val_b}, cls)
+    end
+    cls.__sub = function(a, b)
+        local val_a = (type(a) == "number") and a or a.val
+        local val_b = (type(b) == "number") and b or b.val
+        return setmetatable({val = val_a - val_b}, cls)
+    end
     return cls
 end
 
@@ -46,6 +54,7 @@ function M.Speed.fromMph(v) return M.Speed.fromMs(v * 0.44704) end
 function M.Speed:toMs() return self.val end
 function M.Speed:toKmH() return self.val * 3.6 end
 function M.Speed:toMph() return self.val / 0.44704 end
+
 M.Speed.__mul = function(a, b)
     local meta_a = getmetatable(a)
     local meta_b = getmetatable(b)
@@ -58,12 +67,18 @@ M.Speed.__mul = function(a, b)
 end
 
 M.Speed.__div = function(a, b)
-    if getmetatable(a) == M.Speed and getmetatable(b) == M.Time then
-        if b.val == 0 then error("Division by zero time") end
+    local meta_a = getmetatable(a)
+    local meta_b = getmetatable(b)
+    if meta_a == M.Speed and meta_b == M.Time then
+        if b.val == 0 then error("Time cannot be zero") end
         return M.Acceleration.fromMs2(a.val / b.val)
+    elseif meta_a == M.Speed and meta_b == M.Acceleration then
+        if b.val == 0 then error("Acceleration cannot be zero") end
+        return M.Time.fromSeconds(a.val / b.val)
     end
     error("Invalid division")
 end
+
 
 -- Temperature
 M.Temperature = setup_meta(create_class("Temperature"))
@@ -78,8 +93,9 @@ function M.Temperature:toCelsius() return self.val end
 function M.Temperature:toFahrenheit() return self.val * 1.8 + 32.0 end
 function M.Temperature:toKelvin() return self.val + 273.15 end
 
+
 -- Mass
-M.Mass = create_class("Mass")
+M.Mass = setup_meta(create_class("Mass"))
 function M.Mass.fromKg(v)
     check(v, "Mass")
     if v < 0 then error("Mass must be non-negative") end
@@ -113,6 +129,19 @@ function M.Distance:toFeet() return self.val / 0.3048 end
 function M.Distance:toInch() return self.val / 0.0254 end
 function M.Distance:toMm() return self.val / 0.001 end
 
+M.Distance.__mul = function(a, b)
+    local meta_a = getmetatable(a)
+    local meta_b = getmetatable(b)
+    if meta_a == M.Distance and type(b) == "number" then
+        return M.Distance.fromMeters(a.val * b)
+    elseif type(a) == "number" and meta_b == M.Distance then
+        return M.Distance.fromMeters(a * b.val)
+    end
+    local val_a = (type(a) == "number") and a or a.val
+    local val_b = (type(b) == "number") and b or b.val
+    return setmetatable({val = val_a * val_b}, M.Distance)
+end
+
 M.Distance.__div = function(a, b)
     local meta_a = getmetatable(a)
     local meta_b = getmetatable(b)
@@ -129,6 +158,7 @@ M.Distance.__div = function(a, b)
     error("Invalid division")
 end
 
+
 -- Pressure
 M.Pressure = setup_meta(create_class("Pressure"))
 function M.Pressure.fromKpa(v)
@@ -141,6 +171,7 @@ function M.Pressure.fromPsi(v) return M.Pressure.fromKpa(v * 6.89476) end
 function M.Pressure:toKpa() return self.val end
 function M.Pressure:toBar() return self.val / 100.0 end
 function M.Pressure:toPsi() return self.val / 6.89476 end
+
 
 -- Power
 M.Power = setup_meta(create_class("Power"))
@@ -155,6 +186,7 @@ function M.Power:toKw() return self.val end
 function M.Power:toPs() return self.val / 0.73549875 end
 function M.Power:toHp() return self.val / 0.74569987 end
 
+
 -- Torque
 M.Torque = setup_meta(create_class("Torque"))
 function M.Torque.fromNm(v) 
@@ -167,6 +199,7 @@ function M.Torque.fromLbft(v) return M.Torque.fromNm(v * 1.355817948) end
 function M.Torque:toNm() return self.val end
 function M.Torque:toKgfm() return self.val / 9.80665 end
 function M.Torque:toLbft() return self.val / 1.355817948 end
+
 
 -- Angle
 M.Angle = setup_meta(create_class("Angle"))
@@ -187,6 +220,7 @@ function M.Angle:normalizeRadians()
     return M.Angle.fromRadians(rad)
 end
 
+
 -- Efficiency
 M.Efficiency = setup_meta(create_class("Efficiency"))
 function M.Efficiency.fromKml(v)
@@ -199,6 +233,7 @@ function M.Efficiency.fromMpg(v) return M.Efficiency.fromKml(v * 0.425143707) en
 function M.Efficiency:toKml() return self.val end
 function M.Efficiency:toL100km() return 100.0 / self.val end
 function M.Efficiency:toMpg() return self.val / 0.425143707 end
+
 
 -- EvEfficiency
 M.EvEfficiency = setup_meta(create_class("EvEfficiency"))
@@ -215,6 +250,7 @@ function M.EvEfficiency:toWhkm() return 1000.0 / self.val end
 function M.EvEfficiency:toKwh100km() return 100.0 / self.val end
 function M.EvEfficiency:toMpKwh() return self.val / 1.609344 end
 
+
 -- Volume
 M.Volume = setup_meta(create_class("Volume"))
 function M.Volume.fromLiters(v)
@@ -230,6 +266,7 @@ function M.Volume:toMl() return self.val * 1000.0 end
 function M.Volume:toUsGallons() return self.val / 3.785411784 end
 function M.Volume:toImpGallons() return self.val / 4.54609 end
 
+
 -- Time
 M.Time = setup_meta(create_class("Time"))
 function M.Time.fromSeconds(v)
@@ -242,6 +279,22 @@ function M.Time.fromHours(v) return M.Time.fromSeconds(v * 3600.0) end
 function M.Time:toSeconds() return self.val end
 function M.Time:toMinutes() return self.val / 60.0 end
 function M.Time:toHours() return self.val / 3600.0 end
+
+M.Time.__mul = function(a, b)
+    local meta_a = getmetatable(a)
+    local meta_b = getmetatable(b)
+    if meta_a == M.Time and meta_b == M.Speed then
+        return M.Distance.fromMeters(a.val * b.val)
+    elseif meta_a == M.Time and type(b) == "number" then
+        return M.Time.fromSeconds(a.val * b)
+    elseif type(a) == "number" and meta_b == M.Time then
+        return M.Time.fromSeconds(a * b.val)
+    end
+    local val_a = (type(a) == "number") and a or a.val
+    local val_b = (type(b) == "number") and b or b.val
+    return setmetatable({val = val_a * val_b}, M.Time)
+end
+
 
 -- Acceleration
 M.Acceleration = setup_meta(create_class("Acceleration"))
@@ -257,19 +310,15 @@ M.Acceleration.__mul = function(a, b)
     local meta_b = getmetatable(b)
     if meta_a == M.Acceleration and meta_b == M.Time then return M.Speed.fromMs(a.val * b.val) end
     if meta_b == M.Acceleration and meta_a == M.Time then return M.Speed.fromMs(b.val * a.val) end
+    if meta_a == M.Acceleration and type(b) == "number" then
+        return M.Acceleration.fromMs2(a.val * b)
+    elseif type(a) == "number" and meta_b == M.Acceleration then
+        return M.Acceleration.fromMs2(a * b.val)
+    end
 
     local val_a = (type(a) == "number") and a or a.val
     local val_b = (type(b) == "number") and b or b.val
     return setmetatable({val = val_a * val_b}, M.Acceleration)
-end
-
-local classes = {}
-for _, name in ipairs(classes) do
-    if not M[name] then
-        M[name] = setup_meta(create_class(name))
-        M[name].fromVal = function(v) return setmetatable({val = check(v, name)}, M[name]) end
-        M[name].toVal = function(self) return self.val end
-    end
 end
 
 return M
