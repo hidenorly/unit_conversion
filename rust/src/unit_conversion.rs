@@ -57,6 +57,12 @@ impl Speed {
     }
 }
 
+impl std::fmt::Display for Speed {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} m/s", self.ms)
+    }
+}
+
 
 // --- Temperature
 
@@ -85,6 +91,12 @@ impl Temperature {
     pub fn to_celsius(&self) -> f64 { self.celsius }
     pub fn to_fahrenheit(&self) -> f64 { self.celsius * Self::F_FACTOR + Self::F_OFFSET }
     pub fn to_kelvin(&self) -> f64 { self.celsius + Self::K_OFFSET }
+}
+
+impl std::fmt::Display for Temperature {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} °C", self.celsius)
+    }
 }
 
 
@@ -116,6 +128,12 @@ impl Mass {
     pub fn to_gram(&self) -> f64 { self.kg / Self::G_TO_KG }
     pub fn to_lb(&self) -> f64 { self.kg / Self::LB_TO_KG }
     pub fn to_oz(&self) -> f64 { self.kg / Self::OZ_TO_KG }
+}
+
+impl std::fmt::Display for Mass {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} kg", self.kg)
+    }
 }
 
 
@@ -153,6 +171,12 @@ impl Distance {
     pub fn to_mm(&self) -> f64 { self.meters / Self::MM_TO_M }
 }
 
+impl std::fmt::Display for Distance {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} m", self.meters)
+    }
+}
+
 
 // --- Pressure
 
@@ -181,6 +205,12 @@ impl Pressure {
     pub fn to_psi(&self) -> f64 { self.kpa / Self::PSI_TO_KPA }
 }
 
+impl std::fmt::Display for Pressure {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} kPa", self.kpa)
+    }
+}
+
 
 // --- Power
 
@@ -207,6 +237,12 @@ impl Power {
     pub fn to_hp(&self) -> f64 { self.kw / Self::HP_TO_KW }
 }
 
+impl std::fmt::Display for Power {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} kW", self.kw)
+    }
+}
+
 
 // --- Torque
 
@@ -229,6 +265,12 @@ impl Torque {
     pub fn to_nm(&self) -> f64 { self.nm }
     pub fn to_kgfm(&self) -> f64 { self.nm / Self::KGFM_TO_NM }
     pub fn to_lbft(&self) -> f64 { self.nm / Self::LBFT_TO_NM }
+}
+
+impl std::fmt::Display for Torque {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} Nm", self.nm)
+    }
 }
 
 
@@ -273,6 +315,12 @@ impl Angle {
     }
 }
 
+impl std::fmt::Display for Angle {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} rad", self.rad)
+    }
+}
+
 
 // -- Efficiency
 
@@ -296,6 +344,12 @@ impl Efficiency {
     pub fn to_kml(&self) -> f64 { self.kml }
     pub fn to_l100km(&self) -> f64 { 100.0 / self.kml }
     pub fn to_mpg(&self) -> f64 { self.kml / Self::MPG_TO_KML }
+}
+
+impl std::fmt::Display for Efficiency {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} km/L", self.kml)
+    }
 }
 
 
@@ -323,6 +377,12 @@ impl EvEfficiency {
     pub fn to_wh_per_km(&self) -> f64 { 1000.0 / self.km_per_kwh }
     pub fn to_kwh_per_100km(&self) -> f64 { 100.0 / self.km_per_kwh }
     pub fn to_miles_per_kwh(&self) -> f64 { self.km_per_kwh / Self::MILE_TO_KM }
+}
+
+impl std::fmt::Display for EvEfficiency {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} km/kWh", self.km_per_kwh)
+    }
 }
 
 
@@ -353,6 +413,12 @@ impl Volume {
     pub fn to_imp_gallons(&self) -> f64 { self.liters / Self::IMP_GAL }
 }
 
+impl std::fmt::Display for Volume {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} L", self.liters)
+    }
+}
+
 
 // --- Time
 
@@ -371,6 +437,12 @@ impl Time {
     pub fn to_seconds(&self) -> f64 { self.s }
     pub fn to_minutes(&self) -> f64 { self.s / 60.0 }
     pub fn to_hours(&self) -> f64 { self.s / 3600.0 }
+}
+
+impl std::fmt::Display for Time {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} s", self.s)
+    }
 }
 
 
@@ -392,6 +464,12 @@ impl Acceleration {
         Self::new(a)
     }
     pub fn to_ms2(&self) -> f64 { self.a }
+}
+
+impl std::fmt::Display for Acceleration {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} m/s^2", self.a)
+    }
 }
 
 
@@ -590,6 +668,40 @@ impl std::ops::Mul<Time> for f64 {
     type Output = Time;
     fn mul(self, rhs: Time) -> Self::Output {
         rhs * self
+    }
+}
+
+// --- Scalar multiplication for all types
+
+impl std::ops::Div<f64> for Speed {
+    type Output = Speed;
+    fn div(self, rhs: f64) -> Self::Output {
+        if rhs == 0.0 { panic!("Division by zero"); }
+        Speed::from_ms(self.to_ms() / rhs)
+    }
+}
+
+impl std::ops::Div<f64> for Distance {
+    type Output = Distance;
+    fn div(self, rhs: f64) -> Self::Output {
+        if rhs == 0.0 { panic!("Division by zero"); }
+        Distance::from_meters(self.to_meters() / rhs)
+    }
+}
+
+impl std::ops::Div<f64> for Time {
+    type Output = Time;
+    fn div(self, rhs: f64) -> Self::Output {
+        if rhs == 0.0 { panic!("Division by zero"); }
+        Time::new(self.to_seconds() / rhs)
+    }
+}
+
+impl std::ops::Div<f64> for Acceleration {
+    type Output = Acceleration;
+    fn div(self, rhs: f64) -> Self::Output {
+        if rhs == 0.0 { panic!("Division by zero"); }
+        Acceleration::new(self.to_ms2() / rhs)
     }
 }
 

@@ -27,6 +27,8 @@ mod tests {
         assert!((s1.to_kmh() - 60.0).abs() < EPSILON);
         assert!((s1.to_mph() - 37.2823).abs() < EPSILON);
         assert!((s1.to_ms() - 60.0/3.6).abs() < EPSILON);
+        // Display test
+        assert_eq!(format!("{}", s1), format!("{} m/s", s1.to_ms()));
 
         // test mph -> km/h
         let s2 = Speed::from_mph(60.0);
@@ -72,6 +74,8 @@ mod tests {
         let t1 = Temperature::from_fahrenheit(32.0);
         assert!((t1.to_fahrenheit() - 32.0).abs() < EPSILON);
         assert!((t1.to_celsius() - 0.0).abs() < EPSILON);
+        // Display test
+        assert_eq!(format!("{}", t1), format!("{} °C", t1.to_celsius()));
 
         // 100 C -> 212 F
         let t2 = Temperature::from_celsius(100.0);
@@ -122,6 +126,8 @@ mod tests {
         let w = Mass::from_gram(1000.0);
         assert_eq!(w.to_gram(), 1000.0);
         assert_eq!(w.to_kg(), 1.0);
+        // Display test
+        assert_eq!(format!("{}", w), format!("{} kg", w.to_kg()));
 
         // 1lb -> 0.45359kg
         let w2 = Mass::from_lb(1.0);
@@ -159,6 +165,8 @@ mod tests {
         let d_km = Distance::from_km(1.0);
         assert_eq!(d_km.to_km(), 1.0);
         assert_eq!(d_km.to_meters(), 1000.0);
+        // Display test
+        assert_eq!(format!("{}", d_km), format!("{} m", d_km.to_meters()));
 
         // 1.0 mile -> 1.609344 km
         let d_mile = Distance::from_mile(1.0);
@@ -212,6 +220,8 @@ mod tests {
         assert!((p.to_bar() - 2.5).abs() < EPSILON);
         assert!((p.to_kpa() - 250.0).abs() < EPSILON);
         assert!((p.to_psi() - 36.2594).abs() < EPSILON);
+        // Display test
+        assert_eq!(format!("{}", p), format!("{} kPa", p.to_kpa()));
 
         let p2 = Pressure::from_kpa(250.0);
         assert!((p2.to_bar() - 2.5).abs() < EPSILON);
@@ -243,6 +253,8 @@ mod tests {
         let p = Power::from_kw(100.0);
         assert!((p.to_ps() - 135.962).abs() < 0.001);
         assert!((p.to_hp() - 134.102).abs() < 0.001);
+        // Display test
+        assert_eq!(format!("{}", p), format!("{} kW", p.to_kw()));
     }
 
     #[test]
@@ -313,6 +325,8 @@ mod tests {
         assert!((t.to_lbft() - 1.0).abs() < EPSILON);
         assert!((t.to_nm() - 1.355818).abs() < EPSILON);
         assert!((t.to_kgfm() - 0.138255).abs() < EPSILON);
+        // Display test
+        assert_eq!(format!("{}", t), format!("{} Nm", t.to_nm()));
 
         let t2 = Torque::from_nm(1.355818);
         assert!((t2.to_lbft() - 1.0).abs() < EPSILON);
@@ -387,10 +401,19 @@ mod tests {
         let a = Angle::from_degrees(180.0);
         assert!((a.to_degrees() - 180.0).abs() < EPSILON);
         assert!((a.to_radians() - PI).abs() < EPSILON);
+        // Display test
+        assert_eq!(format!("{}", a), format!("{} rad", a.to_radians()));
 
         let a2 = Angle::from_radians(PI / 2.0);
         assert!((a2.to_radians() - (PI/2.0)).abs() < EPSILON);
         assert!((a2.to_degrees() - 90.0).abs() < EPSILON);
+
+        // Test normalized methods (added)
+        let a3 = Angle::from_degrees(370.0);
+        assert!((a3.normalized().to_degrees() - 10.0).abs() < EPSILON);
+
+        let a4 = Angle::from_degrees(-190.0);
+        assert!((a4.normalized_signed().to_degrees() - 170.0).abs() < EPSILON);
     }
 
     #[test]
@@ -407,6 +430,8 @@ mod tests {
         assert_eq!(e_l100km.to_l100km(), 10.0);
         assert_eq!(e_l100km.to_kml(), 10.0);
         assert!((e_l100km.to_mpg() - 23.5215).abs() < EPSILON);
+        // Display test
+        assert_eq!(format!("{}", e_l100km), format!("{} km/L", e_l100km.to_kml()));
 
         let e_mpg = Efficiency::from_mpg(23.5215);
         assert!((e_mpg.to_mpg() - 23.5215).abs() < EPSILON);
@@ -440,6 +465,8 @@ mod tests {
         assert!((e.to_kwh_per_100km() - 20.0).abs() < EPSILON);
         assert!((e.to_km_per_kwh() - 5.0).abs() < EPSILON);
         assert!((e.to_miles_per_kwh() - 3.11).abs() < 0.01);
+        // Display test
+        assert_eq!(format!("{}", e), format!("{} km/kWh", e.to_km_per_kwh()));
     }
 
     #[test]
@@ -488,6 +515,8 @@ mod tests {
         assert!((v_l.to_ml() - 1000.0).abs() < EPSILON);
         assert!((v_l.to_us_gallons() - 0.264172).abs() < EPSILON);
         assert!((v_l.to_imp_gallons() - 0.219969).abs() < EPSILON);
+        // Display test
+        assert_eq!(format!("{}", v_l), format!("{} L", v_l.to_liters()));
 
         let v_ml = Volume::from_ml(100.0);
         assert!((v_ml.to_liters() - 0.1).abs() < EPSILON);
@@ -528,6 +557,8 @@ mod tests {
         assert_eq!(t.to_seconds(), 3600.0);
         assert_eq!(t.to_minutes(), 60.0);
         assert_eq!(t.to_hours(), 1.0);
+        // Display test
+        assert_eq!(format!("{}", t), format!("{} s", t.to_seconds()));
         Time::new(0.0);
     }
 
@@ -556,6 +587,8 @@ mod tests {
         let a = Acceleration::new(9.8);
         let s = a * Time::from_seconds(2.0);
         assert!((s.to_ms() - 19.6).abs() < 1e-9);
+        // Display test
+        assert_eq!(format!("{}", a), format!("{} m/s^2", a.to_ms2()));
         Acceleration::new(0.0);
     }
 
@@ -744,5 +777,45 @@ mod tests {
     #[should_panic(expected = "Mass cannot be zero")]
     fn test_mass_div_zero_mass() {
         let _ = Mass::from_kg(50.0) / Mass::from_kg(0.0);
+    }
+
+    // -- Added tests for scalar division and guards --
+    #[test]
+    fn test_scalar_division() {
+        let s = Speed::from_ms(10.0) / 2.0;
+        assert!((s.to_ms() - 5.0).abs() < 1e-9);
+
+        let d = Distance::from_meters(100.0) / 4.0;
+        assert!((d.to_meters() - 25.0).abs() < 1e-9);
+
+        let t = Time::from_seconds(60.0) / 3.0;
+        assert!((t.to_seconds() - 20.0).abs() < 1e-9);
+
+        let a = Acceleration::new(10.0) / 2.0;
+        assert!((a.to_ms2() - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_speed_div_scalar_zero() {
+        let _ = Speed::from_ms(10.0) / 0.0;
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_distance_div_scalar_zero() {
+        let _ = Distance::from_meters(100.0) / 0.0;
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_time_div_scalar_zero() {
+        let _ = Time::from_seconds(10.0) / 0.0;
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_acceleration_div_scalar_zero() {
+        let _ = Acceleration::new(10.0) / 0.0;
     }
 }
