@@ -204,6 +204,14 @@ class Angle {
     }
     return Angle.fromDegrees(deg);
   }
+
+  Angle normalizedSigned() {
+    double r = (_rad + math.pi) % _twoPi;
+    if (r < 0.0) {
+      r += _twoPi;
+    }
+    return Angle._(r - math.pi);
+  }
 }
 
 
@@ -273,7 +281,7 @@ class Time {
 
   Time._(this._s) {
     if (_s.isNaN || _s < 0 || _s.isInfinite){
-      throw ArgumentError();
+      throw ArgumentError('Invalid Time');
     }
   }
 
@@ -296,6 +304,13 @@ class Acceleration {
     }
   }
 
+  factory Acceleration.fromSpeedAndTime(Speed s, Time t) {
+    if (t.toSeconds == 0.0) {
+      throw ArgumentError('Time cannot be zero');
+    }
+    return Acceleration.fromMs2(s.toMs / t.toSeconds);
+  }
+
   double get toMs2 => _ms2;
 }
 
@@ -309,6 +324,11 @@ extension AccelMul on Acceleration {
       return Acceleration.fromMs2(this.toMs2 * other.toDouble());
     }
     throw ArgumentError('Unsupported type for multiplication');
+  }
+
+  Acceleration operator /(num scalar) {
+    if (scalar == 0.0) throw ArgumentError('Division by zero');
+    return Acceleration.fromMs2(this.toMs2 / scalar.toDouble());
   }
 }
 
@@ -347,11 +367,14 @@ extension SpeedAdd on Speed {
 extension SpeedDiv on Speed {
   dynamic operator /(dynamic other) {
     if (other is Time) {
-      if (other.toSeconds == 0.0) throw ArgumentError('Division by zero');
+      if (other.toSeconds == 0.0) throw ArgumentError('Time cannot be zero');
       return Acceleration.fromMs2(this.toMs / other.toSeconds);
     } else if (other is Acceleration) {
       if (other.toMs2 == 0.0) throw ArgumentError('Acceleration cannot be zero');
       return Time.fromSeconds(this.toMs / other.toMs2);
+    } else if (other is num) {
+      if (other.toDouble() == 0.0) throw ArgumentError('Division by zero');
+      return Speed.fromMs(this.toMs / other.toDouble());
     }
     throw ArgumentError('Unsupported type for division');
   }
@@ -375,6 +398,9 @@ extension DistanceOps on Distance {
     } else if (other is Distance) {
       if (other.toMeters == 0.0) throw ArgumentError('Distance cannot be zero');
       return this.toMeters / other.toMeters;
+    } else if (other is num) {
+      if (other.toDouble() == 0.0) throw ArgumentError('Division by zero');
+      return Distance.fromMeters(this.toMeters / other.toDouble());
     }
     throw ArgumentError('Unsupported type for division');
   }
@@ -392,6 +418,11 @@ extension TimeOps on Time {
 
   Time operator *(num scalar) {
     return Time.fromSeconds(this.toSeconds * scalar.toDouble());
+  }
+
+  Time operator /(num scalar) {
+    if (scalar == 0.0) throw ArgumentError('Division by zero');
+    return Time.fromSeconds(this.toSeconds / scalar.toDouble());
   }
 }
 
@@ -413,6 +444,9 @@ extension MassOps on Mass {
     if (other is Mass) {
       if (other.toKg == 0.0) throw ArgumentError('Mass cannot be zero');
       return this.toKg / other.toKg;
+    } else if (other is num) {
+      if (other.toDouble() == 0.0) throw ArgumentError('Division by zero');
+      return Mass.fromKg(this.toKg / other.toDouble());
     }
     throw ArgumentError('Unsupported type for division');
   }

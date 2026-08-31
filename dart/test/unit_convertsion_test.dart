@@ -305,6 +305,14 @@ void main() {
       final r2 = Angle.fromRadians(-math.pi * 0.5).normalizeRadians();
       expect(r2.toRadians, closeTo(math.pi * 1.5, epsilon));
     });
+
+    test('Angle Signed Normalization test', () {
+      final a1 = Angle.fromRadians(math.pi * 1.5).normalizedSigned();
+      expect(a1.toRadians, closeTo(-math.pi * 0.5, epsilon));
+
+      final a2 = Angle.fromRadians(-math.pi * 1.5).normalizedSigned();
+      expect(a2.toRadians, closeTo(math.pi * 0.5, epsilon));
+    });
   });
 
 
@@ -438,6 +446,12 @@ void main() {
       expect(() => Time.fromSeconds(-0.1), throwsArgumentError);
       expect(() => Time.fromSeconds(double.infinity), throwsArgumentError);
     });
+
+    test('Time Scalar Division', () {
+      final t = Time.fromSeconds(60.0) / 2.0;
+      expect(t.toSeconds, closeTo(30.0, 1e-9));
+      expect(() => Time.fromSeconds(60.0) / 0.0, throwsArgumentError);
+    });
   });
 
 
@@ -446,6 +460,15 @@ void main() {
       final a = Acceleration.fromMs2(9.8);
       final s = a * Time.fromSeconds(2.0);
       expect(s.toMs, closeTo(19.6, 1e-9));
+    });
+
+    test('Acceleration fromSpeedAndTime', () {
+      final s = Speed.fromMs(20.0);
+      final t = Time.fromSeconds(4.0);
+      final a = Acceleration.fromSpeedAndTime(s, t);
+      expect(a.toMs2, closeTo(5.0, 1e-9));
+
+      expect(() => Acceleration.fromSpeedAndTime(s, Time.fromSeconds(0.0)), throwsArgumentError);
     });
       
     test('Acceleration Conversion Exception', () {
@@ -497,12 +520,26 @@ void main() {
     expect(zero.toMs, closeTo(0.0, 1e-9));
   });
 
+  test('Speed Scalar Division', () {
+    final v = Speed.fromMs(10.0) / 2.0;
+    expect(v.toMs, closeTo(5.0, 1e-9));
+
+    expect(() => Speed.fromMs(10.0) / 0.0, throwsArgumentError);
+  });
+
   test('Acceleration Scalar Multiplication', () {
     final a = Acceleration.fromMs2(9.8) * 0.5;
     expect(a.toMs2, closeTo(4.9, 1e-9));
 
     final zero = Acceleration.fromMs2(9.8) * 0.0;
     expect(zero.toMs2, closeTo(0.0, 1e-9));
+  });
+
+  test('Acceleration Scalar Division', () {
+    final a = Acceleration.fromMs2(9.8) / 2.0;
+    expect(a.toMs2, closeTo(4.9, 1e-9));
+
+    expect(() => Acceleration.fromMs2(9.8) / 0.0, throwsArgumentError);
   });
 
   group('Distance Operations Tests', () {
@@ -516,6 +553,13 @@ void main() {
     test('Distance Scalar Multiplication', () {
       final d = Distance.fromMeters(100.0) * 2.5;
       expect(d.toMeters, closeTo(250.0, 1e-9));
+    });
+
+    test('Distance Scalar Division', () {
+      final d = Distance.fromMeters(100.0) / 2.0;
+      expect(d.toMeters, closeTo(50.0, 1e-9));
+
+      expect(() => Distance.fromMeters(100.0) / 0.0, throwsArgumentError);
     });
 
     test('Distance / Time -> Speed', () {
@@ -571,6 +615,13 @@ void main() {
     test('Mass Scalar Multiplication', () {
       final m = Mass.fromKg(10.0) * 2.0;
       expect(m.toKg, closeTo(20.0, 1e-9));
+    });
+
+    test('Mass Scalar Division', () {
+      final m = Mass.fromKg(10.0) / 2.0;
+      expect(m.toKg, closeTo(5.0, 1e-9));
+
+      expect(() => Mass.fromKg(10.0) / 0.0, throwsArgumentError);
     });
 
     test('Mass / Mass -> Ratio (double)', () {
