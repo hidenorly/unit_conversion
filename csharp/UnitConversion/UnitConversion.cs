@@ -257,7 +257,7 @@ namespace UnitConversion
 
         public override string ToString() => $"{ToRadians()} rad";
 
-        public Angle NormalizeRadians()
+        public Angle Normalized()
         {
             double normalized = m_rad % TwoPi;
             if (normalized < 0.0)
@@ -267,14 +267,14 @@ namespace UnitConversion
             return new Angle(normalized);
         }
 
-        public Angle NormalizeDegrees()
+        public Angle NormalizedSigned()
         {
-            double deg = ToDegrees() % 360.0;
-            if (deg < 0.0)
+            double r = (m_rad + Math.PI) % TwoPi;
+            if (r < 0.0)
             {
-                deg += 360.0;
+                r += TwoPi;
             }
-            return FromDegrees(deg);
+            return new Angle(r - Math.PI);
         }
     }
 
@@ -400,5 +400,17 @@ namespace UnitConversion
         public static Speed operator *(Acceleration a, Time t) => Speed.FromMs(a.m_a * t.ToSeconds());
         public static Acceleration operator *(Acceleration a, double scalar) => FromMs2(a.m_a * scalar);
         public static Acceleration operator *(double scalar, Acceleration a) => FromMs2(a.m_a * scalar);
+
+        public static Speed operator /(Time t, Acceleration a)
+        {
+            if (a.ToMs2() == 0.0) throw new ArgumentException("Acceleration cannot be zero");
+            return Speed.FromMs(t.ToSeconds() / a.ToMs2());
+        }
+
+        public static Acceleration operator /(Acceleration acc, Time t)
+        {
+            if (t.ToSeconds() == 0.0) throw new ArgumentException("Time cannot be zero");
+            return FromMs2(acc.ToMs2() / t.ToSeconds());
+        }
     }
 }

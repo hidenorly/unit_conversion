@@ -265,21 +265,28 @@ public class UnitConversionTests
     public void TestAngleNormalization()
     {
         // Degrees normalization (0 to 360)
-        var a1 = Angle.FromDegrees(450.0).NormalizeDegrees();
+        var a1 = Angle.FromDegrees(450.0).Normalized();
         Assert.Equal(90.0, a1.ToDegrees(), 0.000001);
 
-        var a2 = Angle.FromDegrees(-90.0).NormalizeDegrees();
+        var a2 = Angle.FromDegrees(-90.0).Normalized();
         Assert.Equal(270.0, a2.ToDegrees(), 0.000001);
 
-        var a3 = Angle.FromDegrees(360.0).NormalizeDegrees();
+        var a3 = Angle.FromDegrees(360.0).Normalized();
         Assert.Equal(0.0, a3.ToDegrees(), 0.000001);
 
         // Radians normalization (0 to 2π)
-        var r1 = Angle.FromRadians(Math.PI * 2.5).NormalizeRadians();
+        var r1 = Angle.FromRadians(Math.PI * 2.5).Normalized();
         Assert.Equal(Math.PI * 0.5, r1.ToRadians(), 0.000001);
 
-        var r2 = Angle.FromRadians(-Math.PI * 0.5).NormalizeRadians();
+        var r2 = Angle.FromRadians(-Math.PI * 0.5).Normalized();
         Assert.Equal(Math.PI * 1.5, r2.ToRadians(), 0.000001);
+
+        // Signed radians normalization (-π to π)
+        var sr1 = Angle.FromRadians(Math.PI * 1.5).NormalizedSigned();
+        Assert.Equal(-Math.PI * 0.5, sr1.ToRadians(), 0.000001);
+
+        var sr2 = Angle.FromRadians(-Math.PI * 1.5).NormalizedSigned();
+        Assert.Equal(Math.PI * 0.5, sr2.ToRadians(), 0.000001);
     }
 
     [Fact]
@@ -470,6 +477,12 @@ public class UnitConversionTests
         // Additional operators support verification tests
         var t_calc = Speed.FromMs(20.0) / Acceleration.FromMs2(2.0);
         Assert.Equal(10.0, t_calc.ToSeconds(), 1e-9);
+
+        var t_div_accel = Time.FromSeconds(20.0) / Acceleration.FromMs2(2.0);
+        Assert.Equal(10.0, t_div_accel.ToMs(), 1e-9);
+
+        var accel_div_time = Acceleration.FromMs2(10.0) / Time.FromSeconds(2.0);
+        Assert.Equal(5.0, accel_div_time.ToMs2(), 1e-9);
 
         var d1 = Distance.FromMeters(100.0);
         var d2 = Distance.FromMeters(50.0);
