@@ -320,6 +320,10 @@ class TestAngle < Minitest::Test
 
     a_rad2 = Angle.from_radians(-Math::PI / 2.0).normalize_radians
     assert_in_delta(1.5 * Math::PI, a_rad2.to_radians, 0.000001)
+
+    # Test normalize signed
+    a_signed = Angle.from_degrees(270.0).normalize_signed
+    assert_in_delta(-90.0, a_signed.to_degrees, 0.000001)
   end
 
   def test_guards
@@ -466,9 +470,13 @@ class TestAcceleration < Minitest::Test
     s = a * Time.from_seconds(2.0)
     assert_in_delta(19.6, s.to_ms)
     
+    a2 = Acceleration.from_speed_and_time(Speed.from_ms(20.0), Time.from_seconds(4.0))
+    assert_in_delta(5.0, a2.to_ms2)
+
     assert_raises(ArgumentError) { Acceleration.new(Float::NAN) }
     assert_raises(ArgumentError) { Acceleration.new(Float::INFINITY) }
     assert_raises(ArgumentError) { a * Time.from_seconds(-1.0) }
+    assert_raises(ArgumentError) { Acceleration.from_speed_and_time(Speed.from_ms(10.0), Time.from_seconds(0.0)) }
   end
 end
 
@@ -484,6 +492,25 @@ class TestOperation < Minitest::Test
     assert_raises(ArgumentError) {
       Speed.from_ms(10.0) * Time.from_seconds(-1.0)
     }
+  end
+
+  def test_speed_div
+    accel = Speed.from_ms(20.0) / Time.from_seconds(4.0)
+    assert_in_delta(5.0, accel.to_ms2)
+
+    tm = Speed.from_ms(20.0) / Acceleration.new(2.0)
+    assert_in_delta(10.0, tm.to_seconds)
+
+    sp = Speed.from_ms(20.0) / 2.0
+    assert_in_delta(10.0, sp.to_ms)
+  end
+
+  def test_time_div
+    ratio = Time.from_seconds(60.0) / Time.from_seconds(12.0)
+    assert_in_delta(5.0, ratio)
+
+    tm = Time.from_seconds(60.0) / 2.0
+    assert_in_delta(30.0, tm.to_seconds)
   end
 
   def test_accel_from_delta_speed
@@ -570,5 +597,8 @@ class TestOperation < Minitest::Test
     assert_raises(ArgumentError) { Distance.from_meters(10.0) / Distance.from_meters(0.0) }
     assert_raises(ArgumentError) { Distance.from_meters(10.0) / Speed.from_ms(0.0) }
     assert_raises(ArgumentError) { Distance.from_meters(10.0) / Time.from_seconds(0.0) }
+    assert_raises(ArgumentError) { Speed.from_ms(10.0) / Time.from_seconds(0.0) }
+    assert_raises(ArgumentError) { Speed.from_ms(10.0) / Acceleration.new(0.0) }
+    assert_raises(ArgumentError) { Time.from_seconds(10.0) / Time.from_seconds(0.0) }
   end
 end

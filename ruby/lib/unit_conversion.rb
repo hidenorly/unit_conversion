@@ -21,7 +21,7 @@ class Speed
 
   def initialize(ms)
     val = ms.to_f
-    raise ArgumentError if val.nan? || val.infinite?
+    raise ArgumentError if val.nan? || val < 0 || val.infinite?
     @ms = val
   end
 
@@ -69,8 +69,19 @@ class Speed
   end
 
   def /(other)
-    raise ArgumentError if other.to_seconds == 0
-    return Acceleration.new(self.to_ms / other.to_seconds)
+    case other
+    when Time
+      raise ArgumentError, "Division by zero" if other.to_seconds == 0
+      return Acceleration.new(self.to_ms / other.to_seconds)
+    when Acceleration
+      raise ArgumentError, "Division by zero" if other.to_ms2 == 0
+      return Time.from_seconds(self.to_ms / other.to_ms2)
+    when Numeric
+      raise ArgumentError, "Division by zero" if other == 0
+      return Speed.from_ms(self.to_ms / other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
   end
 
   def coerce(other)
@@ -253,6 +264,9 @@ class Distance
     when Time
       raise ArgumentError, "Division by zero" if other.to_seconds == 0
       return Speed.from_ms(self.to_meters / other.to_seconds)
+    when Numeric
+      raise ArgumentError, "Division by zero" if other == 0
+      return Distance.from_meters(self.to_meters / other)
     else
       raise ArgumentError, "Unsupported type: #{other.class}"
     end
@@ -424,6 +438,13 @@ class Angle
 
   def normalize_degrees
     return Angle.from_degrees(to_degrees % 360.0)
+  end
+
+  def normalize_signed
+    two_pi = 2.0 * Math::PI
+    r = (@rad + Math::PI) % two_pi
+    r += two_pi if r < 0
+    return Angle.from_radians(r - Math::PI)
   end
 end
 
@@ -607,7 +628,20 @@ class Time
       raise ArgumentError, "Unsupported type: #{other.class}"
     end
   end
- 
+
+  def /(other)
+    case other
+    when Time
+      raise ArgumentError, "Division by zero" if other.to_seconds == 0
+      return self.to_seconds / other.to_seconds
+    when Numeric
+      raise ArgumentError, "Division by zero" if other == 0
+      return Time.from_seconds(self.to_seconds / other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
   def coerce(other)
     case other
     when Numeric
@@ -636,6 +670,10 @@ class Acceleration
     return new(s.to_ms / t.to_seconds)
   end
 
+  def self.from_ms2(a)
+    return new(a)
+  end
+
   def to_ms2
     return @a
   end
@@ -646,6 +684,16 @@ class Acceleration
       return Speed.from_ms(self.to_ms2 * other.to_seconds)
     when Numeric
       return Acceleration.new(self.to_ms2 * other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def /(other)
+    case other
+    when Numeric
+      raise ArgumentError, "Division by zero" if other == 0
+      return Acceleration.new(self.to_ms2 / other)
     else
       raise ArgumentError, "Unsupported type: #{other.class}"
     end
