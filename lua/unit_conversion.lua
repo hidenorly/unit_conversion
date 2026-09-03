@@ -16,6 +16,8 @@
 
 local M = {}
 
+M.NO_NEGATIVE_ALLOWED = true
+
 local function check(v, name)
     if v ~= v or v == math.huge or v == -math.huge then error(name .. " must be finite") end
     return v
@@ -48,7 +50,11 @@ end
 
 -- Speed
 M.Speed = setup_meta(create_class("Speed"))
-function M.Speed.fromMs(v) return setmetatable({val = check(v, "Speed")}, M.Speed) end
+function M.Speed.fromMs(v)
+    check(v, "Speed")
+    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Speed must be non-negative") end
+    return setmetatable({val = v}, M.Speed)
+end
 function M.Speed.fromKmH(v) return M.Speed.fromMs(v / 3.6) end
 function M.Speed.fromMph(v) return M.Speed.fromMs(v * 0.44704) end
 function M.Speed:toMs() return self.val end
@@ -84,7 +90,7 @@ end
 M.Temperature = setup_meta(create_class("Temperature"))
 function M.Temperature.fromCelsius(v)
     check(v, "Temperature")
-    if v < -273.15 then error("Temperature must be >= absolute zero") end 
+    if v < -273.15 then error("Temperature below absolute zero or invalid") end
     return setmetatable({val = v}, M.Temperature)
 end
 function M.Temperature.fromFahrenheit(v) return M.Temperature.fromCelsius((v - 32.0) / 1.8) end
@@ -98,7 +104,7 @@ function M.Temperature:toKelvin() return self.val + 273.15 end
 M.Mass = setup_meta(create_class("Mass"))
 function M.Mass.fromKg(v)
     check(v, "Mass")
-    if v < 0 then error("Mass must be non-negative") end
+    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Mass must be non-negative") end
     return setmetatable({val = v}, M.Mass)
 end
 function M.Mass.fromGram(v) return M.Mass.fromKg(v * 0.001) end
@@ -114,7 +120,7 @@ function M.Mass:toOz() return self.val / 0.0283495231 end
 M.Distance = setup_meta(create_class("Distance"))
 function M.Distance.fromMeters(v)
     check(v, "Distance")
-    if v < 0 then error("Distance must be non-negative") end
+    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Distance must be non-negative") end
     return setmetatable({val = v}, M.Distance)
 end
 function M.Distance.fromKm(v) return M.Distance.fromMeters(v * 1000.0) end
@@ -146,13 +152,13 @@ M.Distance.__div = function(a, b)
     local meta_a = getmetatable(a)
     local meta_b = getmetatable(b)
     if meta_a == M.Distance and meta_b == M.Distance then
-        if b.val == 0 then error("Division by zero distance") end
+        if b.val == 0 then error("Distance cannot be zero") end
         return a.val / b.val
     elseif meta_a == M.Distance and meta_b == M.Speed then
-        if b.val == 0 then error("Division by zero speed") end
+        if b.val == 0 then error("Speed cannot be zero") end
         return M.Time.fromSeconds(a.val / b.val)
     elseif meta_a == M.Distance and meta_b == M.Time then
-        if b.val == 0 then error("Division by zero time") end
+        if b.val == 0 then error("Time cannot be zero") end
         return M.Speed.fromMs(a.val / b.val)
     end
     error("Invalid division")
@@ -163,7 +169,7 @@ end
 M.Pressure = setup_meta(create_class("Pressure"))
 function M.Pressure.fromKpa(v)
     check(v, "Pressure")
-    if v < 0 then error("Pressure must be non-negative") end
+    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Pressure must be non-negative") end
     return setmetatable({val = v}, M.Pressure)
 end
 function M.Pressure.fromBar(v) return M.Pressure.fromKpa(v * 100.0) end
@@ -177,7 +183,7 @@ function M.Pressure:toPsi() return self.val / 6.89476 end
 M.Power = setup_meta(create_class("Power"))
 function M.Power.fromKw(v)
     check(v, "Power")
-    if v < 0 then error("Power must be non-negative") end
+    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Power must be non-negative") end
     return setmetatable({val = v}, M.Power) 
 end
 function M.Power.fromPs(v) return M.Power.fromKw(v * 0.73549875) end
@@ -191,7 +197,7 @@ function M.Power:toHp() return self.val / 0.74569987 end
 M.Torque = setup_meta(create_class("Torque"))
 function M.Torque.fromNm(v) 
     check(v, "Torque")
-    if v < 0 then error("Torque must be non-negative") end
+    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Torque must be non-negative") end
     return setmetatable({val = v}, M.Torque)
 end
 function M.Torque.fromKgfm(v) return M.Torque.fromNm(v * 9.80665) end
@@ -209,15 +215,21 @@ end
 function M.Angle.fromDegrees(v) return M.Angle.fromRadians(v * (math.pi / 180.0)) end
 function M.Angle:toRadians() return self.val end
 function M.Angle:toDegrees() return self.val / (math.pi / 180.0) end
-function M.Angle:normalizeDegrees()
-    local deg = self:toDegrees() % 360.0
-    if deg < 0 then deg = deg + 360.0 end
-    return M.Angle.fromDegrees(deg)
+
+function M.Angle:normalized()
+    local r = self.val % (2.0 * math.pi)
+    if r < 0.0 then
+        r = r + (2.0 * math.pi)
+    end
+    return M.Angle.fromRadians(r)
 end
-function M.Angle:normalizeRadians()
-    local rad = self.val % (2.0 * math.pi)
-    if rad < 0 then rad = rad + (2.0 * math.pi) end
-    return M.Angle.fromRadians(rad)
+
+function M.Angle:normalizedSigned()
+    local r = (self.val + math.pi) % (2.0 * math.pi)
+    if r < 0.0 then
+        r = r + (2.0 * math.pi)
+    end
+    return M.Angle.fromRadians(r - math.pi)
 end
 
 
@@ -225,7 +237,7 @@ end
 M.Efficiency = setup_meta(create_class("Efficiency"))
 function M.Efficiency.fromKml(v)
     check(v, "Efficiency")
-    if v <= 0 then error("Efficiency must be positive") end 
+    if v <= 0 then error("Must be positive") end
     return setmetatable({val = v}, M.Efficiency)
 end
 function M.Efficiency.fromL100km(v) return M.Efficiency.fromKml(100.0 / v) end
@@ -239,7 +251,7 @@ function M.Efficiency:toMpg() return self.val / 0.425143707 end
 M.EvEfficiency = setup_meta(create_class("EvEfficiency"))
 function M.EvEfficiency.fromKmkWh(v)
     check(v, "EvEfficiency")
-    if v <= 0 then error("EvEfficiency must be positive") end
+    if v <= 0 then error("Must be positive") end
     return setmetatable({val = v}, M.EvEfficiency)
 end
 function M.EvEfficiency.fromWhkm(v) return M.EvEfficiency.fromKmkWh(1000.0 / v) end
@@ -255,7 +267,7 @@ function M.EvEfficiency:toMpKwh() return self.val / 1.609344 end
 M.Volume = setup_meta(create_class("Volume"))
 function M.Volume.fromLiters(v)
     check(v, "Volume")
-    if v < 0 then error("Volume must be non-negative") end
+    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Volume must be non-negative") end
     return setmetatable({val = v}, M.Volume)
 end
 function M.Volume.fromMl(v) return M.Volume.fromLiters(v / 1000.0) end
@@ -271,7 +283,7 @@ function M.Volume:toImpGallons() return self.val / 4.54609 end
 M.Time = setup_meta(create_class("Time"))
 function M.Time.fromSeconds(v)
     check(v, "Time")
-    if v < 0 then error("Time must be non-negative") end
+    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Time must be non-negative") end
     return setmetatable({val = v}, M.Time)
 end
 function M.Time.fromMinutes(v) return M.Time.fromSeconds(v * 60.0) end
@@ -295,12 +307,26 @@ M.Time.__mul = function(a, b)
     return setmetatable({val = val_a * val_b}, M.Time)
 end
 
+M.Time.__div = function(a, b)
+    local meta_a = getmetatable(a)
+    local meta_b = getmetatable(b)
+    if meta_a == M.Time and meta_b == M.Acceleration then
+        if b.val == 0 then error("Acceleration cannot be zero") end
+        return M.Speed.fromMs(a.val * b.val) -- Note: Time * Accel = Speed
+    end
+    error("Invalid division")
+end
+
 
 -- Acceleration
 M.Acceleration = setup_meta(create_class("Acceleration"))
-function M.Acceleration.fromMs2(v) return setmetatable({val = check(v, "Acceleration")}, M.Acceleration) end
+function M.Acceleration.fromMs2(v)
+    check(v, "Acceleration")
+    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Acceleration must be non-negative") end
+    return setmetatable({val = v}, M.Acceleration)
+end
 function M.Acceleration.fromSpeedAndTime(s, t) 
-    if t:toSeconds() == 0 then error("Division by zero time") end
+    if t:toSeconds() == 0 then error("Time cannot be zero") end
     return M.Acceleration.fromMs2(s:toMs() / t:toSeconds()) 
 end
 function M.Acceleration:toMs2() return self.val end
@@ -319,6 +345,16 @@ M.Acceleration.__mul = function(a, b)
     local val_a = (type(a) == "number") and a or a.val
     local val_b = (type(b) == "number") and b or b.val
     return setmetatable({val = val_a * val_b}, M.Acceleration)
+end
+
+M.Acceleration.__div = function(a, b)
+    local meta_a = getmetatable(a)
+    local meta_b = getmetatable(b)
+    if meta_a == M.Acceleration and meta_b == M.Time then
+        if b.val == 0 then error("Time cannot be zero") end
+        return M.Acceleration.fromMs2(a.val / b.val)
+    end
+    error("Invalid division")
 end
 
 return M

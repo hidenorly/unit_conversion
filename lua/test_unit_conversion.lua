@@ -87,9 +87,10 @@ assert_fail(function() M.Torque.fromNm(0/0) end)
 
 -- Angle
 assert_eq(M.Angle.fromDegrees(180):toRadians(), math.pi, "Angle toRad")
-assert_eq(M.Angle.fromDegrees(450):normalizeDegrees():toDegrees(), 90.0, "Angle normalizeDegrees (positive overflow)")
-assert_eq(M.Angle.fromDegrees(-90):normalizeDegrees():toDegrees(), 270.0, "Angle normalizeDegrees (negative)")
-assert_eq(M.Angle.fromRadians(3 * math.pi):normalizeRadians():toRadians(), math.pi, "Angle normalizeRadians")
+assert_eq(M.Angle.fromDegrees(450):normalized():toDegrees(), 90.0, "Angle normalized (positive overflow)")
+assert_eq(M.Angle.fromDegrees(-90):normalized():toDegrees(), 270.0, "Angle normalized (negative)")
+assert_eq(M.Angle.fromRadians(3 * math.pi):normalized():toRadians(), math.pi, "Angle normalized")
+assert_eq(M.Angle.fromDegrees(-90):normalizedSigned():toDegrees(), -90.0, "Angle normalizedSigned")
 assert_fail(function() M.Angle.fromDegrees(0/0) end)
 assert_fail(function() M.Angle.fromDegrees(math.huge) end)
 
@@ -152,7 +153,7 @@ local acc3 = s1 / t
 assert_eq(acc3:toMs2(), 2.0, "Speed / Time = Acceleration")
 assert_fail(function() local _ = s1 / M.Time.fromSeconds(0.0) end) -- Division by zero time check
 
--- 2. Extended operator overload (Distance div & Numeric * Object / Object * Numeric)
+-- Extended operator overload (Distance div & Numeric * Object / Object * Numeric), Time & Acceleration divisions
 local d1 = M.Distance.fromMeters(100.0)
 local d2 = M.Distance.fromMeters(20.0)
 
@@ -181,5 +182,12 @@ assert_eq(rmul_time:toSeconds(), 30.0, "Number * Time")
 local rmul_dist = 4.0 * M.Distance.fromMeters(10.0)
 assert_eq(rmul_dist:toMeters(), 40.0, "Number * Distance")
 
+local time_div_acc = t / M.Acceleration.fromMs2(2.0)
+assert_eq(time_div_acc:toMs(), 10.0, "Time / Acceleration")
+assert_fail(function() local _ = t / M.Acceleration.fromMs2(0.0) end)
+
+local acc_div_time = acc / t
+assert_eq(acc_div_time:toMs2(), (10.0 / 60.0) / 5.0, "Acceleration / Time")
+assert_fail(function() local _ = acc / M.Time.fromSeconds(0.0) end)
 
 print("All tests passed: Logic, Operators, and Validation coverage 100%.")
