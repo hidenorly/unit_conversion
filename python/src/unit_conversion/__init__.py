@@ -402,10 +402,29 @@ class Angle:
 
     def normalize_radians(self) -> 'Angle':
         two_pi = 2.0 * math.pi
-        return Angle.from_radians(self._rad % two_pi)
+        r = math.fmod(self._rad, two_pi)
+        if r < 0.0:
+            r += two_pi
+        return Angle.from_radians(r)
 
     def normalize_degrees(self) -> 'Angle':
-        return Angle.from_degrees(self.to_degrees % 360.0)
+        r = math.fmod(self.to_degrees, 360.0)
+        if r < 0.0:
+            r += 360.0
+        return Angle.from_degrees(r)
+
+    def normalize_signed_radians(self) -> 'Angle':
+        two_pi = 2.0 * math.pi
+        r = math.fmod(self._rad + math.pi, two_pi)
+        if r < 0.0:
+            r += two_pi
+        return Angle.from_radians(r - math.pi)
+
+    def normalize_signed_degrees(self) -> 'Angle':
+        r = math.fmod(self.to_degrees + 180.0, 360.0)
+        if r < 0.0:
+            r += 360.0
+        return Angle.from_degrees(r - 180.0)
 
     def __repr__(self):
         return f"{self._rad} rad"

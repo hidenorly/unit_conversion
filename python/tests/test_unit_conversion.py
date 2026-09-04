@@ -205,7 +205,6 @@ class TestPower(unittest.TestCase):
         with self.assertRaises(ValueError):
             Power.from_hp(float('nan'))
 
-    def test_guards(self):
         with self.assertRaises(ValueError):
             Power.from_kw(-0.00001)
 
@@ -288,6 +287,17 @@ class TestAngle(unittest.TestCase):
 
         a_rad2 = Angle.from_radians(-math.pi / 2.0).normalize_radians()
         self.assertAlmostEqual(a_rad2.to_radians, 1.5 * math.pi, places=6)
+
+        # Test normalize signed degrees (e.g. 270° -> -90°, -200° -> 160°)
+        a_sdeg1 = Angle.from_degrees(270.0).normalize_signed_degrees()
+        self.assertAlmostEqual(a_sdeg1.to_degrees, -90.0, places=6)
+
+        a_sdeg2 = Angle.from_degrees(-200.0).normalize_signed_degrees()
+        self.assertAlmostEqual(a_sdeg2.to_degrees, 160.0, places=6)
+
+        # Test normalize signed radians (e.g. 1.5 * pi -> -0.5 * pi)
+        a_srad1 = Angle.from_radians(1.5 * math.pi).normalize_signed_radians()
+        self.assertAlmostEqual(a_srad1.to_radians, -0.5 * math.pi, places=6)
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -375,12 +385,14 @@ class TestVolume(unittest.TestCase):
         self.assertEqual(v1.to_ml, 1000.0)
         self.assertAlmostEqual(v1.to_us_gallons, 0.264172, places=6)
         self.assertAlmostEqual(v1.to_imp_gallons, 0.219969, places=6)
+        self.assertEqual(repr(v1), "1.0 L")
 
         v2 = Volume.from_ml(500.0)
         self.assertEqual(v2.to_ml, 500)
         self.assertEqual(v2.to_liters, 0.5)
         self.assertAlmostEqual(v2.to_us_gallons, 0.132086, places=6)
         self.assertAlmostEqual(v2.to_imp_gallons, 0.1099845, places=6)
+        self.assertEqual(repr(v2), "0.5 L")
 
         v3 = Volume.from_us_gallons(10.0)
         self.assertAlmostEqual(v3.to_us_gallons, 10.0, delta=1e-9)
