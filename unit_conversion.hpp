@@ -20,6 +20,7 @@
 #include <cmath>
 #include <stdexcept>
 #include <limits>
+#include <ostream>
 
 #define NO_NEGATIVE_ALLOWED
 
@@ -48,6 +49,10 @@ public:
     constexpr double toKmH() const noexcept { return m_ms * convert_kmh_ms; }
     constexpr double toMph() const noexcept { return m_ms / convert_mph_ms; }
     constexpr double toMs() const noexcept { return m_ms; }
+
+    friend std::ostream& operator<<(std::ostream& os, const Speed& s) {
+        return os << s.m_ms << " m/s";
+    }
 };
 
 
@@ -73,6 +78,10 @@ public:
     constexpr double toCelsius() const noexcept { return m_celsius; }
     constexpr double toFahrenheit() const noexcept { return m_celsius * F_FACTOR + F_OFFSET; }
     constexpr double toKelvin() const noexcept { return m_celsius + K_OFFSET; }
+
+    friend std::ostream& operator<<(std::ostream& os, const Temperature& t) {
+        return os << t.m_celsius << " °C";
+    }
 };
 
 
@@ -104,6 +113,10 @@ public:
     constexpr double toGram() const noexcept { return mWeightKg / G_TO_KG; }
     constexpr double toLb() const noexcept { return mWeightKg / LB_TO_KG; }
     constexpr double toOz() const noexcept { return mWeightKg / OZ_TO_KG; }
+
+    friend std::ostream& operator<<(std::ostream& os, const Mass& m) {
+        return os << m.mWeightKg << " kg";
+    }
 };
 
 
@@ -141,6 +154,10 @@ public:
     constexpr double toFeet() const noexcept { return m_meters / FT_TO_M; }
     constexpr double toInch() const noexcept { return m_meters / IN_TO_M; }
     constexpr double toMm() const noexcept { return m_meters / MM_TO_M; }
+
+    friend std::ostream& operator<<(std::ostream& os, const Distance& d) {
+        return os << d.m_meters << " m";
+    }
 };
 
 
@@ -169,6 +186,10 @@ public:
     constexpr double toKpa() const noexcept { return m_kpa; }
     constexpr double toBar() const noexcept { return m_kpa / BAR_TO_KPA; }
     constexpr double toPsi() const noexcept { return m_kpa / PSI_TO_KPA; }
+
+    friend std::ostream& operator<<(std::ostream& os, const Pressure& p) {
+        return os << p.m_kpa << " kPa";
+    }
 };
 
 
@@ -197,6 +218,10 @@ public:
     constexpr double toKw() const noexcept { return m_kw; }
     constexpr double toPs() const noexcept { return m_kw / PS_TO_KW; }
     constexpr double toHp() const noexcept { return m_kw / HP_TO_KW; }
+
+    friend std::ostream& operator<<(std::ostream& os, const Power& pow) {
+        return os << pow.m_kw << " kW";
+    }
 };
 
 
@@ -225,6 +250,10 @@ public:
     constexpr double toNm() const noexcept { return m_nm; }
     constexpr double toKgfm() const noexcept { return m_nm / KGFM_TO_NM; }
     constexpr double toLbft() const noexcept { return m_nm / LBFT_TO_NM; }
+
+    friend std::ostream& operator<<(std::ostream& os, const Torque& t) {
+        return os << t.m_nm << " Nm";
+    }
 };
 
 
@@ -261,6 +290,10 @@ public:
         }
         return Angle(r - 3.14159265358979323846);
     }
+
+    friend std::ostream& operator<<(std::ostream& os, const Angle& a) {
+        return os << a.m_rad << " rad";
+    }
 };
 
 
@@ -283,6 +316,10 @@ public:
     constexpr double toKml() const noexcept { return m_kml; }
     constexpr double toL100km() const noexcept { return 100.0 / m_kml; }
     constexpr double toMpg() const noexcept { return m_kml / MPG_TO_KML; }
+
+    friend std::ostream& operator<<(std::ostream& os, const Efficiency& e) {
+        return os << e.m_kml << " km/L";
+    }
 };
 
 
@@ -307,6 +344,10 @@ public:
     constexpr double toWhkm() const noexcept { return 1000.0 / m_km_per_kwh; }
     constexpr double toKwh100km() const noexcept { return 100.0 / m_km_per_kwh; }
     constexpr double toMpKwh() const noexcept { return m_km_per_kwh / MILE_TO_KM; }
+
+    friend std::ostream& operator<<(std::ostream& os, const EvEfficiency& e) {
+        return os << e.m_km_per_kwh << " km/kWh";
+    }
 };
 
 
@@ -336,6 +377,10 @@ public:
     constexpr double toMl() const noexcept { return m_liters * 1000.0; }
     constexpr double toUsGallons() const noexcept { return m_liters / US_GAL_TO_L; }
     constexpr double toImpGallons() const noexcept { return m_liters / IMP_GAL_TO_L; }
+
+    friend std::ostream& operator<<(std::ostream& os, const Volume& v) {
+        return os << v.m_liters << " L";
+    }
 };
 
 
@@ -354,6 +399,10 @@ public:
     constexpr double toSeconds() const noexcept { return m_sec; }
     constexpr double toMinutes() const noexcept { return m_sec / 60.0; }
     constexpr double toHours() const noexcept { return m_sec / 3600.0; }
+
+    friend std::ostream& operator<<(std::ostream& os, const Time& t) {
+        return os << t.m_sec << " s";
+    }
 };
 
 
@@ -368,6 +417,10 @@ public:
         return Acceleration(s.toMs() / t.toSeconds());
     }
     constexpr double toMs2() const noexcept { return m_a; }
+
+    friend std::ostream& operator<<(std::ostream& os, const Acceleration& acc) {
+        return os << acc.m_a << " m/s^2";
+    }
 };
 
 

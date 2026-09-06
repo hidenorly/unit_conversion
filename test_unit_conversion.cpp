@@ -15,6 +15,7 @@
 */
 
 #include <iostream>
+#include <sstream>
 #include <gtest/gtest.h>
 #include "unit_conversion.hpp"
 
@@ -69,6 +70,14 @@ TEST(SpeedTest, Identity) {
     EXPECT_NEAR(speed.toKmH(), original, 0.000001);
 }
 
+// test for ostream operator
+TEST(SpeedTest, OstreamOperator) {
+    auto speed = Speed::fromMs(10.0);
+    std::ostringstream oss;
+    oss << speed;
+    EXPECT_EQ(oss.str(), "10 m/s");
+}
+
 
 // --- test case for Temperature
 
@@ -100,6 +109,13 @@ TEST(TemperatureTest, Invalid) {
     EXPECT_THROW(Temperature::fromCelsius(-273.16), std::invalid_argument);
     EXPECT_THROW(Temperature::fromKelvin(-0.01), std::invalid_argument);
     EXPECT_THROW(Temperature::fromCelsius(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+}
+
+TEST(TemperatureTest, OstreamOperator) {
+    auto t = Temperature::fromCelsius(25.0);
+    std::ostringstream oss;
+    oss << t;
+    EXPECT_EQ(oss.str(), "25 °C");
 }
 
 
@@ -146,6 +162,13 @@ TEST(MassTest, Invalid) {
     EXPECT_NO_THROW(Mass::fromKg(0.0));
 }
 
+TEST(MassTest, OstreamOperator) {
+    auto m = Mass::fromKg(5.5);
+    std::ostringstream oss;
+    oss << m;
+    EXPECT_EQ(oss.str(), "5.5 kg");
+}
+
 
 // --- test case for distance
 
@@ -186,6 +209,13 @@ TEST(DistanceTest, Mm) {
     EXPECT_THROW(Distance::fromMm(-1.0), std::invalid_argument);
 }
 
+TEST(DistanceTest, OstreamOperator) {
+    auto d = Distance::fromMeters(100.0);
+    std::ostringstream oss;
+    oss << d;
+    EXPECT_EQ(oss.str(), "100 m");
+}
+
 
 // --- test case for pressure
 
@@ -216,6 +246,13 @@ TEST(PressureTest, Invalid) {
     EXPECT_THROW(Pressure::fromKpa(std::numeric_limits<double>::infinity()), std::invalid_argument);
 
     EXPECT_NO_THROW(Pressure::fromKpa(0.0));
+}
+
+TEST(PressureTest, OstreamOperator) {
+    auto p = Pressure::fromKpa(101.3);
+    std::ostringstream oss;
+    oss << p;
+    EXPECT_EQ(oss.str(), "101.3 kPa");
 }
 
 
@@ -254,6 +291,13 @@ TEST(PowerTest, invalid) {
     EXPECT_NO_THROW(Power::fromKw(0.0));
 }
 
+TEST(PowerTest, OstreamOperator) {
+    auto p = Power::fromKw(75.0);
+    std::ostringstream oss;
+    oss << p;
+    EXPECT_EQ(oss.str(), "75 kW");
+}
+
 
 // --- test case for torque
 
@@ -290,6 +334,13 @@ TEST(TorqueTest, invalid) {
     EXPECT_NO_THROW(Torque::fromNm(0.0));
 }
 
+TEST(TorqueTest, OstreamOperator) {
+    auto t = Torque::fromNm(250.0);
+    std::ostringstream oss;
+    oss << t;
+    EXPECT_EQ(oss.str(), "250 Nm");
+}
+
 
 // -- test case for Angle
 
@@ -317,6 +368,13 @@ TEST(AngleTest, ValidationAndNormalization) {
 
     auto a3 = Angle::fromDegrees(270.0).normalizedSigned();
     EXPECT_NEAR(a3.toDegrees(), -90.0, 0.0001);
+}
+
+TEST(AngleTest, OstreamOperator) {
+    auto a = Angle::fromRadians(1.0);
+    std::ostringstream oss;
+    oss << a;
+    EXPECT_EQ(oss.str(), "1 rad");
 }
 
 
@@ -354,6 +412,13 @@ TEST(EfficiencyTest, EfficiencyFactoryException) {
     EXPECT_THROW(Efficiency::fromKml(std::numeric_limits<double>::infinity()), std::invalid_argument);
     EXPECT_THROW(Efficiency::fromL100km(std::numeric_limits<double>::infinity()), std::invalid_argument);
     EXPECT_THROW(Efficiency::fromMpg(std::numeric_limits<double>::infinity()), std::invalid_argument);
+}
+
+TEST(EfficiencyTest, OstreamOperator) {
+    auto e = Efficiency::fromKml(15.0);
+    std::ostringstream oss;
+    oss << e;
+    EXPECT_EQ(oss.str(), "15 km/L");
 }
 
 
@@ -400,6 +465,14 @@ TEST(EvEfficiencyTest, invalid) {
     EXPECT_THROW(EvEfficiency::fromKmkWh(std::numeric_limits<double>::infinity()), std::invalid_argument);
 }
 
+TEST(EvEfficiencyTest, OstreamOperator) {
+    auto e = EvEfficiency::fromKmkWh(6.5);
+    std::ostringstream oss;
+    oss << e;
+    EXPECT_EQ(oss.str(), "6.5 km/kWh");
+}
+
+
 // --- test case for Volume
 
 TEST(VolumeTest, VolumeFromLiters) {
@@ -445,6 +518,13 @@ TEST(VolumeTest, Invalid) {
     EXPECT_NO_THROW(Volume::fromLiters(0.0));
 }
 
+TEST(VolumeTest, OstreamOperator) {
+    auto v = Volume::fromLiters(2.0);
+    std::ostringstream oss;
+    oss << v;
+    EXPECT_EQ(oss.str(), "2 L");
+}
+
 
 // --- test case for Time
 
@@ -483,6 +563,13 @@ TEST(TimeTest, exception) {
     EXPECT_THROW(Time::fromHours(INFINITY), std::invalid_argument);
 }
 
+TEST(TimeTest, OstreamOperator) {
+    auto t = Time::fromSeconds(30.0);
+    std::ostringstream oss;
+    oss << t;
+    EXPECT_EQ(oss.str(), "30 s");
+}
+
 
 // --- test case for Acceleration
 
@@ -508,6 +595,14 @@ TEST(AccelerationTest, DerivedFromDeltaSpeed) {
     // Time=0 (divide by zero)
     EXPECT_THROW((v1 - v2) / Time::fromSeconds(0.0), std::invalid_argument);
 }
+
+TEST(AccelerationTest, OstreamOperator) {
+    auto a = Acceleration::fromMs2(9.81);
+    std::ostringstream oss;
+    oss << a;
+    EXPECT_EQ(oss.str(), "9.81 m/s^2");
+}
+
 
 // --- test case for cross operation
 
