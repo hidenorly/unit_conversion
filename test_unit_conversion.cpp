@@ -78,6 +78,18 @@ TEST(SpeedTest, OstreamOperator) {
     EXPECT_EQ(oss.str(), "10 m/s");
 }
 
+// test for validation and exceptions in Speed
+TEST(SpeedTest, Invalid) {
+    EXPECT_THROW(Speed::fromKmH(-1.0), std::invalid_argument);
+    EXPECT_THROW(Speed::fromMph(-1.0), std::invalid_argument);
+    EXPECT_THROW(Speed::fromMs(-1.0), std::invalid_argument);
+
+    EXPECT_THROW(Speed::fromKmH(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(Speed::fromKmH(std::numeric_limits<double>::infinity()), std::invalid_argument);
+
+    EXPECT_NO_THROW(Speed::fromKmH(0.0));
+}
+
 
 // --- test case for Temperature
 
@@ -109,6 +121,8 @@ TEST(TemperatureTest, Invalid) {
     EXPECT_THROW(Temperature::fromCelsius(-273.16), std::invalid_argument);
     EXPECT_THROW(Temperature::fromKelvin(-0.01), std::invalid_argument);
     EXPECT_THROW(Temperature::fromCelsius(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(Temperature::fromCelsius(std::numeric_limits<double>::infinity()), std::invalid_argument);
+    EXPECT_THROW(Temperature::fromFahrenheit(-500.0), std::invalid_argument); // Extended lower bound check if applicable
 }
 
 TEST(TemperatureTest, OstreamOperator) {
@@ -207,6 +221,8 @@ TEST(DistanceTest, Mm) {
     EXPECT_NEAR(d.toMeters(), 1.0, 0.000001);
 
     EXPECT_THROW(Distance::fromMm(-1.0), std::invalid_argument);
+    EXPECT_THROW(Distance::fromMeters(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(Distance::fromKm(std::numeric_limits<double>::infinity()), std::invalid_argument);
 }
 
 TEST(DistanceTest, OstreamOperator) {
@@ -607,7 +623,7 @@ TEST(AccelerationTest, OstreamOperator) {
 // --- test case for cross operation
 
 TEST(PhysicsOpsTest, AccelMulTime) {
-    auto speed = Speed::Speed::fromKmH(100.0);
+    auto speed = Speed::fromKmH(100.0);
     auto time = Time::fromSeconds(9.5);
     auto accel = Acceleration::fromSpeedAndTime(speed, time);
     EXPECT_NEAR(accel.toMs2(), 2.9239, 1e-4);
@@ -703,6 +719,16 @@ TEST(PhysicsOpsTest, SpeedDivAccelerationEqualsTime) {
     EXPECT_NEAR(t.toSeconds(), 5.0, 1e-9);
 
     EXPECT_THROW(s / Acceleration::fromMs2(0.0), std::invalid_argument);
+}
+
+// Time / Acceleration = Speed
+TEST(PhysicsOpsTest, TimeDivAccelerationEqualsSpeed) {
+    auto t = Time::fromSeconds(10.0);
+    auto a = Acceleration::fromMs2(2.0);
+    auto s = t / a;
+    EXPECT_NEAR(s.toMs(), 5.0, 1e-9);
+
+    EXPECT_THROW(t / Acceleration::fromMs2(0.0), std::invalid_argument);
 }
 
 TEST(PhysicsOpsTest, DistanceDivDistanceEqualsScalar) {

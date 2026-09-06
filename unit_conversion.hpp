@@ -424,9 +424,21 @@ public:
 };
 
 
+// --- operator overloads
+
 // Acceleration * Time = Speed
 inline Speed operator*(const Acceleration& a, const Time& t) noexcept {
     return Speed::fromMs(a.toMs2() * t.toSeconds());
+}
+
+inline Speed operator*(const Time& t, const Acceleration& a) noexcept {
+    return a * t;
+}
+
+// Time / Acceleration = Speed
+inline Speed operator/(const Time& t, const Acceleration& a) {
+    if (a.toMs2() == 0.0) throw std::invalid_argument("Acceleration cannot be zero");
+    return Speed::fromMs(t.toSeconds() / a.toMs2());
 }
 
 // Speed / Time = Acceleration
@@ -462,10 +474,16 @@ inline Time operator/(const Distance& d, const Speed& s) {
     return Time::fromSeconds(d.toMeters() / s.toMs());
 }
 
-// Distance / Distance = Scalar (無次元化)
+// Distance / Distance = Scalar
 inline double operator/(const Distance& a, const Distance& b) {
     if (b.toMeters() == 0.0) throw std::invalid_argument("Distance cannot be zero");
     return a.toMeters() / b.toMeters();
+}
+
+// Mass / Mass = Scalar
+inline double operator/(const Mass& a, const Mass& b) {
+    if (b.toKg() == 0.0) throw std::invalid_argument("Mass cannot be zero");
+    return a.toKg() / b.toKg();
 }
 
 // Speed - Speed
@@ -498,13 +516,29 @@ inline Time operator+(const Time& a, const Time& b) noexcept {
     return Time::fromSeconds(a.toSeconds() + b.toSeconds());
 }
 
-// Speed * scalar
+// Mass - Mass
+inline Mass operator-(const Mass& a, const Mass& b) noexcept {
+    return Mass::fromKg(a.toKg() - b.toKg());
+}
+
+// Mass + Mass
+inline Mass operator+(const Mass& a, const Mass& b) noexcept {
+    return Mass::fromKg(a.toKg() + b.toKg());
+}
+
+// Speed * scalar / scalar * Speed
 inline Speed operator*(const Speed& s, double scalar) noexcept {
     return Speed::fromMs(s.toMs() * scalar);
 }
 
 inline Speed operator*(double scalar, const Speed& s) noexcept {
     return s * scalar;
+}
+
+// Speed / scalar
+inline Speed operator/(const Speed& s, double scalar) {
+    if (scalar == 0.0) throw std::invalid_argument("Division by zero");
+    return Speed::fromMs(s.toMs() / scalar);
 }
 
 // Distance * scalar / scalar * Distance
@@ -516,13 +550,25 @@ inline Distance operator*(double scalar, const Distance& d) noexcept {
     return d * scalar;
 }
 
-// Acceleration * scalar
+// Distance / scalar
+inline Distance operator/(const Distance& d, double scalar) {
+    if (scalar == 0.0) throw std::invalid_argument("Division by zero");
+    return Distance::fromMeters(d.toMeters() / scalar);
+}
+
+// Acceleration * scalar / scalar * Acceleration
 inline Acceleration operator*(const Acceleration& a, double scalar) noexcept {
     return Acceleration::fromMs2(a.toMs2() * scalar);
 }
 
 inline Acceleration operator*(double scalar, const Acceleration& a) noexcept {
     return a * scalar;
+}
+
+// Acceleration / scalar
+inline Acceleration operator/(const Acceleration& a, double scalar) {
+    if (scalar == 0.0) throw std::invalid_argument("Division by zero");
+    return Acceleration::fromMs2(a.toMs2() / scalar);
 }
 
 // Time * scalar / scalar * Time
@@ -532,6 +578,27 @@ inline Time operator*(const Time& t, double scalar) noexcept {
 
 inline Time operator*(double scalar, const Time& t) noexcept {
     return t * scalar;
+}
+
+// Time / scalar
+inline Time operator/(const Time& t, double scalar) {
+    if (scalar == 0.0) throw std::invalid_argument("Division by zero");
+    return Time::fromSeconds(t.toSeconds() / scalar);
+}
+
+// Mass * scalar / scalar * Mass
+inline Mass operator*(const Mass& m, double scalar) noexcept {
+    return Mass::fromKg(m.toKg() * scalar);
+}
+
+inline Mass operator*(double scalar, const Mass& m) noexcept {
+    return m * scalar;
+}
+
+// Mass / scalar
+inline Mass operator/(const Mass& m, double scalar) {
+    if (scalar == 0.0) throw std::invalid_argument("Division by zero");
+    return Mass::fromKg(m.toKg() / scalar);
 }
 
 #endif // __UNIT_CONVERSION_HPP__
