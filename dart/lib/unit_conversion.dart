@@ -420,9 +420,15 @@ extension TimeOps on Time {
     return Time.fromSeconds(this.toSeconds * scalar.toDouble());
   }
 
-  Time operator /(num scalar) {
-    if (scalar == 0.0) throw ArgumentError('Division by zero');
-    return Time.fromSeconds(this.toSeconds / scalar.toDouble());
+  dynamic operator /(dynamic other) {
+    if (other is num) {
+      if (other.toDouble() == 0.0) throw ArgumentError('Division by zero');
+      return Time.fromSeconds(this.toSeconds / other.toDouble());
+    } else if (other is Acceleration) {
+      if (other.toMs2 == 0.0) throw ArgumentError('Acceleration cannot be zero');
+      return Speed.fromMs(this.toSeconds / other.toMs2);
+    }
+    throw ArgumentError('Unsupported type for division');
   }
 }
 

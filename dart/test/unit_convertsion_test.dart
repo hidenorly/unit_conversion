@@ -225,10 +225,9 @@ void main() {
       expect(() => Power.fromKw(double.infinity), throwsArgumentError);
       expect(() => Power.fromKw(-5.0), throwsArgumentError);
 
-      expect(() => Power.fromKw(double.nan), throwsArgumentError);
+      expect(() => Power.fromPs(double.nan), throwsArgumentError);
       expect(() => Power.fromPs(double.infinity), throwsArgumentError);
       expect(() => Power.fromPs(-5.0), throwsArgumentError);
-
 
       expect(() => Power.fromHp(double.nan), throwsArgumentError);
       expect(() => Power.fromHp(double.infinity), throwsArgumentError);
@@ -260,15 +259,6 @@ void main() {
     });
 
     test('Torque guards,', () {
-      expect(() => Torque.fromNm(double.nan), throwsArgumentError);
-      expect(() => Torque.fromKgfm(double.infinity), throwsArgumentError);
-      expect(() => Torque.fromLbft(-5.0), throwsArgumentError);
-
-      expect(() => Torque.fromNm(double.nan), throwsArgumentError);
-      expect(() => Torque.fromKgfm(double.infinity), throwsArgumentError);
-      expect(() => Torque.fromLbft(-5.0), throwsArgumentError);
-
-
       expect(() => Torque.fromNm(double.nan), throwsArgumentError);
       expect(() => Torque.fromKgfm(double.infinity), throwsArgumentError);
       expect(() => Torque.fromLbft(-5.0), throwsArgumentError);
@@ -325,7 +315,6 @@ void main() {
 
     test('Efficiency MpgToKml', () {
       final e = Efficiency.fromMpg(23.5215);
-
       expect(e.toKml, closeTo(10.0, epsilon));
     });
 
@@ -602,6 +591,15 @@ void main() {
       final t = Time.fromSeconds(60.0) * 1.5;
       expect(t.toSeconds, closeTo(90.0, 1e-9));
     });
+
+    test('Time / Acceleration -> Speed', () {
+      final t = Time.fromSeconds(10.0);
+      final a = Acceleration.fromMs2(2.0);
+      final s = t / a;
+      expect(s.toMs, closeTo(5.0, 1e-9));
+
+      expect(() => Time.fromSeconds(10.0) / Acceleration.fromMs2(0.0), throwsArgumentError);
+    });
   });
 
   group('Mass Operations Tests', () {
@@ -631,6 +629,32 @@ void main() {
       expect(ratio, closeTo(5.0, 1e-9));
 
       expect(() => Mass.fromKg(10.0) / Mass.fromKg(0.0), throwsArgumentError);
+    });
+  });
+
+  group('Unsupported Operator Edge Cases', () {
+    test('Unsupported operator types and unsupported divisions', () {
+      final speed = Speed.fromMs(10.0);
+      final accel = Acceleration.fromMs2(2.0);
+      final time = Time.fromSeconds(5.0);
+      final dist = Distance.fromMeters(50.0);
+      final mass = Mass.fromKg(10.0);
+
+      // Unsupported multiplication types
+      expect(() => speed * 'unsupported', throwsArgumentError);
+      expect(() => accel * 'unsupported', throwsArgumentError);
+
+      // Unsupported division types & zero checks
+      expect(() => speed / 'unsupported', throwsArgumentError);
+      expect(() => dist / 'unsupported', throwsArgumentError);
+      expect(() => time / 'unsupported', throwsArgumentError);
+      expect(() => mass / 'unsupported', throwsArgumentError);
+
+      // Additional division guards
+      expect(() => speed / Time.fromSeconds(0.0), throwsArgumentError);
+      expect(() => speed / Acceleration.fromMs2(0.0), throwsArgumentError);
+      expect(() => dist / Speed.fromMs(0.0), throwsArgumentError);
+      expect(() => time / Acceleration.fromMs2(0.0), throwsArgumentError);
     });
   });
 }
