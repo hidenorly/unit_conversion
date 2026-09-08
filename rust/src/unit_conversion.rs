@@ -16,7 +16,7 @@
 
 // --- Speed
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Speed {
     ms: f64,
 }
@@ -66,7 +66,7 @@ impl std::fmt::Display for Speed {
 
 // --- Temperature
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Temperature {
     celsius: f64,
 }
@@ -102,7 +102,7 @@ impl std::fmt::Display for Temperature {
 
 // --- Mass
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Mass {
     kg: f64,
 }
@@ -139,7 +139,7 @@ impl std::fmt::Display for Mass {
 
 // --- Distance
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Distance {
     meters: f64,
 }
@@ -180,7 +180,7 @@ impl std::fmt::Display for Distance {
 
 // --- Pressure
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Pressure {
     kpa: f64
 }
@@ -214,7 +214,7 @@ impl std::fmt::Display for Pressure {
 
 // --- Power
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Power { kw: f64 }
 
 impl Power {
@@ -246,7 +246,7 @@ impl std::fmt::Display for Power {
 
 // --- Torque
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Torque { nm: f64 }
 
 impl Torque {
@@ -276,7 +276,7 @@ impl std::fmt::Display for Torque {
 
 // --- Angle
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Angle { rad: f64 }
 
 impl Angle {
@@ -324,7 +324,7 @@ impl std::fmt::Display for Angle {
 
 // -- Efficiency
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Efficiency { kml: f64 }
 
 impl Efficiency {
@@ -355,7 +355,7 @@ impl std::fmt::Display for Efficiency {
 
 // -- EvEfficiency
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct EvEfficiency { km_per_kwh: f64 }
 
 impl EvEfficiency {
@@ -388,7 +388,7 @@ impl std::fmt::Display for EvEfficiency {
 
 // --- Volume
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Volume { liters: f64 }
 
 impl Volume {
@@ -422,7 +422,7 @@ impl std::fmt::Display for Volume {
 
 // --- Time
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Time { s: f64 }
 
 impl Time {
@@ -448,7 +448,7 @@ impl std::fmt::Display for Time {
 
 // --- Acceleration
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Acceleration { a: f64 }
 
 impl Acceleration {
@@ -487,6 +487,17 @@ impl std::ops::Mul<Acceleration> for Time {
     type Output = Speed;
     fn mul(self, rhs: Acceleration) -> Self::Output {
         rhs * self
+    }
+}
+
+// Time / Acceleration = Speed
+impl std::ops::Div<Acceleration> for Time {
+    type Output = Speed;
+    fn div(self, rhs: Acceleration) -> Self::Output {
+        if rhs.to_ms2() == 0.0 {
+            panic!("Acceleration cannot be zero");
+        }
+        Speed::from_ms(self.to_seconds() / rhs.to_ms2())
     }
 }
 
@@ -671,7 +682,7 @@ impl std::ops::Mul<Time> for f64 {
     }
 }
 
-// --- Scalar multiplication for all types
+// --- Scalar division for all types
 
 impl std::ops::Div<f64> for Speed {
     type Output = Speed;
@@ -702,6 +713,14 @@ impl std::ops::Div<f64> for Acceleration {
     fn div(self, rhs: f64) -> Self::Output {
         if rhs == 0.0 { panic!("Division by zero"); }
         Acceleration::new(self.to_ms2() / rhs)
+    }
+}
+
+impl std::ops::Div<f64> for Mass {
+    type Output = Mass;
+    fn div(self, rhs: f64) -> Self::Output {
+        if rhs == 0.0 { panic!("Division by zero"); }
+        Mass::from_kg(self.to_kg() / rhs)
     }
 }
 

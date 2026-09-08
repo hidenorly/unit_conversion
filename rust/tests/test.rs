@@ -52,6 +52,17 @@ mod tests {
         assert!((s5.to_ms() - 60.0/3.6).abs() < EPSILON);
         assert!((s5.to_kmh() - 60.0).abs() < EPSILON);
         assert!((s5.to_mph() - 37.2823).abs() < EPSILON);
+
+        // comparison
+        let s_a = Speed::from_ms(10.0);
+        let s_b = Speed::from_ms(20.0);
+        assert!(s_a < s_b);
+        assert!(s_b > s_a);
+        assert!(s_a <= s_b);
+        assert!(s_b >= s_a);
+        assert!(s_a != s_b);
+
+        assert_eq!(s_a, Speed::from_ms(10.0));
     }
 
     #[test]
@@ -64,6 +75,12 @@ mod tests {
     #[should_panic]
     fn test_speed_nan_guard() {
         Speed::from_ms(f64::NAN);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_speed_inf_guard() {
+        Speed::from_ms(f64::INFINITY);
     }
 
     use unit_conversion::Temperature;
@@ -91,6 +108,12 @@ mod tests {
         let t4 = Temperature::from_kelvin(273.15);
         assert_eq!(t4.to_kelvin(), 273.15);
         assert!((t4.to_celsius() - 0.0).abs() < EPSILON);
+
+        // Comparison
+        let ta = Temperature::from_celsius(10.0);
+        let tb = Temperature::from_celsius(20.0);
+        assert!(ta < tb);
+        assert_eq!(ta, Temperature::from_celsius(10.0));
     }
 
     #[test]
@@ -118,6 +141,12 @@ mod tests {
         Temperature::from_kelvin(f64::NAN);
     }
 
+    #[test]
+    #[should_panic]
+    fn test_temperature_inf_guard() {
+        Temperature::from_celsius(f64::INFINITY);
+    }
+
     use unit_conversion::Mass;
 
     #[test]
@@ -143,6 +172,12 @@ mod tests {
         let w4 = Mass::from_lb(1.0);
         assert!((w4.to_lb() - 1.0).abs() < EPSILON);
         assert!((w4.to_oz() - 16.0).abs() < EPSILON);
+
+        // Comparison
+        let m1 = Mass::from_kg(1.0);
+        let m2 = Mass::from_kg(2.0);
+        assert!(m1 < m2);
+        assert_eq!(m1, Mass::from_kg(1.0));
     }
 
     #[test]
@@ -155,6 +190,12 @@ mod tests {
     #[should_panic]
     fn test_mass_nan_guard() {
         Mass::from_gram(f64::NAN);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_mass_inf_guard() {
+        Mass::from_kg(f64::INFINITY);
     }
 
     use unit_conversion::Distance;
@@ -186,6 +227,12 @@ mod tests {
         // 1000.0 mm -> 1.0m
         let d_mm = Distance::from_mm(1000.0);
         assert_eq!(d_mm.to_meters(), 1.0);
+
+        // Comparison
+        let da = Distance::from_meters(10.0);
+        let db = Distance::from_meters(20.0);
+        assert!(da < db);
+        assert_eq!(da, Distance::from_meters(10.0));
     }
 
     #[test]
@@ -232,6 +279,12 @@ mod tests {
         assert!((p3.to_bar() - 2.5).abs() < EPSILON);
         assert!((p3.to_kpa() - 250.0).abs() < EPSILON);
         assert!((p3.to_psi() - 36.2594).abs() < EPSILON);
+
+        // Comparison
+        let pa = Pressure::from_bar(1.0);
+        let pb = Pressure::from_bar(2.0);
+        assert!(pa < pb);
+        assert_eq!(pa, Pressure::from_bar(1.0));
     }
 
     #[test]
@@ -246,6 +299,12 @@ mod tests {
         Pressure::from_psi(f64::NAN);
     }
 
+    #[test]
+    #[should_panic]
+    fn test_pressure_inf_guard() {
+        Pressure::from_kpa(f64::INFINITY);
+    }
+
     use unit_conversion::Power;
 
     #[test]
@@ -255,6 +314,12 @@ mod tests {
         assert!((p.to_hp() - 134.102).abs() < 0.001);
         // Display test
         assert_eq!(format!("{}", p), format!("{} kW", p.to_kw()));
+
+        // Comparison
+        let pa = Power::from_kw(50.0);
+        let pb = Power::from_kw(100.0);
+        assert!(pa < pb);
+        assert_eq!(pa, Power::from_kw(50.0));
     }
 
     #[test]
@@ -337,6 +402,12 @@ mod tests {
         assert!((t3.to_lbft() - 1.0).abs() < EPSILON);
         assert!((t3.to_nm() - 1.355818).abs() < EPSILON);
         assert!((t3.to_kgfm() - 0.138255).abs() < EPSILON);
+
+        // Comparison
+        let ta = Torque::from_nm(10.0);
+        let tb = Torque::from_nm(20.0);
+        assert!(ta < tb);
+        assert_eq!(ta, Torque::from_nm(10.0));
     }
 
     #[test]
@@ -412,14 +483,34 @@ mod tests {
         let a3 = Angle::from_degrees(370.0);
         assert!((a3.normalized().to_degrees() - 10.0).abs() < EPSILON);
 
+        // Test negative normalization branch: r < 0.0 in normalized()
+        let a_neg_norm = Angle::from_degrees(-10.0);
+        assert!((a_neg_norm.normalized().to_degrees() - 350.0).abs() < EPSILON);
+
         let a4 = Angle::from_degrees(-190.0);
         assert!((a4.normalized_signed().to_degrees() - 170.0).abs() < EPSILON);
+
+        // Test negative branch for normalized_signed(): r < 0.0
+        let a_neg_signed = Angle::from_degrees(-370.0);
+        assert!((a_neg_signed.normalized_signed().to_degrees() - (-10.0)).abs() < EPSILON);
+
+        // Comparison
+        let aa = Angle::from_degrees(10.0);
+        let ab = Angle::from_degrees(20.0);
+        assert!(aa < ab);
+        assert_eq!(aa, Angle::from_degrees(10.0));
     }
 
     #[test]
     #[should_panic]
     fn test_angle_nan_guard() {
         Angle::from_degrees(f64::NAN);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_angle_inf_guard() {
+        Angle::from_degrees(f64::INFINITY);
     }
 
     use unit_conversion::Efficiency;
@@ -442,6 +533,12 @@ mod tests {
         assert!((e_kml.to_kml() - 10.0).abs() < EPSILON);
         assert!((e_kml.to_mpg() - 23.5215).abs() < EPSILON);
         assert!((e_kml.to_l100km() - 10.0).abs() < EPSILON);
+
+        // Comparison
+        let ea = Efficiency::from_kml(10.0);
+        let eb = Efficiency::from_kml(20.0);
+        assert!(ea < eb);
+        assert_eq!(ea, Efficiency::from_kml(10.0));
     }
 
     #[test]
@@ -456,6 +553,12 @@ mod tests {
         let _ = Efficiency::from_mpg(f64::NAN);
     }
 
+    #[test]
+    #[should_panic(expected = "Must be positive")]
+    fn test_efficiency_inf_panic() {
+        let _ = Efficiency::from_kml(f64::INFINITY);
+    }
+
     use unit_conversion::EvEfficiency;
 
     #[test]
@@ -467,6 +570,12 @@ mod tests {
         assert!((e.to_miles_per_kwh() - 3.11).abs() < 0.01);
         // Display test
         assert_eq!(format!("{}", e), format!("{} km/kWh", e.to_km_per_kwh()));
+
+        // Comparison
+        let eva = EvEfficiency::from_km_per_kwh(5.0);
+        let evb = EvEfficiency::from_km_per_kwh(6.0);
+        assert!(eva < evb);
+        assert_eq!(eva, EvEfficiency::from_km_per_kwh(5.0));
     }
 
     #[test]
@@ -506,6 +615,12 @@ mod tests {
         let _ = EvEfficiency::from_km_per_kwh(f64::NAN);
     }
 
+    #[test]
+    #[should_panic(expected = "Must be positive")]
+    fn test_ev_inf_panic() {
+        let _ = EvEfficiency::from_km_per_kwh(f64::INFINITY);
+    }
+
     use unit_conversion::Volume;
 
     #[test]
@@ -535,6 +650,12 @@ mod tests {
         assert!((v_imp.to_us_gallons() - 1.20095).abs() < EPSILON);
         assert!((v_imp.to_liters() - 4.54609).abs() < EPSILON);
         assert!((v_imp.to_ml() - 4546.09).abs() < EPSILON);
+
+        // Comparison
+        let va = Volume::from_liters(1.0);
+        let vb = Volume::from_liters(2.0);
+        assert!(va < vb);
+        assert_eq!(va, Volume::from_liters(1.0));
     }
 
     #[test]
@@ -549,6 +670,12 @@ mod tests {
         Volume::from_us_gallons(f64::NAN);
     }
 
+    #[test]
+    #[should_panic]
+    fn test_volume_inf_guard() {
+        Volume::from_liters(f64::INFINITY);
+    }
+
     use unit_conversion::Time;
 
     #[test]
@@ -559,55 +686,74 @@ mod tests {
         assert_eq!(t.to_hours(), 1.0);
         // Display test
         assert_eq!(format!("{}", t), format!("{} s", t.to_seconds()));
-        Time::new(0.0);
+
+        // Use existing explicit constructors as defined in library or fallback to from_seconds if new isn't present
+        let t_sec = Time::from_seconds(0.0);
+        assert_eq!(t_sec.to_seconds(), 0.0);
+
+        // Comparison
+        let ta = Time::from_seconds(10.0);
+        let tb = Time::from_seconds(20.0);
+        assert!(ta < tb);
+        assert_eq!(ta, Time::from_seconds(10.0));
     }
 
     #[test]
     #[should_panic]
     fn test_time_nan() {
-        Time::new(f64::NAN);
+        let _ = Time::from_seconds(f64::NAN);
     }
 
     #[test]
     #[should_panic]
     fn test_time_neg() {
-        Time::new(-0.1);
+        let _ = Time::from_seconds(-0.1);
     }
 
     #[test]
     #[should_panic]
     fn test_time_inf() {
-        Time::new(f64::INFINITY);
+        let _ = Time::from_seconds(f64::INFINITY);
     }
 
     use unit_conversion::Acceleration;
 
     #[test]
     fn test_acceleration_coverage() {
-        let a = Acceleration::new(9.8);
+        let a = Acceleration::from_ms2(9.8);
         let s = a * Time::from_seconds(2.0);
         assert!((s.to_ms() - 19.6).abs() < 1e-9);
         // Display test
         assert_eq!(format!("{}", a), format!("{} m/s^2", a.to_ms2()));
-        Acceleration::new(0.0);
+        let _ = Acceleration::from_ms2(0.0);
+
+        // Test Acceleration creation from Speed and Time
+        let a_st = Acceleration::from_speed_and_time(Speed::from_ms(10.0), Time::from_seconds(2.0));
+        assert!((a_st.to_ms2() - 5.0).abs() < 1e-9);
+
+        // Comparison
+        let aa = Acceleration::from_ms2(1.0);
+        let ab = Acceleration::from_ms2(2.0);
+        assert!(aa < ab);
+        assert_eq!(aa, Acceleration::from_ms2(1.0));
     }
 
     #[test]
     #[should_panic]
     fn test_nan() {
-        Acceleration::new(f64::NAN);
+        let _ = Acceleration::from_ms2(f64::NAN);
     }
 
     #[test]
     #[should_panic]
     fn test_inf(){
-        Acceleration::new(f64::INFINITY);
+        let _ = Acceleration::from_ms2(f64::INFINITY);
     }
 
     #[test]
     #[should_panic]
     fn test_time_guard() {
-        let _ = Acceleration::new(9.8) * Time::from_seconds(-1.0);
+        let _ = Acceleration::from_ms2(9.8) * Time::from_seconds(-1.0);
     }
 
     // -- operator
@@ -615,6 +761,12 @@ mod tests {
     fn test_speed_mul_time() {
         let d = Speed::from_ms(10.0) * Time::from_seconds(5.0);
         assert!((d.to_meters() - 50.0).abs() < 1e-9); // C0
+    }
+
+    #[test]
+    fn test_time_mul_speed() {
+        let d = Time::from_seconds(5.0) * Speed::from_ms(10.0);
+        assert!((d.to_meters() - 50.0).abs() < 1e-9);
     }
 
     #[test]
@@ -641,9 +793,37 @@ mod tests {
     #[test]
     fn test_velocity_change() {
         let v = Speed::from_ms(10.0);
-        let v_delta = Acceleration::new(2.0) * Time::from_seconds(5.0);
+        let v_delta = Acceleration::from_ms2(2.0) * Time::from_seconds(5.0);
         let v2 = v + v_delta;
         assert!((v2.to_ms() - 20.0).abs() < 1e-9);
+
+        // Test symmetric / commutative ops for Acceleration and Time
+        let v_delta_sym = Time::from_seconds(5.0) * Acceleration::from_ms2(2.0);
+        assert!((v_delta_sym.to_ms() - 10.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_time_div_acceleration_branch() {
+        let t_res = Time::from_seconds(10.0) / Acceleration::from_ms2(2.0);
+        assert!((t_res.to_ms() - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_time_div_zero_acceleration() {
+        let _ = Time::from_seconds(10.0) / Acceleration::from_ms2(0.0);
+    }
+
+    #[test]
+    fn test_speed_div_acceleration_to_time() {
+        let time_res = Speed::from_ms(10.0) / Acceleration::from_ms2(2.0);
+        assert!((time_res.to_seconds() - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_speed_div_zero_acceleration_to_time() {
+        let _ = Speed::from_ms(10.0) / Acceleration::from_ms2(0.0);
     }
 
     #[test]
@@ -709,7 +889,7 @@ mod tests {
         let d = 3.0 * Distance::from_meters(10.0);
         assert!((d.to_meters() - 30.0).abs() < 1e-9);
 
-        let a = 1.5 * Acceleration::new(2.0);
+        let a = 1.5 * Acceleration::from_ms2(2.0);
         assert!((a.to_ms2() - 3.0).abs() < 1e-9);
 
         let m = Mass::from_kg(5.0) * 2.0;
@@ -723,7 +903,7 @@ mod tests {
         let d_right = Distance::from_meters(10.0) * 3.0;
         assert!((d_right.to_meters() - 30.0).abs() < 1e-9);
 
-        let a_right = Acceleration::new(2.0) * 1.5;
+        let a_right = Acceleration::from_ms2(2.0) * 1.5;
         assert!((a_right.to_ms2() - 3.0).abs() < 1e-9);
     }
 
@@ -740,7 +920,7 @@ mod tests {
     #[test]
     fn test_speed_div_acceleration() {
         let v = Speed::from_ms(20.0);
-        let a = Acceleration::new(5.0);
+        let a = Acceleration::from_ms2(5.0);
         let t = v / a;
         assert!((t.to_seconds() - 4.0).abs() < 1e-9);
     }
@@ -748,7 +928,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "Acceleration cannot be zero")]
     fn test_speed_div_zero_acceleration() {
-        let _ = Speed::from_ms(20.0) / Acceleration::new(0.0);
+        let _ = Speed::from_ms(20.0) / Acceleration::from_ms2(0.0);
     }
 
     #[test]
@@ -791,8 +971,11 @@ mod tests {
         let t = Time::from_seconds(60.0) / 3.0;
         assert!((t.to_seconds() - 20.0).abs() < 1e-9);
 
-        let a = Acceleration::new(10.0) / 2.0;
+        let a = Acceleration::from_ms2(10.0) / 2.0;
         assert!((a.to_ms2() - 5.0).abs() < 1e-9);
+
+        let m = Mass::from_kg(10.0) / 2.0;
+        assert!((m.to_kg() - 5.0).abs() < 1e-9);
     }
 
     #[test]
@@ -816,6 +999,12 @@ mod tests {
     #[test]
     #[should_panic(expected = "Division by zero")]
     fn test_acceleration_div_scalar_zero() {
-        let _ = Acceleration::new(10.0) / 0.0;
+        let _ = Acceleration::from_ms2(10.0) / 0.0;
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_mass_div_scalar_zero() {
+        let _ = Mass::from_kg(10.0) / 0.0;
     }
 }
