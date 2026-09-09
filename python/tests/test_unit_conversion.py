@@ -45,6 +45,9 @@ class TestSpeed(unittest.TestCase):
         s4 = Speed.from_kmh(original);
         self.assertAlmostEqual(s4.to_kmh, original, places = 3)
 
+        # test output stream / repr
+        self.assertTrue(str(s1) != "")
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Speed.from_kmh(float('nan'))
@@ -76,6 +79,8 @@ class TestTemperature(unittest.TestCase):
         self.assertEqual(t4.to_kelvin, 273.15)
         self.assertAlmostEqual(t3.to_celsius, 0.0, places=3)
 
+        self.assertTrue(str(t1) != "")
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Temperature.from_kelvin(-1)
@@ -86,9 +91,14 @@ class TestTemperature(unittest.TestCase):
         with self.assertRaises(ValueError):
             Temperature.from_kelvin(-0.1)
 
+        with self.assertRaises(ValueError):
+            Temperature.from_celsius(float('nan'))
+
+        with self.assertRaises(ValueError):
+            Temperature.from_celsius(float('inf'))
+
         t = Temperature.from_fahrenheit(-459.67) # Absolute Zero
         self.assertAlmostEqual(t.to_celsius, -273.15, places=3)
-
 
 
 class TestMass(unittest.TestCase):
@@ -117,6 +127,8 @@ class TestMass(unittest.TestCase):
         w4 = Mass.from_oz(8.0)
         self.assertEqual(w4.to_oz, 8.0)
 
+        self.assertTrue(str(w1) != "")
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Mass.from_kg(-1.0)
@@ -124,6 +136,8 @@ class TestMass(unittest.TestCase):
             Mass.from_gram(float('nan'))
         with self.assertRaises(ValueError):
             Mass.from_lb(float('inf'))
+        with self.assertRaises(ValueError):
+            Mass.from_oz(float('-inf'))
 
 
 class TestDistance(unittest.TestCase):
@@ -158,6 +172,8 @@ class TestDistance(unittest.TestCase):
         d5 = Distance.from_inch(16.0)
         self.assertEqual(d5.to_inch, 16.0)
 
+        self.assertTrue(str(d1) != "")
+
     def test_guards(self):
         d6 = Distance.from_mm(1000.0)
         self.assertEqual(d6.to_meters, 1.0)
@@ -166,6 +182,8 @@ class TestDistance(unittest.TestCase):
             Distance.from_mm(-1.0)
         with self.assertRaises(ValueError):
             Distance.from_meters(float('nan'))
+        with self.assertRaises(ValueError):
+            Distance.from_mile(float('inf'))
 
 
 class TestPressure(unittest.TestCase):
@@ -182,6 +200,8 @@ class TestPressure(unittest.TestCase):
         self.assertAlmostEqual(p_psi.to_psi, 36.2594, places=3)
         self.assertAlmostEqual(p_psi.to_kpa, 250.0, places=3)
 
+        self.assertTrue(str(p_bar) != "")
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Pressure.from_bar(-1.0)
@@ -196,6 +216,9 @@ class TestPower(unittest.TestCase):
         p = Power.from_hp(200)
         self.assertAlmostEqual(p.to_kw, 149.139, places=2)
         self.assertAlmostEqual(p.to_ps, 202.774, places=2)
+        self.assertAlmostEqual(p.to_hp, 200.0, places=2)
+
+        self.assertTrue(str(p) != "")
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -240,9 +263,13 @@ class TestTorque(unittest.TestCase):
         self.assertAlmostEqual(t3.to_nm, 9.80665, places=5)
         self.assertAlmostEqual(t3.to_kgfm, 1.0, places=5)
 
+        self.assertTrue(str(t) != "")
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Torque.from_nm(float('nan'))
+        with self.assertRaises(ValueError):
+            Torque.from_nm(-1.0)
         with self.assertRaises(ValueError):
             Torque.from_kgfm(float('nan'))
         with self.assertRaises(ValueError):
@@ -273,6 +300,8 @@ class TestAngle(unittest.TestCase):
         self.assertAlmostEqual(a2.to_radians, math.pi / 2, places=6)
         self.assertAlmostEqual(a2.to_degrees, 90.0, places=6)
 
+        self.assertTrue(str(a) != "")
+
     def test_normalization(self):
         # Test normalize degrees (e.g. 450° -> 90°, -90° -> 270°)
         a_deg1 = Angle.from_degrees(450.0).normalize_degrees()
@@ -299,6 +328,13 @@ class TestAngle(unittest.TestCase):
         a_srad1 = Angle.from_radians(1.5 * math.pi).normalize_signed_radians()
         self.assertAlmostEqual(a_srad1.to_radians, -0.5 * math.pi, places=6)
 
+        a_srad2 = Angle.from_radians(-1.5 * math.pi).normalize_signed_radians()
+        self.assertAlmostEqual(a_srad2.to_radians, 0.5 * math.pi, places=6)
+
+        # Backward compatibility aliases
+        self.assertAlmostEqual(Angle.from_degrees(-90.0).normalized().to_degrees, 270.0, places=6)
+        self.assertAlmostEqual(Angle.from_degrees(270.0).normalized_signed().to_degrees, -90.0, places=6)
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Angle.from_radians(float('nan'))
@@ -318,6 +354,8 @@ class TestEfficiency(unittest.TestCase):
         self.assertAlmostEqual(e2.to_kml, 10.0, delta=0.0001)
         self.assertAlmostEqual(e2.to_l100km, 10.0, delta=0.0001)
 
+        self.assertTrue(str(e) != "")
+
     def test_invalid_values(self):
         with self.assertRaises(ValueError):
             Efficiency.from_kml(0.0)
@@ -332,6 +370,8 @@ class TestEfficiency(unittest.TestCase):
             Efficiency.from_l100km(float('nan'))
         with self.assertRaises(ValueError):
             Efficiency.from_mpg(float('nan'))
+        with self.assertRaises(ValueError):
+            Efficiency.from_kml(float('inf'))
 
 
 class TestEvEfficiency(unittest.TestCase):
@@ -341,6 +381,8 @@ class TestEvEfficiency(unittest.TestCase):
         self.assertAlmostEqual(e.to_wh_per_km, 166.666, places=2)
         self.assertAlmostEqual(e.to_kwh_per_100km, 16.666, places=2)
         self.assertAlmostEqual(e.to_miles_per_kwh, 3.728, delta=0.001)
+
+        self.assertTrue(str(e) != "")
 
     def test_from_wh_per_km_all_to(self):
         e = EvEfficiency.from_wh_per_km(200.0)
@@ -376,6 +418,8 @@ class TestEvEfficiency(unittest.TestCase):
             EvEfficiency.from_km_per_kwh(float('nan'))
         with self.assertRaises(ValueError):
             EvEfficiency.from_miles_per_kwh(-5.0)
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_wh_per_km(float('inf'))
 
 
 class TestVolume(unittest.TestCase):
@@ -386,6 +430,7 @@ class TestVolume(unittest.TestCase):
         self.assertAlmostEqual(v1.to_us_gallons, 0.264172, places=6)
         self.assertAlmostEqual(v1.to_imp_gallons, 0.219969, places=6)
         self.assertEqual(repr(v1), "1.0 L")
+        self.assertTrue(str(v1) != "")
 
         v2 = Volume.from_ml(500.0)
         self.assertEqual(v2.to_ml, 500)
@@ -437,6 +482,8 @@ class TestTime(unittest.TestCase):
         self.assertAlmostEqual(t0.to_minutes, 0)
         self.assertAlmostEqual(t0.to_hours, 0)
 
+        self.assertTrue(str(t) != "")
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Time.from_seconds(float('nan'))
@@ -452,6 +499,7 @@ class TestAcceleration(unittest.TestCase):
         t = Time.from_seconds(2.0)
         accel = Acceleration.from_speed_and_time(s, t)
         self.assertEqual(accel.to_ms2, 5.0)
+        self.assertTrue(str(accel) != "")
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -463,7 +511,6 @@ class TestAcceleration(unittest.TestCase):
 
 
 class TestOperation(unittest.TestCase):
-    # Distance
     def test_speed_mul_time(self):
         d = Speed.from_ms(10.0) * Time.from_seconds(5.0)
         self.assertEqual(d.to_meters, 50.0)
@@ -507,6 +554,12 @@ class TestOperation(unittest.TestCase):
         t_sub = t1 - t2
         self.assertEqual(t_sub.to_seconds, 15.0)
 
+    def test_mass_arithmetic(self):
+        m1 = Mass.from_kg(10.0)
+        m2 = Mass.from_kg(4.0)
+        self.assertEqual((m1 + m2).to_kg, 14.0)
+        self.assertEqual((m1 - m2).to_kg, 6.0)
+
     def test_velocity_change(self):
         v = Speed.from_ms(10.0)
         v_delta = Acceleration(2.0) * Time.from_seconds(5.0)
@@ -519,6 +572,22 @@ class TestOperation(unittest.TestCase):
         zero = Speed.from_ms(10.0) * 0.0
         self.assertEqual(zero.to_ms, 0.0)
 
+    def test_scalar_div(self):
+        v = Speed.from_ms(10.0) / 2.0
+        self.assertEqual(v.to_ms, 5.0)
+
+        d = Distance.from_meters(20.0) / 2.0
+        self.assertEqual(d.to_meters, 10.0)
+
+        a = Acceleration(10.0) / 2.0
+        self.assertEqual(a.to_ms2, 5.0)
+
+        t = Time.from_seconds(10.0) / 2.0
+        self.assertEqual(t.to_seconds, 5.0)
+
+        m = Mass.from_kg(10.0) / 2.0
+        self.assertEqual(m.to_kg, 5.0)
+
     def test_acceleration_scalar_mul(self):
         a = Acceleration(9.8) * 0.5
         self.assertEqual(a.to_ms2, 4.9)
@@ -530,38 +599,54 @@ class TestOperation(unittest.TestCase):
         d1 = Distance.from_meters(100.0)
         d2 = Distance.from_meters(20.0)
         
-        # Distance / Distance = scalar (比率)
         ratio = d1 / d2
         self.assertEqual(ratio, 5.0)
 
-        # Distance / Speed = Time
         t = Distance.from_meters(100.0) / Speed.from_ms(10.0)
         self.assertEqual(t.to_seconds, 10.0)
 
-        # Distance / Time = Speed
         v = Distance.from_meters(100.0) / Time.from_seconds(10.0)
         self.assertEqual(v.to_ms, 10.0)
 
+    def test_mass_div(self):
+        m1 = Mass.from_kg(10.0)
+        m2 = Mass.from_kg(2.0)
+        self.assertEqual(m1 / m2, 5.0)
+
+    def test_advanced_divisions(self):
+        # Time / Acceleration = Speed
+        s = Time.from_seconds(10.0) / Acceleration(2.0)
+        self.assertEqual(s.to_ms, 5.0)
+
+        # Speed / Acceleration = Time
+        t = Speed.from_ms(10.0) / Acceleration(2.0)
+        self.assertEqual(t.to_seconds, 5.0)
+
+        # Speed / Time = Acceleration
+        acc = Speed.from_ms(10.0) / Time.from_seconds(2.0)
+        self.assertEqual(acc.to_ms2, 5.0)
+
     def test_rmul_operations(self):
-        # Speed * scalar
         v = 2.0 * Speed.from_ms(10.0)
         self.assertEqual(v.to_ms, 20.0)
 
-        # Acceleration * scalar
         a = 0.5 * Acceleration(10.0)
         self.assertEqual(a.to_ms2, 5.0)
         
-        # Time * scalar
         t = 3.0 * Time.from_seconds(10.0)
         self.assertEqual(t.to_seconds, 30.0)
         
-        # Distance * scalar
         d = 4.0 * Distance.from_meters(10.0)
         self.assertEqual(d.to_meters, 40.0)
 
-        # Time * Speed (rmul check)
+        m = 2.0 * Mass.from_kg(5.0)
+        self.assertEqual(m.to_kg, 10.0)
+
         d2 = Time.from_seconds(5.0) * Speed.from_ms(10.0)
         self.assertEqual(d2.to_meters, 50.0)
+
+        a2 = Time.from_seconds(2.0) * Acceleration(5.0)
+        self.assertEqual(a2.to_ms, 10.0)
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -570,6 +655,24 @@ class TestOperation(unittest.TestCase):
             Distance.from_meters(10.0) / Speed.from_ms(0.0)
         with self.assertRaises(ValueError):
             Distance.from_meters(10.0) / Time.from_seconds(0.0)
+        with self.assertRaises(ValueError):
+            Mass.from_kg(10.0) / Mass.from_kg(0.0)
+        with self.assertRaises(ValueError):
+            Time.from_seconds(10.0) / Acceleration(0.0)
+        with self.assertRaises(ValueError):
+            Speed.from_ms(10.0) / Acceleration(0.0)
+        with self.assertRaises(ValueError):
+            Speed.from_ms(10.0) / Time.from_seconds(0.0)
+        with self.assertRaises(ValueError):
+            Speed.from_ms(10.0) / 0.0
+        with self.assertRaises(ValueError):
+            Distance.from_meters(10.0) / 0.0
+        with self.assertRaises(ValueError):
+            Acceleration(1.0) / 0.0
+        with self.assertRaises(ValueError):
+            Time.from_seconds(1.0) / 0.0
+        with self.assertRaises(ValueError):
+            Mass.from_kg(1.0) / 0.0
 
 
 if __name__ == '__main__':

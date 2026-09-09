@@ -15,7 +15,10 @@
 #   limitations under the License.
 
 import math
+from functools import total_ordering
 
+
+@total_ordering
 class Speed:
     KMH_TO_MS = 3.6
     MPH_TO_MS = 0.44704
@@ -31,10 +34,14 @@ class Speed:
 
     @classmethod
     def from_kmh(cls, value: float):
+        if math.isnan(value) or math.isinf(value) or value < 0:
+            raise ValueError("Speed must be a non-negative finite number")
         return cls(value / cls.KMH_TO_MS)
 
     @classmethod
     def from_mph(cls, value: float):
+        if math.isnan(value) or math.isinf(value) or value < 0:
+            raise ValueError("Speed must be a non-negative finite number")
         return cls(value * cls.MPH_TO_MS)
 
     @property
@@ -48,6 +55,16 @@ class Speed:
     @property
     def to_ms(self) -> float:
         return self._ms
+
+    def __eq__(self, other):
+        if not isinstance(other, Speed):
+            return NotImplemented
+        return self._ms == other._ms
+
+    def __lt__(self, other):
+        if not isinstance(other, Speed):
+            return NotImplemented
+        return self._ms < other._ms
 
     def __sub__(self, other: 'Speed') -> 'Speed':
         if not isinstance(other, Speed):
@@ -68,6 +85,10 @@ class Speed:
             if other.to_ms2 == 0:
                 raise ValueError("Acceleration cannot be zero")
             return Time.from_seconds(self.to_ms / other.to_ms2)
+        elif isinstance(other, (int, float)):
+            if other == 0:
+                raise ValueError("Division by zero")
+            return Speed.from_ms(self.to_ms / other)
         return NotImplemented
 
     def __mul__(self, other):
@@ -80,12 +101,15 @@ class Speed:
     def __rmul__(self, other):
         if isinstance(other, (int, float)):
             return self.__mul__(other)
+        elif isinstance(other, Time):
+            return self.__mul__(other)
         return NotImplemented
 
     def __repr__(self):
         return f"{self._ms} m/s"
 
 
+@total_ordering
 class Temperature:
     _F_OFFSET = 32.0
     _F_FACTOR = 1.8
@@ -117,10 +141,21 @@ class Temperature:
     @property
     def to_kelvin(self): return self._celsius + self._K_OFFSET
 
+    def __eq__(self, other):
+        if not isinstance(other, Temperature):
+            return NotImplemented
+        return self._celsius == other._celsius
+
+    def __lt__(self, other):
+        if not isinstance(other, Temperature):
+            return NotImplemented
+        return self._celsius < other._celsius
+
     def __repr__(self):
         return f"{self._celsius} °C"
 
 
+@total_ordering
 class Mass:
     _G_TO_KG = 0.001
     _LB_TO_KG = 0.45359237
@@ -163,10 +198,52 @@ class Mass:
     def to_oz(self):
         return self._kg / self._OZ_TO_KG
 
+    def __eq__(self, other):
+        if not isinstance(other, Mass):
+            return NotImplemented
+        return self._kg == other._kg
+
+    def __lt__(self, other):
+        if not isinstance(other, Mass):
+            return NotImplemented
+        return self._kg < other._kg
+
+    def __add__(self, other: 'Mass') -> 'Mass':
+        if not isinstance(other, Mass):
+            return NotImplemented
+        return Mass.from_kg(self.to_kg + other.to_kg)
+
+    def __sub__(self, other: 'Mass') -> 'Mass':
+        if not isinstance(other, Mass):
+            return NotImplemented
+        return Mass.from_kg(self.to_kg - other.to_kg)
+
+    def __mul__(self, other):
+        if isinstance(other, (int, float)):
+            return Mass.from_kg(self.to_kg * other)
+        return NotImplemented
+
+    def __rmul__(self, other):
+        if isinstance(other, (int, float)):
+            return self.__mul__(other)
+        return NotImplemented
+
+    def __truediv__(self, other):
+        if isinstance(other, (int, float)):
+            if other == 0:
+                raise ValueError("Division by zero")
+            return Mass.from_kg(self.to_kg / other)
+        elif isinstance(other, Mass):
+            if other.to_kg == 0:
+                raise ValueError("Mass cannot be zero")
+            return self.to_kg / other.to_kg
+        return NotImplemented
+
     def __repr__(self):
         return f"{self._kg} kg"
 
 
+@total_ordering
 class Distance:
     _kmToM = 1000.0
     _mileToM = 1609.344
@@ -227,6 +304,16 @@ class Distance:
     def to_mm(self):
         return self._meters / self._MM_TO_M
 
+    def __eq__(self, other):
+        if not isinstance(other, Distance):
+            return NotImplemented
+        return self._meters == other._meters
+
+    def __lt__(self, other):
+        if not isinstance(other, Distance):
+            return NotImplemented
+        return self._meters < other._meters
+
     def __add__(self, other: 'Distance') -> 'Distance':
         if not isinstance(other, Distance):
             return NotImplemented
@@ -260,12 +347,17 @@ class Distance:
             if other.to_meters == 0:
                 raise ValueError("Distance cannot be zero")
             return self.to_meters / other.to_meters
+        elif isinstance(other, (int, float)):
+            if other == 0:
+                raise ValueError("Division by zero")
+            return Distance.from_meters(self.to_meters / other)
         return NotImplemented
 
     def __repr__(self):
         return f"{self._meters} m"
 
 
+@total_ordering
 class Pressure:
     _BAR_TO_KPA = 100.0
     _PSI_TO_KPA = 6.89476
@@ -299,10 +391,21 @@ class Pressure:
     def to_psi(self):
         return self._kpa / self._PSI_TO_KPA
 
+    def __eq__(self, other):
+        if not isinstance(other, Pressure):
+            return NotImplemented
+        return self._kpa == other._kpa
+
+    def __lt__(self, other):
+        if not isinstance(other, Pressure):
+            return NotImplemented
+        return self._kpa < other._kpa
+
     def __repr__(self):
         return f"{self._kpa} kPa"
 
 
+@total_ordering
 class Power:
     _PS_TO_KW = 0.73549875
     _HP_TO_KW = 0.74569987
@@ -336,10 +439,21 @@ class Power:
     def to_hp(self):
         return self._kw / self._HP_TO_KW
 
+    def __eq__(self, other):
+        if not isinstance(other, Power):
+            return NotImplemented
+        return self._kw == other._kw
+
+    def __lt__(self, other):
+        if not isinstance(other, Power):
+            return NotImplemented
+        return self._kw < other._kw
+
     def __repr__(self):
         return f"{self._kw} kW"
 
 
+@total_ordering
 class Torque:
     _KGFM_TO_NM = 9.80665
     _LBFT_TO_NM = 1.355817948
@@ -372,10 +486,21 @@ class Torque:
     def to_lbft(self):
         return self._nm / self._LBFT_TO_NM
 
+    def __eq__(self, other):
+        if not isinstance(other, Torque):
+            return NotImplemented
+        return self._nm == other._nm
+
+    def __lt__(self, other):
+        if not isinstance(other, Torque):
+            return NotImplemented
+        return self._nm < other._nm
+
     def __repr__(self):
         return f"{self._nm} Nm"
 
 
+@total_ordering
 class Angle:
     _DEG_TO_RAD = math.pi / 180.0
 
@@ -413,6 +538,9 @@ class Angle:
             r += 360.0
         return Angle.from_degrees(r)
 
+    def normalized(self) -> 'Angle':
+        return self.normalize_degrees()
+
     def normalize_signed_radians(self) -> 'Angle':
         two_pi = 2.0 * math.pi
         r = math.fmod(self._rad + math.pi, two_pi)
@@ -426,10 +554,24 @@ class Angle:
             r += 360.0
         return Angle.from_degrees(r - 180.0)
 
+    def normalized_signed(self) -> 'Angle':
+        return self.normalize_signed_degrees()
+
+    def __eq__(self, other):
+        if not isinstance(other, Angle):
+            return NotImplemented
+        return self._rad == other._rad
+
+    def __lt__(self, other):
+        if not isinstance(other, Angle):
+            return NotImplemented
+        return self._rad < other._rad
+
     def __repr__(self):
         return f"{self._rad} rad"
 
 
+@total_ordering
 class Efficiency:
     _MPG_TO_KML = 0.425143707
 
@@ -464,10 +606,21 @@ class Efficiency:
     def to_mpg(self):
         return self._kml / self._MPG_TO_KML
 
+    def __eq__(self, other):
+        if not isinstance(other, Efficiency):
+            return NotImplemented
+        return self._kml == other._kml
+
+    def __lt__(self, other):
+        if not isinstance(other, Efficiency):
+            return NotImplemented
+        return self._kml < other._kml
+
     def __repr__(self):
         return f"{self._kml} km/L"
 
 
+@total_ordering
 class EvEfficiency:
     _MILE_TO_KM = 1.609344
 
@@ -512,10 +665,21 @@ class EvEfficiency:
     def to_miles_per_kwh(self):
         return self._v / self._MILE_TO_KM
 
+    def __eq__(self, other):
+        if not isinstance(other, EvEfficiency):
+            return NotImplemented
+        return self._v == other._v
+
+    def __lt__(self, other):
+        if not isinstance(other, EvEfficiency):
+            return NotImplemented
+        return self._v < other._v
+
     def __repr__(self):
         return f"{self._v} km/kWh"
 
 
+@total_ordering
 class Volume:
     _US_GAL = 3.785411784
     _IMP_GAL = 4.54609
@@ -557,10 +721,21 @@ class Volume:
     def to_imp_gallons(self):
         return self._l / self._IMP_GAL
 
+    def __eq__(self, other):
+        if not isinstance(other, Volume):
+            return NotImplemented
+        return self._l == other._l
+
+    def __lt__(self, other):
+        if not isinstance(other, Volume):
+            return NotImplemented
+        return self._l < other._l
+
     def __repr__(self):
         return f"{self._l} L"
 
 
+@total_ordering
 class Time:
     def __init__(self, s: float):
         if math.isnan(s) or s < 0 or math.isinf(s):
@@ -591,6 +766,16 @@ class Time:
     def to_hours(self):
         return self._s / 3600.0
 
+    def __eq__(self, other):
+        if not isinstance(other, Time):
+            return NotImplemented
+        return self._s == other._s
+
+    def __lt__(self, other):
+        if not isinstance(other, Time):
+            return NotImplemented
+        return self._s < other._s
+
     def __add__(self, other: 'Time') -> 'Time':
         if not isinstance(other, Time):
             return NotImplemented
@@ -606,6 +791,8 @@ class Time:
             return Time.from_seconds(self.to_seconds * other)
         elif isinstance(other, Speed):
             return other * self
+        elif isinstance(other, Acceleration):
+            return Speed.from_ms(self.to_seconds * other.to_ms2)
         return NotImplemented
 
     def __rmul__(self, other):
@@ -613,12 +800,26 @@ class Time:
             return self.__mul__(other)
         elif isinstance(other, Speed):
             return other * self
+        elif isinstance(other, Acceleration):
+            return Speed.from_ms(self.to_seconds * other.to_ms2)
+        return NotImplemented
+
+    def __truediv__(self, other):
+        if isinstance(other, (int, float)):
+            if other == 0:
+                raise ValueError("Division by zero")
+            return Time.from_seconds(self.to_seconds / other)
+        elif isinstance(other, Acceleration):
+            if other.to_ms2 == 0:
+                raise ValueError("Division by zero acceleration")
+            return Speed.from_ms(self.to_seconds / other.to_ms2)
         return NotImplemented
 
     def __repr__(self):
         return f"{self._s} s"
 
 
+@total_ordering
 class Acceleration:
     def __init__(self, a: float):
         if math.isnan(a) or math.isinf(a): raise ValueError("Invalid Acceleration")
@@ -639,6 +840,16 @@ class Acceleration:
     def to_ms2(self):
         return self._a
 
+    def __eq__(self, other):
+        if not isinstance(other, Acceleration):
+            return NotImplemented
+        return self._a == other._a
+
+    def __lt__(self, other):
+        if not isinstance(other, Acceleration):
+            return NotImplemented
+        return self._a < other._a
+
     def __mul__(self, other):
         if isinstance(other, Time):
             return Speed.from_ms(self.to_ms2 * other.to_seconds)
@@ -649,6 +860,15 @@ class Acceleration:
     def __rmul__(self, other):
         if isinstance(other, (int, float)):
             return self.__mul__(other)
+        elif isinstance(other, Time):
+            return Speed.from_ms(self.to_ms2 * other.to_seconds)
+        return NotImplemented
+
+    def __truediv__(self, other):
+        if isinstance(other, (int, float)):
+            if other == 0:
+                raise ValueError("Division by zero")
+            return Acceleration.from_ms2(self.to_ms2 / other)
         return NotImplemented
 
     def __repr__(self):
