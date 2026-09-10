@@ -5,7 +5,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+#       http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,7 @@
 # limitations under the License.
 
 class Speed
+  include Comparable
   KMH_TO_MS = 3.6
   MPH_TO_MS = 0.44704
 
@@ -49,12 +50,27 @@ class Speed
     return @ms
   end
 
+  def <=>(other)
+    return nil unless other.is_a?(Speed)
+    return self.to_ms <=> other.to_ms
+  end
+
   def +(other)
-    return Speed.from_ms(self.to_ms + other.to_ms)
+    case other
+    when Speed
+      return Speed.from_ms(self.to_ms + other.to_ms)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
   end
 
   def -(other)
-    return Speed.from_ms(self.to_ms - other.to_ms)
+    case other
+    when Speed
+      return Speed.from_ms(self.to_ms - other.to_ms)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
   end
 
   def *(other)
@@ -72,7 +88,7 @@ class Speed
     case other
     when Time
       raise ArgumentError, "Division by zero" if other.to_seconds == 0
-      return Acceleration.new(self.to_ms / other.to_seconds)
+      return Acceleration.from_ms2(self.to_ms / other.to_seconds)
     when Acceleration
       raise ArgumentError, "Division by zero" if other.to_ms2 == 0
       return Time.from_seconds(self.to_ms / other.to_ms2)
@@ -92,10 +108,15 @@ class Speed
       super
     end
   end
+
+  def to_s
+    return "#{@ms} m/s"
+  end
 end
 
 
 class Temperature
+  include Comparable
   F_OFFSET = 32.0
   F_FACTOR = 1.8
   K_OFFSET = 273.15
@@ -133,10 +154,20 @@ class Temperature
   def to_kelvin()
     return @celsius + K_OFFSET
   end
+
+  def <=>(other)
+    return nil unless other.is_a?(Temperature)
+    return self.to_celsius <=> other.to_celsius
+  end
+
+  def to_s
+    return "#{@celsius} °C"
+  end
 end
 
 
 class Mass
+  include Comparable
   G_TO_KG = 0.001
   LB_TO_KG = 0.45359237
   OZ_TO_KG = 0.0283495231
@@ -179,10 +210,69 @@ class Mass
   def to_oz
     return @kg / OZ_TO_KG
   end
+
+  def <=>(other)
+    return nil unless other.is_a?(Mass)
+    return self.to_kg <=> other.to_kg
+  end
+
+  def +(other)
+    case other
+    when Mass
+      return Mass.from_kg(self.to_kg + other.to_kg)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def -(other)
+    case other
+    when Mass
+      return Mass.from_kg(self.to_kg - other.to_kg)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def *(other)
+    case other
+    when Numeric
+      return Mass.from_kg(self.to_kg * other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def /(other)
+    case other
+    when Mass
+      raise ArgumentError, "Division by zero" if other.to_kg == 0
+      return self.to_kg / other.to_kg
+    when Numeric
+      raise ArgumentError, "Division by zero" if other == 0
+      return Mass.from_kg(self.to_kg / other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def coerce(other)
+    case other
+    when Numeric
+      [self, other]
+    else
+      super
+    end
+  end
+
+  def to_s
+    return "#{@kg} kg"
+  end
 end
 
 
 class Distance
+  include Comparable
   KM_TO_M  = 1000.0
   MILE_TO_M = 1609.344
   FT_TO_M   = 0.3048
@@ -245,12 +335,27 @@ class Distance
     return @meters / MM_TO_M
   end
 
+  def <=>(other)
+    return nil unless other.is_a?(Distance)
+    return self.to_meters <=> other.to_meters
+  end
+
   def +(other)
-    return Distance.from_meters(self.to_meters + other.to_meters)
+    case other
+    when Distance
+      return Distance.from_meters(self.to_meters + other.to_meters)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
   end
 
   def -(other)
-    return Distance.from_meters(self.to_meters - other.to_meters)
+    case other
+    when Distance
+      return Distance.from_meters(self.to_meters - other.to_meters)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
   end
 
   def /(other)
@@ -289,10 +394,15 @@ class Distance
       super
     end
   end
+
+  def to_s
+    return "#{@meters} m"
+  end
 end
 
 
 class Pressure
+  include Comparable
   BAR_TO_KPA = 100.0
   PSI_TO_KPA = 6.89476
 
@@ -327,10 +437,20 @@ class Pressure
   def to_psi
     return @kpa / PSI_TO_KPA
   end
+
+  def <=>(other)
+    return nil unless other.is_a?(Pressure)
+    return self.to_kpa <=> other.to_kpa
+  end
+
+  def to_s
+    return "#{@kpa} kPa"
+  end
 end
 
 
 class Power
+  include Comparable
   PS_TO_KW = 0.73549875
   HP_TO_KW = 0.74569987
 
@@ -364,9 +484,19 @@ class Power
   def to_hp
     return @kw / HP_TO_KW
   end
+
+  def <=>(other)
+    return nil unless other.is_a?(Power)
+    return self.to_kw <=> other.to_kw
+  end
+
+  def to_s
+    return "#{@kw} kW"
+  end
 end
 
 class Torque
+  include Comparable
   KGFM_TO_NM = 9.80665
   LBFT_TO_NM = 1.355817948
 
@@ -401,10 +531,20 @@ class Torque
   def to_lbft
     return @nm / LBFT_TO_NM
   end
+
+  def <=>(other)
+    return nil unless other.is_a?(Torque)
+    return self.to_nm <=> other.to_nm
+  end
+
+  def to_s
+    return "#{@nm} Nm"
+  end
 end
 
 
 class Angle
+  include Comparable
   DEG_TO_RAD = Math::PI / 180.0
 
   private_class_method :new
@@ -446,10 +586,20 @@ class Angle
     r += two_pi if r < 0
     return Angle.from_radians(r - Math::PI)
   end
+
+  def <=>(other)
+    return nil unless other.is_a?(Angle)
+    return self.to_radians <=> other.to_radians
+  end
+
+  def to_s
+    return "#{@rad} rad"
+  end
 end
 
 
 class Efficiency
+  include Comparable
   MPG_TO_KML = 0.425143707
 
   private_class_method :new
@@ -484,10 +634,20 @@ class Efficiency
   def to_mpg
     return @kml / MPG_TO_KML
   end
+
+  def <=>(other)
+    return nil unless other.is_a?(Efficiency)
+    return self.to_kml <=> other.to_kml
+  end
+
+  def to_s
+    return "#{@kml} km/L"
+  end
 end
 
 
 class EvEfficiency
+  include Comparable
   MILE_TO_KM = 1.609344
 
   private_class_method :new
@@ -530,10 +690,20 @@ class EvEfficiency
   def to_miles_per_kwh
     return @v / MILE_TO_KM
   end
+
+  def <=>(other)
+    return nil unless other.is_a?(EvEfficiency)
+    return self.to_km_per_kwh <=> other.to_km_per_kwh
+  end
+
+  def to_s
+    return "#{@v} km/kWh"
+  end
 end
 
 
 class Volume
+  include Comparable
   US_GAL = 3.785411784
   IMP_GAL = 4.54609
 
@@ -575,10 +745,20 @@ class Volume
   def to_imp_gallons
     return @l / IMP_GAL
   end
+
+  def <=>(other)
+    return nil unless other.is_a?(Volume)
+    return self.to_liters <=> other.to_liters
+  end
+
+  def to_s
+    return "#{@l} L"
+  end
 end
 
 
 class Time
+  include Comparable
   private_class_method :new
   def initialize(s)
     val = s.to_f
@@ -610,12 +790,27 @@ class Time
     return @s / 3600.0
   end
 
+  def <=>(other)
+    return nil unless other.is_a?(Time)
+    return self.to_seconds <=> other.to_seconds
+  end
+
   def +(other)
-    return Time.from_seconds(self.to_seconds + other.to_seconds)
+    case other
+    when Time
+      return Time.from_seconds(self.to_seconds + other.to_seconds)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
   end
 
   def -(other)
-    return Time.from_seconds(self.to_seconds - other.to_seconds)
+    case other
+    when Time
+      return Time.from_seconds(self.to_seconds - other.to_seconds)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
   end
 
   def *(other)
@@ -624,6 +819,8 @@ class Time
       return Time.from_seconds(self.to_seconds * other)
     when Speed
       return Distance.from_meters(self.to_seconds * other.to_ms)
+    when Acceleration
+      return Speed.from_ms(self.to_seconds * other.to_ms2)
     else
       raise ArgumentError, "Unsupported type: #{other.class}"
     end
@@ -634,6 +831,9 @@ class Time
     when Time
       raise ArgumentError, "Division by zero" if other.to_seconds == 0
       return self.to_seconds / other.to_seconds
+    when Acceleration
+      raise ArgumentError, "Division by zero" if other.to_ms2 == 0
+      return Speed.from_ms(self.to_seconds / other.to_ms2)
     when Numeric
       raise ArgumentError, "Division by zero" if other == 0
       return Time.from_seconds(self.to_seconds / other)
@@ -650,10 +850,15 @@ class Time
       super
     end
   end
+
+  def to_s
+    return "#{@s} s"
+  end
 end
 
 
 class Acceleration
+  include Comparable
   private_class_method :new
   def initialize(a)
     val = a.to_f
@@ -676,6 +881,11 @@ class Acceleration
 
   def to_ms2
     return @a
+  end
+
+  def <=>(other)
+    return nil unless other.is_a?(Acceleration)
+    return self.to_ms2 <=> other.to_ms2
   end
 
   def *(other)
@@ -706,5 +916,9 @@ class Acceleration
     else
       super
     end
+  end
+
+  def to_s
+    return "#{@a} m/s^2"
   end
 end
