@@ -27,23 +27,43 @@ local function create_class(name)
     local cls = {__type = name}
     cls.__index = cls
     cls.__add = function(a, b)
-        local val_a = (type(a) == "number") and a or a.val
-        local val_b = (type(b) == "number") and b or b.val
-        return setmetatable({val = val_a + val_b}, cls)
+        local meta_a = getmetatable(a)
+        local meta_b = getmetatable(b)
+        if meta_a == meta_b then
+            return setmetatable({val = a.val + b.val}, cls)
+        end
+        error("Invalid addition")
     end
     cls.__sub = function(a, b)
-        local val_a = (type(a) == "number") and a or a.val
-        local val_b = (type(b) == "number") and b or b.val
-        return setmetatable({val = val_a - val_b}, cls)
+        local meta_a = getmetatable(a)
+        local meta_b = getmetatable(b)
+        if meta_a == meta_b then
+            return setmetatable({val = a.val - b.val}, cls)
+        end
+        error("Invalid subtraction")
     end
     return cls
 end
 
 local function setup_meta(cls)
     cls.__mul = function(a, b)
-        local val_a = (type(a) == "number") and a or a.val
-        local val_b = (type(b) == "number") and b or b.val
-        return setmetatable({val = val_a * val_b}, cls)
+        local meta_a = getmetatable(a)
+        local meta_b = getmetatable(b)
+        if meta_a == cls and type(b) == "number" then
+            return setmetatable({val = a.val * b}, cls)
+        elseif type(a) == "number" and meta_b == cls then
+            return setmetatable({val = a * b.val}, cls)
+        end
+        error("Invalid multiplication")
+    end
+    cls.__div = function(a, b)
+        local meta_a = getmetatable(a)
+        local meta_b = getmetatable(b)
+        if meta_a == cls and type(b) == "number" then
+            if b == 0 then error("Division by zero") end
+            return setmetatable({val = a.val / b}, cls)
+        end
+        error("Invalid division")
     end
     return cls
 end
@@ -66,10 +86,12 @@ M.Speed.__mul = function(a, b)
     local meta_b = getmetatable(b)
     if meta_a == M.Speed and meta_b == M.Time then return M.Distance.fromMeters(a.val * b.val) end
     if meta_b == M.Speed and meta_a == M.Time then return M.Distance.fromMeters(b.val * a.val) end
-
-    local val_a = (type(a) == "number") and a or a.val
-    local val_b = (type(b) == "number") and b or b.val
-    return setmetatable({val = val_a * val_b}, M.Speed)
+    if meta_a == M.Speed and type(b) == "number" then
+        return M.Speed.fromMs(a.val * b)
+    elseif type(a) == "number" and meta_b == M.Speed then
+        return M.Speed.fromMs(a * b.val)
+    end
+    error("Invalid multiplication")
 end
 
 M.Speed.__div = function(a, b)
@@ -81,6 +103,9 @@ M.Speed.__div = function(a, b)
     elseif meta_a == M.Speed and meta_b == M.Acceleration then
         if b.val == 0 then error("Acceleration cannot be zero") end
         return M.Time.fromSeconds(a.val / b.val)
+    elseif meta_a == M.Speed and type(b) == "number" then
+        if b == 0 then error("Division by zero") end
+        return M.Speed.fromMs(a.val / b)
     end
     error("Invalid division")
 end
@@ -115,6 +140,19 @@ function M.Mass:toGram() return self.val / 0.001 end
 function M.Mass:toLb() return self.val / 0.45359237 end
 function M.Mass:toOz() return self.val / 0.0283495231 end
 
+M.Mass.__div = function(a, b)
+    local meta_a = getmetatable(a)
+    local meta_b = getmetatable(b)
+    if meta_a == M.Mass and meta_b == M.Mass then
+        if b.val == 0 then error("Mass cannot be zero") end
+        return a.val / b.val
+    elseif meta_a == M.Mass and type(b) == "number" then
+        if b == 0 then error("Division by zero") end
+        return M.Mass.fromKg(a.val / b)
+    end
+    error("Invalid division")
+end
+
 
 -- Distance
 M.Distance = setup_meta(create_class("Distance"))
@@ -143,9 +181,7 @@ M.Distance.__mul = function(a, b)
     elseif type(a) == "number" and meta_b == M.Distance then
         return M.Distance.fromMeters(a * b.val)
     end
-    local val_a = (type(a) == "number") and a or a.val
-    local val_b = (type(b) == "number") and b or b.val
-    return setmetatable({val = val_a * val_b}, M.Distance)
+    error("Invalid multiplication")
 end
 
 M.Distance.__div = function(a, b)
@@ -160,6 +196,9 @@ M.Distance.__div = function(a, b)
     elseif meta_a == M.Distance and meta_b == M.Time then
         if b.val == 0 then error("Time cannot be zero") end
         return M.Speed.fromMs(a.val / b.val)
+    elseif meta_a == M.Distance and type(b) == "number" then
+        if b == 0 then error("Division by zero") end
+        return M.Distance.fromMeters(a.val / b)
     end
     error("Invalid division")
 end
@@ -302,9 +341,7 @@ M.Time.__mul = function(a, b)
     elseif type(a) == "number" and meta_b == M.Time then
         return M.Time.fromSeconds(a * b.val)
     end
-    local val_a = (type(a) == "number") and a or a.val
-    local val_b = (type(b) == "number") and b or b.val
-    return setmetatable({val = val_a * val_b}, M.Time)
+    error("Invalid multiplication")
 end
 
 M.Time.__div = function(a, b)
@@ -312,7 +349,10 @@ M.Time.__div = function(a, b)
     local meta_b = getmetatable(b)
     if meta_a == M.Time and meta_b == M.Acceleration then
         if b.val == 0 then error("Acceleration cannot be zero") end
-        return M.Speed.fromMs(a.val * b.val) -- Note: Time * Accel = Speed
+        return M.Speed.fromMs(a.val * b.val)
+    elseif meta_a == M.Time and type(b) == "number" then
+        if b == 0 then error("Division by zero") end
+        return M.Time.fromSeconds(a.val / b)
     end
     error("Invalid division")
 end
@@ -342,9 +382,7 @@ M.Acceleration.__mul = function(a, b)
         return M.Acceleration.fromMs2(a * b.val)
     end
 
-    local val_a = (type(a) == "number") and a or a.val
-    local val_b = (type(b) == "number") and b or b.val
-    return setmetatable({val = val_a * val_b}, M.Acceleration)
+    error("Invalid multiplication")
 end
 
 M.Acceleration.__div = function(a, b)
@@ -353,6 +391,9 @@ M.Acceleration.__div = function(a, b)
     if meta_a == M.Acceleration and meta_b == M.Time then
         if b.val == 0 then error("Time cannot be zero") end
         return M.Acceleration.fromMs2(a.val / b.val)
+    elseif meta_a == M.Acceleration and type(b) == "number" then
+        if b == 0 then error("Division by zero") end
+        return M.Acceleration.fromMs2(a.val / b)
     end
     error("Invalid division")
 end
