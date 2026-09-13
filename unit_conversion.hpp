@@ -50,6 +50,13 @@ public:
     constexpr double toMph() const noexcept { return m_ms / convert_mph_ms; }
     constexpr double toMs() const noexcept { return m_ms; }
 
+    bool operator==(const Speed& other) const noexcept { return m_ms == other.m_ms; }
+    bool operator!=(const Speed& other) const noexcept { return m_ms != other.m_ms; }
+    bool operator<(const Speed& other) const noexcept { return m_ms < other.m_ms; }
+    bool operator<=(const Speed& other) const noexcept { return m_ms <= other.m_ms; }
+    bool operator>(const Speed& other) const noexcept { return m_ms > other.m_ms; }
+    bool operator>=(const Speed& other) const noexcept { return m_ms >= other.m_ms; }
+
     friend std::ostream& operator<<(std::ostream& os, const Speed& s) {
         return os << s.m_ms << " m/s";
     }
@@ -78,6 +85,13 @@ public:
     constexpr double toCelsius() const noexcept { return m_celsius; }
     constexpr double toFahrenheit() const noexcept { return m_celsius * F_FACTOR + F_OFFSET; }
     constexpr double toKelvin() const noexcept { return m_celsius + K_OFFSET; }
+
+    bool operator==(const Temperature& other) const noexcept { return m_celsius == other.m_celsius; }
+    bool operator!=(const Temperature& other) const noexcept { return m_celsius != other.m_celsius; }
+    bool operator<(const Temperature& other) const noexcept { return m_celsius < other.m_celsius; }
+    bool operator<=(const Temperature& other) const noexcept { return m_celsius <= other.m_celsius; }
+    bool operator>(const Temperature& other) const noexcept { return m_celsius > other.m_celsius; }
+    bool operator>=(const Temperature& other) const noexcept { return m_celsius >= other.m_celsius; }
 
     friend std::ostream& operator<<(std::ostream& os, const Temperature& t) {
         return os << t.m_celsius << " °C";
@@ -113,6 +127,13 @@ public:
     constexpr double toGram() const noexcept { return mWeightKg / G_TO_KG; }
     constexpr double toLb() const noexcept { return mWeightKg / LB_TO_KG; }
     constexpr double toOz() const noexcept { return mWeightKg / OZ_TO_KG; }
+
+    bool operator==(const Mass& other) const noexcept { return mWeightKg == other.mWeightKg; }
+    bool operator!=(const Mass& other) const noexcept { return mWeightKg != other.mWeightKg; }
+    bool operator<(const Mass& other) const noexcept { return mWeightKg < other.mWeightKg; }
+    bool operator<=(const Mass& other) const noexcept { return mWeightKg <= other.mWeightKg; }
+    bool operator>(const Mass& other) const noexcept { return mWeightKg > other.mWeightKg; }
+    bool operator>=(const Mass& other) const noexcept { return mWeightKg >= other.mWeightKg; }
 
     friend std::ostream& operator<<(std::ostream& os, const Mass& m) {
         return os << m.mWeightKg << " kg";
@@ -155,6 +176,13 @@ public:
     constexpr double toInch() const noexcept { return m_meters / IN_TO_M; }
     constexpr double toMm() const noexcept { return m_meters / MM_TO_M; }
 
+    bool operator==(const Distance& other) const noexcept { return m_meters == other.m_meters; }
+    bool operator!=(const Distance& other) const noexcept { return m_meters != other.m_meters; }
+    bool operator<(const Distance& other) const noexcept { return m_meters < other.m_meters; }
+    bool operator<=(const Distance& other) const noexcept { return m_meters <= other.m_meters; }
+    bool operator>(const Distance& other) const noexcept { return m_meters > other.m_meters; }
+    bool operator>=(const Distance& other) const noexcept { return m_meters >= other.m_meters; }
+
     friend std::ostream& operator<<(std::ostream& os, const Distance& d) {
         return os << d.m_meters << " m";
     }
@@ -186,6 +214,13 @@ public:
     constexpr double toKpa() const noexcept { return m_kpa; }
     constexpr double toBar() const noexcept { return m_kpa / BAR_TO_KPA; }
     constexpr double toPsi() const noexcept { return m_kpa / PSI_TO_KPA; }
+
+    bool operator==(const Pressure& other) const noexcept { return m_kpa == other.m_kpa; }
+    bool operator!=(const Pressure& other) const noexcept { return m_kpa != other.m_kpa; }
+    bool operator<(const Pressure& other) const noexcept { return m_kpa < other.m_kpa; }
+    bool operator<=(const Pressure& other) const noexcept { return m_kpa <= other.m_kpa; }
+    bool operator>(const Pressure& other) const noexcept { return m_kpa > other.m_kpa; }
+    bool operator>=(const Pressure& other) const noexcept { return m_kpa >= other.m_kpa; }
 
     friend std::ostream& operator<<(std::ostream& os, const Pressure& p) {
         return os << p.m_kpa << " kPa";
@@ -219,6 +254,13 @@ public:
     constexpr double toPs() const noexcept { return m_kw / PS_TO_KW; }
     constexpr double toHp() const noexcept { return m_kw / HP_TO_KW; }
 
+    bool operator==(const Power& other) const noexcept { return m_kw == other.m_kw; }
+    bool operator!=(const Power& other) const noexcept { return m_kw != other.m_kw; }
+    bool operator<(const Power& other) const noexcept { return m_kw < other.m_kw; }
+    bool operator<=(const Power& other) const noexcept { return m_kw <= other.m_kw; }
+    bool operator>(const Power& other) const noexcept { return m_kw > other.m_kw; }
+    bool operator>=(const Power& other) const noexcept { return m_kw >= other.m_kw; }
+
     friend std::ostream& operator<<(std::ostream& os, const Power& pow) {
         return os << pow.m_kw << " kW";
     }
@@ -250,6 +292,13 @@ public:
     constexpr double toNm() const noexcept { return m_nm; }
     constexpr double toKgfm() const noexcept { return m_nm / KGFM_TO_NM; }
     constexpr double toLbft() const noexcept { return m_nm / LBFT_TO_NM; }
+
+    bool operator==(const Torque& other) const noexcept { return m_nm == other.m_nm; }
+    bool operator!=(const Torque& other) const noexcept { return m_nm != other.m_nm; }
+    bool operator<(const Torque& other) const noexcept { return m_nm < other.m_nm; }
+    bool operator<=(const Torque& other) const noexcept { return m_nm <= other.m_nm; }
+    bool operator>(const Torque& other) const noexcept { return m_nm > other.m_nm; }
+    bool operator>=(const Torque& other) const noexcept { return m_nm >= other.m_nm; }
 
     friend std::ostream& operator<<(std::ostream& os, const Torque& t) {
         return os << t.m_nm << " Nm";
@@ -291,6 +340,13 @@ public:
         return Angle(r - 3.14159265358979323846);
     }
 
+    bool operator==(const Angle& other) const noexcept { return m_rad == other.m_rad; }
+    bool operator!=(const Angle& other) const noexcept { return m_rad != other.m_rad; }
+    bool operator<(const Angle& other) const noexcept { return m_rad < other.m_rad; }
+    bool operator<=(const Angle& other) const noexcept { return m_rad <= other.m_rad; }
+    bool operator>(const Angle& other) const noexcept { return m_rad > other.m_rad; }
+    bool operator>=(const Angle& other) const noexcept { return m_rad >= other.m_rad; }
+
     friend std::ostream& operator<<(std::ostream& os, const Angle& a) {
         return os << a.m_rad << " rad";
     }
@@ -316,6 +372,13 @@ public:
     constexpr double toKml() const noexcept { return m_kml; }
     constexpr double toL100km() const noexcept { return 100.0 / m_kml; }
     constexpr double toMpg() const noexcept { return m_kml / MPG_TO_KML; }
+
+    bool operator==(const Efficiency& other) const noexcept { return m_kml == other.m_kml; }
+    bool operator!=(const Efficiency& other) const noexcept { return m_kml != other.m_kml; }
+    bool operator<(const Efficiency& other) const noexcept { return m_kml < other.m_kml; }
+    bool operator<=(const Efficiency& other) const noexcept { return m_kml <= other.m_kml; }
+    bool operator>(const Efficiency& other) const noexcept { return m_kml > other.m_kml; }
+    bool operator>=(const Efficiency& other) const noexcept { return m_kml >= other.m_kml; }
 
     friend std::ostream& operator<<(std::ostream& os, const Efficiency& e) {
         return os << e.m_kml << " km/L";
@@ -344,6 +407,13 @@ public:
     constexpr double toWhkm() const noexcept { return 1000.0 / m_km_per_kwh; }
     constexpr double toKwh100km() const noexcept { return 100.0 / m_km_per_kwh; }
     constexpr double toMpKwh() const noexcept { return m_km_per_kwh / MILE_TO_KM; }
+
+    bool operator==(const EvEfficiency& other) const noexcept { return m_km_per_kwh == other.m_km_per_kwh; }
+    bool operator!=(const EvEfficiency& other) const noexcept { return m_km_per_kwh != other.m_km_per_kwh; }
+    bool operator<(const EvEfficiency& other) const noexcept { return m_km_per_kwh < other.m_km_per_kwh; }
+    bool operator<=(const EvEfficiency& other) const noexcept { return m_km_per_kwh <= other.m_km_per_kwh; }
+    bool operator>(const EvEfficiency& other) const noexcept { return m_km_per_kwh > other.m_km_per_kwh; }
+    bool operator>=(const EvEfficiency& other) const noexcept { return m_km_per_kwh >= other.m_km_per_kwh; }
 
     friend std::ostream& operator<<(std::ostream& os, const EvEfficiency& e) {
         return os << e.m_km_per_kwh << " km/kWh";
@@ -378,6 +448,13 @@ public:
     constexpr double toUsGallons() const noexcept { return m_liters / US_GAL_TO_L; }
     constexpr double toImpGallons() const noexcept { return m_liters / IMP_GAL_TO_L; }
 
+    bool operator==(const Volume& other) const noexcept { return m_liters == other.m_liters; }
+    bool operator!=(const Volume& other) const noexcept { return m_liters != other.m_liters; }
+    bool operator<(const Volume& other) const noexcept { return m_liters < other.m_liters; }
+    bool operator<=(const Volume& other) const noexcept { return m_liters <= other.m_liters; }
+    bool operator>(const Volume& other) const noexcept { return m_liters > other.m_liters; }
+    bool operator>=(const Volume& other) const noexcept { return m_liters >= other.m_liters; }
+
     friend std::ostream& operator<<(std::ostream& os, const Volume& v) {
         return os << v.m_liters << " L";
     }
@@ -400,6 +477,13 @@ public:
     constexpr double toMinutes() const noexcept { return m_sec / 60.0; }
     constexpr double toHours() const noexcept { return m_sec / 3600.0; }
 
+    bool operator==(const Time& other) const noexcept { return m_sec == other.m_sec; }
+    bool operator!=(const Time& other) const noexcept { return m_sec != other.m_sec; }
+    bool operator<(const Time& other) const noexcept { return m_sec < other.m_sec; }
+    bool operator<=(const Time& other) const noexcept { return m_sec <= other.m_sec; }
+    bool operator>(const Time& other) const noexcept { return m_sec > other.m_sec; }
+    bool operator>=(const Time& other) const noexcept { return m_sec >= other.m_sec; }
+
     friend std::ostream& operator<<(std::ostream& os, const Time& t) {
         return os << t.m_sec << " s";
     }
@@ -417,6 +501,13 @@ public:
         return Acceleration(s.toMs() / t.toSeconds());
     }
     constexpr double toMs2() const noexcept { return m_a; }
+
+    bool operator==(const Acceleration& other) const noexcept { return m_a == other.m_a; }
+    bool operator!=(const Acceleration& other) const noexcept { return m_a != other.m_a; }
+    bool operator<(const Acceleration& other) const noexcept { return m_a < other.m_a; }
+    bool operator<=(const Acceleration& other) const noexcept { return m_a <= other.m_a; }
+    bool operator>(const Acceleration& other) const noexcept { return m_a > other.m_a; }
+    bool operator>=(const Acceleration& other) const noexcept { return m_a >= other.m_a; }
 
     friend std::ostream& operator<<(std::ostream& os, const Acceleration& acc) {
         return os << acc.m_a << " m/s^2";
@@ -474,16 +565,46 @@ inline Time operator/(const Distance& d, const Speed& s) {
     return Time::fromSeconds(d.toMeters() / s.toMs());
 }
 
-// Distance / Distance = Scalar
+// --- Ratio (same dimension division -> scalar) ---
+
 inline double operator/(const Distance& a, const Distance& b) {
     if (b.toMeters() == 0.0) throw std::invalid_argument("Distance cannot be zero");
     return a.toMeters() / b.toMeters();
 }
 
-// Mass / Mass = Scalar
 inline double operator/(const Mass& a, const Mass& b) {
     if (b.toKg() == 0.0) throw std::invalid_argument("Mass cannot be zero");
     return a.toKg() / b.toKg();
+}
+
+inline double operator/(const Speed& a, const Speed& b) {
+    if (b.toMs() == 0.0) throw std::invalid_argument("Speed cannot be zero");
+    return a.toMs() / b.toMs();
+}
+
+inline double operator/(const Time& a, const Time& b) {
+    if (b.toSeconds() == 0.0) throw std::invalid_argument("Time cannot be zero");
+    return a.toSeconds() / b.toSeconds();
+}
+
+inline double operator/(const Pressure& a, const Pressure& b) {
+    if (b.toKpa() == 0.0) throw std::invalid_argument("Pressure cannot be zero");
+    return a.toKpa() / b.toKpa();
+}
+
+inline double operator/(const Power& a, const Power& b) {
+    if (b.toKw() == 0.0) throw std::invalid_argument("Power cannot be zero");
+    return a.toKw() / b.toKw();
+}
+
+inline double operator/(const Torque& a, const Torque& b) {
+    if (b.toNm() == 0.0) throw std::invalid_argument("Torque cannot be zero");
+    return a.toNm() / b.toNm();
+}
+
+inline double operator/(const Angle& a, const Angle& b) {
+    if (b.toRadians() == 0.0) throw std::invalid_argument("Angle cannot be zero");
+    return a.toRadians() / b.toRadians();
 }
 
 // Speed - Speed

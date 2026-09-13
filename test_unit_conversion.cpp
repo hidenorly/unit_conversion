@@ -70,6 +70,23 @@ TEST(SpeedTest, Identity) {
     EXPECT_NEAR(speed.toKmH(), original, 0.000001);
 }
 
+// test for comparison operators
+TEST(SpeedTest, Comparison) {
+    auto s1 = Speed::fromKmH(50.0);
+    auto s2 = Speed::fromKmH(50.0);
+    auto s3 = Speed::fromKmH(100.0);
+
+    EXPECT_TRUE(s1 == s2);
+    EXPECT_FALSE(s1 != s2);
+    EXPECT_TRUE(s1 != s3);
+    EXPECT_TRUE(s1 < s3);
+    EXPECT_TRUE(s1 <= s2);
+    EXPECT_TRUE(s1 <= s3);
+    EXPECT_TRUE(s3 > s1);
+    EXPECT_TRUE(s2 >= s1);
+    EXPECT_TRUE(s3 >= s1);
+}
+
 // test for ostream operator
 TEST(SpeedTest, OstreamOperator) {
     auto speed = Speed::fromMs(10.0);
@@ -114,6 +131,19 @@ TEST(TemperatureTest, KelvinToCelsius) {
     auto t = Temperature::fromKelvin(373.15);
     EXPECT_DOUBLE_EQ(t.toKelvin(), 373.15);
     EXPECT_NEAR(t.toCelsius(), 100.0, 0.001);
+}
+
+TEST(TemperatureTest, Comparison) {
+    auto t1 = Temperature::fromCelsius(20.0);
+    auto t2 = Temperature::fromCelsius(20.0);
+    auto t3 = Temperature::fromCelsius(30.0);
+
+    EXPECT_TRUE(t1 == t2);
+    EXPECT_TRUE(t1 != t3);
+    EXPECT_TRUE(t1 < t3);
+    EXPECT_TRUE(t1 <= t2);
+    EXPECT_TRUE(t3 > t1);
+    EXPECT_TRUE(t2 >= t1);
 }
 
 TEST(TemperatureTest, Invalid) {
@@ -162,6 +192,17 @@ TEST(MassTest, OzToOz) {
     auto m4 = Mass::fromOz(16.0);
     EXPECT_NEAR(m4.toOz(), 16.0, 0.000001);
     EXPECT_NEAR(m4.toKg(), 0.453592, 0.000001);
+}
+
+TEST(MassTest, Comparison) {
+    auto m1 = Mass::fromKg(10.0);
+    auto m2 = Mass::fromKg(10.0);
+    auto m3 = Mass::fromKg(20.0);
+
+    EXPECT_TRUE(m1 == m2);
+    EXPECT_TRUE(m1 != m3);
+    EXPECT_TRUE(m1 < m3);
+    EXPECT_TRUE(m3 > m1);
 }
 
 TEST(MassTest, Invalid) {
@@ -215,6 +256,16 @@ TEST(DistanceTest, InchToInch) {
     EXPECT_NEAR(d.toInch(), 12.0, 0.000001);
 }
 
+TEST(DistanceTest, Comparison) {
+    auto d1 = Distance::fromMeters(100.0);
+    auto d2 = Distance::fromMeters(100.0);
+    auto d3 = Distance::fromMeters(200.0);
+
+    EXPECT_TRUE(d1 == d2);
+    EXPECT_TRUE(d1 != d3);
+    EXPECT_TRUE(d1 < d3);
+    EXPECT_TRUE(d3 > d1);
+}
 
 TEST(DistanceTest, Mm) {
     auto d = Distance::fromMm(1000.0);
@@ -253,6 +304,16 @@ TEST(PressureTest, PsiToPsi) {
     EXPECT_NEAR(p.toKpa(), 250.0, 0.001);
 }
 
+TEST(PressureTest, Comparison) {
+    auto p1 = Pressure::fromKpa(100.0);
+    auto p2 = Pressure::fromKpa(100.0);
+    auto p3 = Pressure::fromKpa(200.0);
+
+    EXPECT_TRUE(p1 == p2);
+    EXPECT_TRUE(p1 != p3);
+    EXPECT_TRUE(p1 < p3);
+}
+
 TEST(PressureTest, Invalid) {
     EXPECT_THROW(Pressure::fromKpa(-1.0), std::invalid_argument);
     EXPECT_THROW(Pressure::fromBar(-0.1), std::invalid_argument);
@@ -288,6 +349,16 @@ TEST(PowerTest, KwPsHpToAll) {
     // fromHp -> all to
     auto p3 = Power::fromHp(134.102);
     EXPECT_NEAR(p3.toKw(), 100.0, 0.01);
+}
+
+TEST(PowerTest, Comparison) {
+    auto pow1 = Power::fromKw(50.0);
+    auto pow2 = Power::fromKw(50.0);
+    auto pow3 = Power::fromKw(80.0);
+
+    EXPECT_TRUE(pow1 == pow2);
+    EXPECT_TRUE(pow1 != pow3);
+    EXPECT_TRUE(pow1 < pow3);
 }
 
 TEST(PowerTest, invalid) {
@@ -331,6 +402,16 @@ TEST(TorqueTest, KgfmToNm) {
 TEST(TorqueTest, LbftToLbft) {
     auto t = Torque::fromLbft(1.0);
     EXPECT_NEAR(t.toLbft(), 1.0, 0.0001);
+}
+
+TEST(TorqueTest, Comparison) {
+    auto t1 = Torque::fromNm(100.0);
+    auto t2 = Torque::fromNm(100.0);
+    auto t3 = Torque::fromNm(150.0);
+
+    EXPECT_TRUE(t1 == t2);
+    EXPECT_TRUE(t1 != t3);
+    EXPECT_TRUE(t1 < t3);
 }
 
 TEST(TorqueTest, invalid) {
@@ -386,6 +467,16 @@ TEST(AngleTest, ValidationAndNormalization) {
     EXPECT_NEAR(a3.toDegrees(), -90.0, 0.0001);
 }
 
+TEST(AngleTest, Comparison) {
+    auto a1 = Angle::fromDegrees(45.0);
+    auto a2 = Angle::fromDegrees(45.0);
+    auto a3 = Angle::fromDegrees(90.0);
+
+    EXPECT_TRUE(a1 == a2);
+    EXPECT_TRUE(a1 != a3);
+    EXPECT_TRUE(a1 < a3);
+}
+
 TEST(AngleTest, OstreamOperator) {
     auto a = Angle::fromRadians(1.0);
     std::ostringstream oss;
@@ -413,6 +504,16 @@ TEST(EfficiencyTest, KmlToL100andMPG) {
     EXPECT_DOUBLE_EQ(e.toKml(), 10.0);
     EXPECT_DOUBLE_EQ(e.toL100km(), 10.0);     // 100 / 10 = 10
     EXPECT_NEAR(e.toMpg(), 23.5215, 0.001);   // 10 / 0.42514...
+}
+
+TEST(EfficiencyTest, Comparison) {
+    auto e1 = Efficiency::fromKml(12.0);
+    auto e2 = Efficiency::fromKml(12.0);
+    auto e3 = Efficiency::fromKml(15.0);
+
+    EXPECT_TRUE(e1 == e2);
+    EXPECT_TRUE(e1 != e3);
+    EXPECT_TRUE(e1 < e3);
 }
 
 TEST(EfficiencyTest, EfficiencyFactoryException) {
@@ -470,6 +571,16 @@ TEST(EvEfficiencyTest, fromMpKwh) {
     EXPECT_NEAR(e.toKmkWh(), 1.609344, 0.000001);
 }
 
+TEST(EvEfficiencyTest, Comparison) {
+    auto e1 = EvEfficiency::fromKmkWh(5.0);
+    auto e2 = EvEfficiency::fromKmkWh(5.0);
+    auto e3 = EvEfficiency::fromKmkWh(7.0);
+
+    EXPECT_TRUE(e1 == e2);
+    EXPECT_TRUE(e1 != e3);
+    EXPECT_TRUE(e1 < e3);
+}
+
 TEST(EvEfficiencyTest, invalid) {
     EXPECT_THROW(EvEfficiency::fromKmkWh(0.0), std::invalid_argument);
     EXPECT_THROW(EvEfficiency::fromWhkm(-1.0), std::invalid_argument);
@@ -523,6 +634,16 @@ TEST(VolumeTest, VolumeFromImpGallons) {
     EXPECT_NEAR(v.toMl(), 45460.9, 0.1);
 }
 
+TEST(VolumeTest, Comparison) {
+    auto v1 = Volume::fromLiters(5.0);
+    auto v2 = Volume::fromLiters(5.0);
+    auto v3 = Volume::fromLiters(10.0);
+
+    EXPECT_TRUE(v1 == v2);
+    EXPECT_TRUE(v1 != v3);
+    EXPECT_TRUE(v1 < v3);
+}
+
 TEST(VolumeTest, Invalid) {
     EXPECT_THROW(Volume::fromLiters(-1.0), std::invalid_argument);
     EXPECT_THROW(Volume::fromMl(-100.0), std::invalid_argument);
@@ -565,6 +686,16 @@ TEST(TimeTest, ConversionMatrix) {
     EXPECT_NO_THROW(Time::fromHours(0.0));
 }
 
+TEST(TimeTest, Comparison) {
+    auto t1 = Time::fromSeconds(30.0);
+    auto t2 = Time::fromSeconds(30.0);
+    auto t3 = Time::fromSeconds(60.0);
+
+    EXPECT_TRUE(t1 == t2);
+    EXPECT_TRUE(t1 != t3);
+    EXPECT_TRUE(t1 < t3);
+}
+
 TEST(TimeTest, exception) {
     EXPECT_THROW(Time::fromSeconds(NAN), std::invalid_argument);
     EXPECT_THROW(Time::fromSeconds(-1.0), std::invalid_argument);
@@ -598,6 +729,16 @@ TEST(AccelerationTest, FullCoverage) {
 
     EXPECT_THROW(Acceleration::fromMs2(NAN), std::invalid_argument);
     EXPECT_THROW(a * Time::fromSeconds(-1.0), std::invalid_argument);
+}
+
+TEST(AccelerationTest, Comparison) {
+    auto a1 = Acceleration::fromMs2(5.0);
+    auto a2 = Acceleration::fromMs2(5.0);
+    auto a3 = Acceleration::fromMs2(10.0);
+
+    EXPECT_TRUE(a1 == a2);
+    EXPECT_TRUE(a1 != a3);
+    EXPECT_TRUE(a1 < a3);
 }
 
 TEST(AccelerationTest, DerivedFromDeltaSpeed) {
@@ -731,11 +872,52 @@ TEST(PhysicsOpsTest, TimeDivAccelerationEqualsSpeed) {
     EXPECT_THROW(t / Acceleration::fromMs2(0.0), std::invalid_argument);
 }
 
-TEST(PhysicsOpsTest, DistanceDivDistanceEqualsScalar) {
+TEST(PhysicsOpsTest, SameDimensionDivisionRatio) {
+    // Distance / Distance
     auto d1 = Distance::fromMeters(250.0);
     auto d2 = Distance::fromMeters(50.0);
-    double scalar = d1 / d2;
-    EXPECT_NEAR(scalar, 5.0, 1e-9);
-
+    EXPECT_NEAR(d1 / d2, 5.0, 1e-9);
     EXPECT_THROW(d1 / Distance::fromMeters(0.0), std::invalid_argument);
+
+    // Mass / Mass
+    auto m1 = Mass::fromKg(10.0);
+    auto m2 = Mass::fromKg(2.0);
+    EXPECT_NEAR(m1 / m2, 5.0, 1e-9);
+    EXPECT_THROW(m1 / Mass::fromKg(0.0), std::invalid_argument);
+
+    // Speed / Speed
+    auto s1 = Speed::fromMs(60.0);
+    auto s2 = Speed::fromMs(15.0);
+    EXPECT_NEAR(s1 / s2, 4.0, 1e-9);
+    EXPECT_THROW(s1 / Speed::fromMs(0.0), std::invalid_argument);
+
+    // Time / Time
+    auto t1 = Time::fromSeconds(120.0);
+    auto t2 = Time::fromSeconds(30.0);
+    EXPECT_NEAR(t1 / t2, 4.0, 1e-9);
+    EXPECT_THROW(t1 / Time::fromSeconds(0.0), std::invalid_argument);
+
+    // Pressure / Pressure
+    auto p1 = Pressure::fromKpa(200.0);
+    auto p2 = Pressure::fromKpa(50.0);
+    EXPECT_NEAR(p1 / p2, 4.0, 1e-9);
+    EXPECT_THROW(p1 / Pressure::fromKpa(0.0), std::invalid_argument);
+
+    // Power / Power
+    auto pow1 = Power::fromKw(150.0);
+    auto pow2 = Power::fromKw(30.0);
+    EXPECT_NEAR(pow1 / pow2, 5.0, 1e-9);
+    EXPECT_THROW(pow1 / Power::fromKw(0.0), std::invalid_argument);
+
+    // Torque / Torque
+    auto tr1 = Torque::fromNm(100.0);
+    auto tr2 = Torque::fromNm(25.0);
+    EXPECT_NEAR(tr1 / tr2, 4.0, 1e-9);
+    EXPECT_THROW(tr1 / Torque::fromNm(0.0), std::invalid_argument);
+
+    // Angle / Angle
+    auto ang1 = Angle::fromDegrees(180.0);
+    auto ang2 = Angle::fromDegrees(45.0);
+    EXPECT_NEAR(ang1 / ang2, 4.0, 1e-9);
+    EXPECT_THROW(ang1 / Angle::fromDegrees(0.0), std::invalid_argument);
 }
