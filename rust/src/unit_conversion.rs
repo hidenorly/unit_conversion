@@ -55,6 +55,10 @@ impl Speed {
     pub fn to_ms(&self) -> f64 {
         self.ms
     }
+
+    pub fn compare_to(&self, other: &Speed) -> std::cmp::Ordering {
+        self.ms.partial_cmp(&other.ms).unwrap_or(std::cmp::Ordering::Equal)
+    }
 }
 
 impl std::fmt::Display for Speed {
@@ -91,6 +95,10 @@ impl Temperature {
     pub fn to_celsius(&self) -> f64 { self.celsius }
     pub fn to_fahrenheit(&self) -> f64 { self.celsius * Self::F_FACTOR + Self::F_OFFSET }
     pub fn to_kelvin(&self) -> f64 { self.celsius + Self::K_OFFSET }
+
+    pub fn compare_to(&self, other: &Temperature) -> std::cmp::Ordering {
+        self.celsius.partial_cmp(&other.celsius).unwrap_or(std::cmp::Ordering::Equal)
+    }
 }
 
 impl std::fmt::Display for Temperature {
@@ -128,6 +136,10 @@ impl Mass {
     pub fn to_gram(&self) -> f64 { self.kg / Self::G_TO_KG }
     pub fn to_lb(&self) -> f64 { self.kg / Self::LB_TO_KG }
     pub fn to_oz(&self) -> f64 { self.kg / Self::OZ_TO_KG }
+
+    pub fn compare_to(&self, other: &Mass) -> std::cmp::Ordering {
+        self.kg.partial_cmp(&other.kg).unwrap_or(std::cmp::Ordering::Equal)
+    }
 }
 
 impl std::fmt::Display for Mass {
@@ -169,6 +181,10 @@ impl Distance {
     pub fn to_feet(&self) -> f64 { self.meters / Self::FT_TO_M }
     pub fn to_inch(&self) -> f64 { self.meters / Self::IN_TO_M }
     pub fn to_mm(&self) -> f64 { self.meters / Self::MM_TO_M }
+
+    pub fn compare_to(&self, other: &Distance) -> std::cmp::Ordering {
+        self.meters.partial_cmp(&other.meters).unwrap_or(std::cmp::Ordering::Equal)
+    }
 }
 
 impl std::fmt::Display for Distance {
@@ -203,6 +219,10 @@ impl Pressure {
     pub fn to_kpa(&self) -> f64 { self.kpa }
     pub fn to_bar(&self) -> f64 { self.kpa / Self::BAR_TO_KPA }
     pub fn to_psi(&self) -> f64 { self.kpa / Self::PSI_TO_KPA }
+
+    pub fn compare_to(&self, other: &Pressure) -> std::cmp::Ordering {
+        self.kpa.partial_cmp(&other.kpa).unwrap_or(std::cmp::Ordering::Equal)
+    }
 }
 
 impl std::fmt::Display for Pressure {
@@ -235,6 +255,10 @@ impl Power {
     pub fn to_kw(&self) -> f64 { self.kw }
     pub fn to_ps(&self) -> f64 { self.kw / Self::PS_TO_KW }
     pub fn to_hp(&self) -> f64 { self.kw / Self::HP_TO_KW }
+
+    pub fn compare_to(&self, other: &Power) -> std::cmp::Ordering {
+        self.kw.partial_cmp(&other.kw).unwrap_or(std::cmp::Ordering::Equal)
+    }
 }
 
 impl std::fmt::Display for Power {
@@ -265,6 +289,10 @@ impl Torque {
     pub fn to_nm(&self) -> f64 { self.nm }
     pub fn to_kgfm(&self) -> f64 { self.nm / Self::KGFM_TO_NM }
     pub fn to_lbft(&self) -> f64 { self.nm / Self::LBFT_TO_NM }
+
+    pub fn compare_to(&self, other: &Torque) -> std::cmp::Ordering {
+        self.nm.partial_cmp(&other.nm).unwrap_or(std::cmp::Ordering::Equal)
+    }
 }
 
 impl std::fmt::Display for Torque {
@@ -313,6 +341,10 @@ impl Angle {
         r -= std::f64::consts::PI;
         Self::new(r)
     }
+
+    pub fn compare_to(&self, other: &Angle) -> std::cmp::Ordering {
+        self.rad.partial_cmp(&other.rad).unwrap_or(std::cmp::Ordering::Equal)
+    }
 }
 
 impl std::fmt::Display for Angle {
@@ -344,6 +376,10 @@ impl Efficiency {
     pub fn to_kml(&self) -> f64 { self.kml }
     pub fn to_l100km(&self) -> f64 { 100.0 / self.kml }
     pub fn to_mpg(&self) -> f64 { self.kml / Self::MPG_TO_KML }
+
+    pub fn compare_to(&self, other: &Efficiency) -> std::cmp::Ordering {
+        self.kml.partial_cmp(&other.kml).unwrap_or(std::cmp::Ordering::Equal)
+    }
 }
 
 impl std::fmt::Display for Efficiency {
@@ -377,6 +413,10 @@ impl EvEfficiency {
     pub fn to_wh_per_km(&self) -> f64 { 1000.0 / self.km_per_kwh }
     pub fn to_kwh_per_100km(&self) -> f64 { 100.0 / self.km_per_kwh }
     pub fn to_miles_per_kwh(&self) -> f64 { self.km_per_kwh / Self::MILE_TO_KM }
+
+    pub fn compare_to(&self, other: &EvEfficiency) -> std::cmp::Ordering {
+        self.km_per_kwh.partial_cmp(&other.km_per_kwh).unwrap_or(std::cmp::Ordering::Equal)
+    }
 }
 
 impl std::fmt::Display for EvEfficiency {
@@ -411,6 +451,10 @@ impl Volume {
     pub fn to_ml(&self) -> f64 { self.liters * 1000.0 }
     pub fn to_us_gallons(&self) -> f64 { self.liters / Self::US_GAL }
     pub fn to_imp_gallons(&self) -> f64 { self.liters / Self::IMP_GAL }
+
+    pub fn compare_to(&self, other: &Volume) -> std::cmp::Ordering {
+        self.liters.partial_cmp(&other.liters).unwrap_or(std::cmp::Ordering::Equal)
+    }
 }
 
 impl std::fmt::Display for Volume {
@@ -437,6 +481,10 @@ impl Time {
     pub fn to_seconds(&self) -> f64 { self.s }
     pub fn to_minutes(&self) -> f64 { self.s / 60.0 }
     pub fn to_hours(&self) -> f64 { self.s / 3600.0 }
+
+    pub fn compare_to(&self, other: &Time) -> std::cmp::Ordering {
+        self.s.partial_cmp(&other.s).unwrap_or(std::cmp::Ordering::Equal)
+    }
 }
 
 impl std::fmt::Display for Time {
@@ -464,6 +512,10 @@ impl Acceleration {
         Self::new(a)
     }
     pub fn to_ms2(&self) -> f64 { self.a }
+
+    pub fn compare_to(&self, other: &Acceleration) -> std::cmp::Ordering {
+        self.a.partial_cmp(&other.a).unwrap_or(std::cmp::Ordering::Equal)
+    }
 }
 
 impl std::fmt::Display for Acceleration {

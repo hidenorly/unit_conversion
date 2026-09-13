@@ -63,6 +63,7 @@ mod tests {
         assert!(s_a != s_b);
 
         assert_eq!(s_a, Speed::from_ms(10.0));
+        assert!(s_a.partial_cmp(&s_b) == Some(std::cmp::Ordering::Less));
     }
 
     #[test]
@@ -81,6 +82,12 @@ mod tests {
     #[should_panic]
     fn test_speed_inf_guard() {
         Speed::from_ms(f64::INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_speed_neg_inf_guard() {
+        Speed::from_ms(f64::NEG_INFINITY);
     }
 
     use unit_conversion::Temperature;
@@ -113,7 +120,12 @@ mod tests {
         let ta = Temperature::from_celsius(10.0);
         let tb = Temperature::from_celsius(20.0);
         assert!(ta < tb);
+        assert!(tb > ta);
+        assert!(ta <= tb);
+        assert!(tb >= ta);
+        assert!(ta != tb);
         assert_eq!(ta, Temperature::from_celsius(10.0));
+        assert!(ta.partial_cmp(&tb) == Some(std::cmp::Ordering::Less));
     }
 
     #[test]
@@ -137,6 +149,12 @@ mod tests {
 
     #[test]
     #[should_panic]
+    fn test_below_absolute_zero_kelvin() {
+        Temperature::from_kelvin(-1.0);
+    }
+
+    #[test]
+    #[should_panic]
     fn test_temperature_nan_guard() {
         Temperature::from_kelvin(f64::NAN);
     }
@@ -145,6 +163,12 @@ mod tests {
     #[should_panic]
     fn test_temperature_inf_guard() {
         Temperature::from_celsius(f64::INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_temperature_neg_inf_guard() {
+        Temperature::from_celsius(f64::NEG_INFINITY);
     }
 
     use unit_conversion::Mass;
@@ -173,11 +197,20 @@ mod tests {
         assert!((w4.to_lb() - 1.0).abs() < EPSILON);
         assert!((w4.to_oz() - 16.0).abs() < EPSILON);
 
+        // 1oz conversion branch
+        let w5 = Mass::from_oz(16.0);
+        assert!((w5.to_lb() - 1.0).abs() < EPSILON);
+
         // Comparison
         let m1 = Mass::from_kg(1.0);
         let m2 = Mass::from_kg(2.0);
         assert!(m1 < m2);
+        assert!(m2 > m1);
+        assert!(m1 <= m2);
+        assert!(m2 >= m1);
+        assert!(m1 != m2);
         assert_eq!(m1, Mass::from_kg(1.0));
+        assert!(m1.partial_cmp(&m2) == Some(std::cmp::Ordering::Less));
     }
 
     #[test]
@@ -196,6 +229,12 @@ mod tests {
     #[should_panic]
     fn test_mass_inf_guard() {
         Mass::from_kg(f64::INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_mass_neg_inf_guard() {
+        Mass::from_kg(f64::NEG_INFINITY);
     }
 
     use unit_conversion::Distance;
@@ -232,7 +271,12 @@ mod tests {
         let da = Distance::from_meters(10.0);
         let db = Distance::from_meters(20.0);
         assert!(da < db);
+        assert!(db > da);
+        assert!(da <= db);
+        assert!(db >= da);
+        assert!(da != db);
         assert_eq!(da, Distance::from_meters(10.0));
+        assert!(da.partial_cmp(&db) == Some(std::cmp::Ordering::Less));
     }
 
     #[test]
@@ -257,6 +301,18 @@ mod tests {
     #[should_panic]
     fn test_distance_mile_guard() {
         Distance::from_mile(f64::NEG_INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_distance_feet_guard() {
+        Distance::from_feet(-1.0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_distance_inch_guard() {
+        Distance::from_inch(f64::NAN);
     }
 
     use unit_conversion::Pressure;
@@ -284,7 +340,12 @@ mod tests {
         let pa = Pressure::from_bar(1.0);
         let pb = Pressure::from_bar(2.0);
         assert!(pa < pb);
+        assert!(pb > pa);
+        assert!(pa <= pb);
+        assert!(pb >= pa);
+        assert!(pa != pb);
         assert_eq!(pa, Pressure::from_bar(1.0));
+        assert!(pa.partial_cmp(&pb) == Some(std::cmp::Ordering::Less));
     }
 
     #[test]
@@ -305,6 +366,12 @@ mod tests {
         Pressure::from_kpa(f64::INFINITY);
     }
 
+    #[test]
+    #[should_panic]
+    fn test_pressure_neg_inf_guard() {
+        Pressure::from_bar(f64::NEG_INFINITY);
+    }
+
     use unit_conversion::Power;
 
     #[test]
@@ -315,11 +382,23 @@ mod tests {
         // Display test
         assert_eq!(format!("{}", p), format!("{} kW", p.to_kw()));
 
+        // Test from_ps and from_hp constructors
+        let p_ps = Power::from_ps(135.962);
+        assert!((p_ps.to_kw() - 100.0).abs() < 0.1);
+
+        let p_hp = Power::from_hp(134.102);
+        assert!((p_hp.to_kw() - 100.0).abs() < 0.1);
+
         // Comparison
         let pa = Power::from_kw(50.0);
         let pb = Power::from_kw(100.0);
         assert!(pa < pb);
+        assert!(pb > pa);
+        assert!(pa <= pb);
+        assert!(pb >= pa);
+        assert!(pa != pb);
         assert_eq!(pa, Power::from_kw(50.0));
+        assert!(pa.partial_cmp(&pb) == Some(std::cmp::Ordering::Less));
     }
 
     #[test]
@@ -407,7 +486,12 @@ mod tests {
         let ta = Torque::from_nm(10.0);
         let tb = Torque::from_nm(20.0);
         assert!(ta < tb);
+        assert!(tb > ta);
+        assert!(ta <= tb);
+        assert!(tb >= ta);
+        assert!(ta != tb);
         assert_eq!(ta, Torque::from_nm(10.0));
+        assert!(ta.partial_cmp(&tb) == Some(std::cmp::Ordering::Less));
     }
 
     #[test]
@@ -464,6 +548,12 @@ mod tests {
         Torque::from_lbft(f64::NEG_INFINITY);
     }
 
+    #[test]
+    #[should_panic]
+    fn test_torque_negative_value() {
+        Torque::from_nm(-1.0);
+    }
+
     use unit_conversion::Angle;
     use std::f64::consts::PI;
 
@@ -498,7 +588,12 @@ mod tests {
         let aa = Angle::from_degrees(10.0);
         let ab = Angle::from_degrees(20.0);
         assert!(aa < ab);
+        assert!(ab > aa);
+        assert!(aa <= ab);
+        assert!(ab >= aa);
+        assert!(aa != ab);
         assert_eq!(aa, Angle::from_degrees(10.0));
+        assert!(aa.partial_cmp(&ab) == Some(std::cmp::Ordering::Less));
     }
 
     #[test]
@@ -511,6 +606,12 @@ mod tests {
     #[should_panic]
     fn test_angle_inf_guard() {
         Angle::from_degrees(f64::INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_angle_neg_inf_guard() {
+        Angle::from_degrees(f64::NEG_INFINITY);
     }
 
     use unit_conversion::Efficiency;
@@ -538,7 +639,12 @@ mod tests {
         let ea = Efficiency::from_kml(10.0);
         let eb = Efficiency::from_kml(20.0);
         assert!(ea < eb);
+        assert!(eb > ea);
+        assert!(ea <= eb);
+        assert!(eb >= ea);
+        assert!(ea != eb);
         assert_eq!(ea, Efficiency::from_kml(10.0));
+        assert!(ea.partial_cmp(&eb) == Some(std::cmp::Ordering::Less));
     }
 
     #[test]
@@ -559,6 +665,12 @@ mod tests {
         let _ = Efficiency::from_kml(f64::INFINITY);
     }
 
+    #[test]
+    #[should_panic(expected = "Must be positive")]
+    fn test_efficiency_neg_inf_panic() {
+        let _ = Efficiency::from_kml(f64::NEG_INFINITY);
+    }
+
     use unit_conversion::EvEfficiency;
 
     #[test]
@@ -575,7 +687,12 @@ mod tests {
         let eva = EvEfficiency::from_km_per_kwh(5.0);
         let evb = EvEfficiency::from_km_per_kwh(6.0);
         assert!(eva < evb);
+        assert!(evb > eva);
+        assert!(eva <= evb);
+        assert!(evb >= eva);
+        assert!(eva != evb);
         assert_eq!(eva, EvEfficiency::from_km_per_kwh(5.0));
+        assert!(eva.partial_cmp(&evb) == Some(std::cmp::Ordering::Less));
     }
 
     #[test]
@@ -621,6 +738,12 @@ mod tests {
         let _ = EvEfficiency::from_km_per_kwh(f64::INFINITY);
     }
 
+    #[test]
+    #[should_panic(expected = "Must be positive")]
+    fn test_ev_neg_inf_panic() {
+        let _ = EvEfficiency::from_km_per_kwh(f64::NEG_INFINITY);
+    }
+
     use unit_conversion::Volume;
 
     #[test]
@@ -655,7 +778,12 @@ mod tests {
         let va = Volume::from_liters(1.0);
         let vb = Volume::from_liters(2.0);
         assert!(va < vb);
+        assert!(vb > va);
+        assert!(va <= vb);
+        assert!(vb >= va);
+        assert!(va != vb);
         assert_eq!(va, Volume::from_liters(1.0));
+        assert!(va.partial_cmp(&vb) == Some(std::cmp::Ordering::Less));
     }
 
     #[test]
@@ -676,6 +804,12 @@ mod tests {
         Volume::from_liters(f64::INFINITY);
     }
 
+    #[test]
+    #[should_panic]
+    fn test_volume_neg_inf_guard() {
+        Volume::from_liters(f64::NEG_INFINITY);
+    }
+
     use unit_conversion::Time;
 
     #[test]
@@ -691,11 +825,19 @@ mod tests {
         let t_sec = Time::from_seconds(0.0);
         assert_eq!(t_sec.to_seconds(), 0.0);
 
+        let t_min = Time::from_minutes(1.0);
+        assert_eq!(t_min.to_seconds(), 60.0);
+
         // Comparison
         let ta = Time::from_seconds(10.0);
         let tb = Time::from_seconds(20.0);
         assert!(ta < tb);
+        assert!(tb > ta);
+        assert!(ta <= tb);
+        assert!(tb >= ta);
+        assert!(ta != tb);
         assert_eq!(ta, Time::from_seconds(10.0));
+        assert!(ta.partial_cmp(&tb) == Some(std::cmp::Ordering::Less));
     }
 
     #[test]
@@ -714,6 +856,12 @@ mod tests {
     #[should_panic]
     fn test_time_inf() {
         let _ = Time::from_seconds(f64::INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_time_neg_inf() {
+        let _ = Time::from_seconds(f64::NEG_INFINITY);
     }
 
     use unit_conversion::Acceleration;
@@ -735,7 +883,12 @@ mod tests {
         let aa = Acceleration::from_ms2(1.0);
         let ab = Acceleration::from_ms2(2.0);
         assert!(aa < ab);
+        assert!(ab > aa);
+        assert!(aa <= ab);
+        assert!(ab >= aa);
+        assert!(aa != ab);
         assert_eq!(aa, Acceleration::from_ms2(1.0));
+        assert!(aa.partial_cmp(&ab) == Some(std::cmp::Ordering::Less));
     }
 
     #[test]
@@ -748,6 +901,12 @@ mod tests {
     #[should_panic]
     fn test_inf(){
         let _ = Acceleration::from_ms2(f64::INFINITY);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_neg_inf(){
+        let _ = Acceleration::from_ms2(f64::NEG_INFINITY);
     }
 
     #[test]
