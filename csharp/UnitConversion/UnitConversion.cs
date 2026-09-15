@@ -18,7 +18,7 @@ using System;
 
 namespace UnitConversion
 {
-    public readonly struct Speed
+    public readonly struct Speed : IEquatable<Speed>, IComparable<Speed>
     {
         private readonly double m_ms;
         private const double ConvertKmhMs = 3.6;
@@ -56,9 +56,21 @@ namespace UnitConversion
             if (a.ToMs2() == 0.0) throw new ArgumentException("Acceleration cannot be zero");
             return Time.FromSeconds(s.m_ms / a.ToMs2());
         }
+
+        public bool Equals(Speed other) => m_ms.Equals(other.m_ms);
+        public override bool Equals(object? obj) => obj is Speed other && Equals(other);
+        public override int GetHashCode() => m_ms.GetHashCode();
+        public int CompareTo(Speed other) => m_ms.CompareTo(other.m_ms);
+
+        public static bool operator ==(Speed left, Speed right) => left.Equals(right);
+        public static bool operator !=(Speed left, Speed right) => !left.Equals(right);
+        public static bool operator <(Speed left, Speed right) => left.CompareTo(right) < 0;
+        public static bool operator >(Speed left, Speed right) => left.CompareTo(right) > 0;
+        public static bool operator <=(Speed left, Speed right) => left.CompareTo(right) <= 0;
+        public static bool operator >=(Speed left, Speed right) => left.CompareTo(right) >= 0;
     }
 
-    public readonly struct Temperature
+    public readonly struct Temperature : IEquatable<Temperature>, IComparable<Temperature>
     {
         private readonly double m_celsius;
         private const double AbsoluteZeroC = -273.15;
@@ -82,9 +94,21 @@ namespace UnitConversion
         public double ToKelvin() => m_celsius + KOffset;
 
         public override string ToString() => $"{ToCelsius()} °C";
+
+        public bool Equals(Temperature other) => m_celsius.Equals(other.m_celsius);
+        public override bool Equals(object? obj) => obj is Temperature other && Equals(other);
+        public override int GetHashCode() => m_celsius.GetHashCode();
+        public int CompareTo(Temperature other) => m_celsius.CompareTo(other.m_celsius);
+
+        public static bool operator ==(Temperature left, Temperature right) => left.Equals(right);
+        public static bool operator !=(Temperature left, Temperature right) => !left.Equals(right);
+        public static bool operator <(Temperature left, Temperature right) => left.CompareTo(right) < 0;
+        public static bool operator >(Temperature left, Temperature right) => left.CompareTo(right) > 0;
+        public static bool operator <=(Temperature left, Temperature right) => left.CompareTo(right) <= 0;
+        public static bool operator >=(Temperature left, Temperature right) => left.CompareTo(right) >= 0;
     }
 
-    public readonly struct Mass
+    public readonly struct Mass : IEquatable<Mass>, IComparable<Mass>
     {
         private readonly double mWeightKg;
         private const double GToKg = 0.001;
@@ -109,9 +133,21 @@ namespace UnitConversion
         public double ToOz() => mWeightKg / OzToKg;
 
         public override string ToString() => $"{ToKg()} kg";
+
+        public bool Equals(Mass other) => mWeightKg.Equals(other.mWeightKg);
+        public override bool Equals(object? obj) => obj is Mass other && Equals(other);
+        public override int GetHashCode() => mWeightKg.GetHashCode();
+        public int CompareTo(Mass other) => mWeightKg.CompareTo(other.mWeightKg);
+
+        public static bool operator ==(Mass left, Mass right) => left.Equals(right);
+        public static bool operator !=(Mass left, Mass right) => !left.Equals(right);
+        public static bool operator <(Mass left, Mass right) => left.CompareTo(right) < 0;
+        public static bool operator >(Mass left, Mass right) => left.CompareTo(right) > 0;
+        public static bool operator <=(Mass left, Mass right) => left.CompareTo(right) <= 0;
+        public static bool operator >=(Mass left, Mass right) => left.CompareTo(right) >= 0;
     }
 
-    public readonly struct Distance
+    public readonly struct Distance : IEquatable<Distance>, IComparable<Distance>
     {
         private readonly double m_meters;
         private const double KmToM = 1000.0;
@@ -162,9 +198,21 @@ namespace UnitConversion
             if (b.ToMeters() == 0.0) throw new ArgumentException("Distance cannot be zero");
             return a.m_meters / b.m_meters;
         }
+
+        public bool Equals(Distance other) => m_meters.Equals(other.m_meters);
+        public override bool Equals(object? obj) => obj is Distance other && Equals(other);
+        public override int GetHashCode() => m_meters.GetHashCode();
+        public int CompareTo(Distance other) => m_meters.CompareTo(other.m_meters);
+
+        public static bool operator ==(Distance left, Distance right) => left.Equals(right);
+        public static bool operator !=(Distance left, Distance right) => !left.Equals(right);
+        public static bool operator <(Distance left, Distance right) => left.CompareTo(right) < 0;
+        public static bool operator >(Distance left, Distance right) => left.CompareTo(right) > 0;
+        public static bool operator <=(Distance left, Distance right) => left.CompareTo(right) <= 0;
+        public static bool operator >=(Distance left, Distance right) => left.CompareTo(right) >= 0;
     }
 
-    public readonly struct Pressure
+    public readonly struct Pressure : IEquatable<Pressure>, IComparable<Pressure>
     {
         private readonly double m_kpa;
         private const double BarToKpa = 100.0;
@@ -186,9 +234,21 @@ namespace UnitConversion
         public double ToPsi() => m_kpa / PsiToKpa;
 
         public override string ToString() => $"{ToKpa()} kPa";
+
+        public bool Equals(Pressure other) => m_kpa.Equals(other.m_kpa);
+        public override bool Equals(object? obj) => obj is Pressure other && Equals(other);
+        public override int GetHashCode() => m_kpa.GetHashCode();
+        public int CompareTo(Pressure other) => m_kpa.CompareTo(other.m_kpa);
+
+        public static bool operator ==(Pressure left, Pressure right) => left.Equals(right);
+        public static bool operator !=(Pressure left, Pressure right) => !left.Equals(right);
+        public static bool operator <(Pressure left, Pressure right) => left.CompareTo(right) < 0;
+        public static bool operator >(Pressure left, Pressure right) => left.CompareTo(right) > 0;
+        public static bool operator <=(Pressure left, Pressure right) => left.CompareTo(right) <= 0;
+        public static bool operator >=(Pressure left, Pressure right) => left.CompareTo(right) >= 0;
     }
 
-    public readonly struct Power
+    public readonly struct Power : IEquatable<Power>, IComparable<Power>
     {
         private readonly double m_kw;
         private const double PsToKw = 0.73549875;
@@ -210,9 +270,21 @@ namespace UnitConversion
         public double ToHp() => m_kw / HpToKw;
 
         public override string ToString() => $"{ToKw()} kW";
+
+        public bool Equals(Power other) => m_kw.Equals(other.m_kw);
+        public override bool Equals(object? obj) => obj is Power other && Equals(other);
+        public override int GetHashCode() => m_kw.GetHashCode();
+        public int CompareTo(Power other) => m_kw.CompareTo(other.m_kw);
+
+        public static bool operator ==(Power left, Power right) => left.Equals(right);
+        public static bool operator !=(Power left, Power right) => !left.Equals(right);
+        public static bool operator <(Power left, Power right) => left.CompareTo(right) < 0;
+        public static bool operator >(Power left, Power right) => left.CompareTo(right) > 0;
+        public static bool operator <=(Power left, Power right) => left.CompareTo(right) <= 0;
+        public static bool operator >=(Power left, Power right) => left.CompareTo(right) >= 0;
     }
 
-    public readonly struct Torque
+    public readonly struct Torque : IEquatable<Torque>, IComparable<Torque>
     {
         private readonly double m_nm;
         private const double KgfmToNm = 9.80665;
@@ -234,9 +306,21 @@ namespace UnitConversion
         public double ToLbft() => m_nm / LbftToNm;
 
         public override string ToString() => $"{ToNm()} Nm";
+
+        public bool Equals(Torque other) => m_nm.Equals(other.m_nm);
+        public override bool Equals(object? obj) => obj is Torque other && Equals(other);
+        public override int GetHashCode() => m_nm.GetHashCode();
+        public int CompareTo(Torque other) => m_nm.CompareTo(other.m_nm);
+
+        public static bool operator ==(Torque left, Torque right) => left.Equals(right);
+        public static bool operator !=(Torque left, Torque right) => !left.Equals(right);
+        public static bool operator <(Torque left, Torque right) => left.CompareTo(right) < 0;
+        public static bool operator >(Torque left, Torque right) => left.CompareTo(right) > 0;
+        public static bool operator <=(Torque left, Torque right) => left.CompareTo(right) <= 0;
+        public static bool operator >=(Torque left, Torque right) => left.CompareTo(right) >= 0;
     }
 
-    public readonly struct Angle
+    public readonly struct Angle : IEquatable<Angle>, IComparable<Angle>
     {
         private readonly double m_rad;
         private const double DegToRad = Math.PI / 180.0;
@@ -276,9 +360,21 @@ namespace UnitConversion
             }
             return new Angle(r - Math.PI);
         }
+
+        public bool Equals(Angle other) => m_rad.Equals(other.m_rad);
+        public override bool Equals(object? obj) => obj is Angle other && Equals(other);
+        public override int GetHashCode() => m_rad.GetHashCode();
+        public int CompareTo(Angle other) => m_rad.CompareTo(other.m_rad);
+
+        public static bool operator ==(Angle left, Angle right) => left.Equals(right);
+        public static bool operator !=(Angle left, Angle right) => !left.Equals(right);
+        public static bool operator <(Angle left, Angle right) => left.CompareTo(right) < 0;
+        public static bool operator >(Angle left, Angle right) => left.CompareTo(right) > 0;
+        public static bool operator <=(Angle left, Angle right) => left.CompareTo(right) <= 0;
+        public static bool operator >=(Angle left, Angle right) => left.CompareTo(right) >= 0;
     }
 
-    public readonly struct Efficiency
+    public readonly struct Efficiency : IEquatable<Efficiency>, IComparable<Efficiency>
     {
         private readonly double m_kml;
         private const double MpgToKml = 0.425143707;
@@ -299,9 +395,21 @@ namespace UnitConversion
         public double ToMpg() => m_kml / MpgToKml;
 
         public override string ToString() => $"{ToKml()} km/L";
+
+        public bool Equals(Efficiency other) => m_kml.Equals(other.m_kml);
+        public override bool Equals(object? obj) => obj is Efficiency other && Equals(other);
+        public override int GetHashCode() => m_kml.GetHashCode();
+        public int CompareTo(Efficiency other) => m_kml.CompareTo(other.m_kml);
+
+        public static bool operator ==(Efficiency left, Efficiency right) => left.Equals(right);
+        public static bool operator !=(Efficiency left, Efficiency right) => !left.Equals(right);
+        public static bool operator <(Efficiency left, Efficiency right) => left.CompareTo(right) < 0;
+        public static bool operator >(Efficiency left, Efficiency right) => left.CompareTo(right) > 0;
+        public static bool operator <=(Efficiency left, Efficiency right) => left.CompareTo(right) <= 0;
+        public static bool operator >=(Efficiency left, Efficiency right) => left.CompareTo(right) >= 0;
     }
 
-    public readonly struct EvEfficiency
+    public readonly struct EvEfficiency : IEquatable<EvEfficiency>, IComparable<EvEfficiency>
     {
         private readonly double m_km_per_kwh;
         private const double MileToKm = 1.609344;
@@ -324,9 +432,21 @@ namespace UnitConversion
         public double ToMpKwh() => m_km_per_kwh / MileToKm;
 
         public override string ToString() => $"{ToKmkWh()} km/kWh";
+
+        public bool Equals(EvEfficiency other) => m_km_per_kwh.Equals(other.m_km_per_kwh);
+        public override bool Equals(object? obj) => obj is EvEfficiency other && Equals(other);
+        public override int GetHashCode() => m_km_per_kwh.GetHashCode();
+        public int CompareTo(EvEfficiency other) => m_km_per_kwh.CompareTo(other.m_km_per_kwh);
+
+        public static bool operator ==(EvEfficiency left, EvEfficiency right) => left.Equals(right);
+        public static bool operator !=(EvEfficiency left, EvEfficiency right) => !left.Equals(right);
+        public static bool operator <(EvEfficiency left, EvEfficiency right) => left.CompareTo(right) < 0;
+        public static bool operator >(EvEfficiency left, EvEfficiency right) => left.CompareTo(right) > 0;
+        public static bool operator <=(EvEfficiency left, EvEfficiency right) => left.CompareTo(right) <= 0;
+        public static bool operator >=(EvEfficiency left, EvEfficiency right) => left.CompareTo(right) >= 0;
     }
 
-    public readonly struct Volume
+    public readonly struct Volume : IEquatable<Volume>, IComparable<Volume>
     {
         private readonly double m_liters;
         private const double UsGalToL = 3.785411784;
@@ -350,9 +470,21 @@ namespace UnitConversion
         public double ToImpGallons() => m_liters / ImpGalToL;
 
         public override string ToString() => $"{ToLiters()} L";
+
+        public bool Equals(Volume other) => m_liters.Equals(other.m_liters);
+        public override bool Equals(object? obj) => obj is Volume other && Equals(other);
+        public override int GetHashCode() => m_liters.GetHashCode();
+        public int CompareTo(Volume other) => m_liters.CompareTo(other.m_liters);
+
+        public static bool operator ==(Volume left, Volume right) => left.Equals(right);
+        public static bool operator !=(Volume left, Volume right) => !left.Equals(right);
+        public static bool operator <(Volume left, Volume right) => left.CompareTo(right) < 0;
+        public static bool operator >(Volume left, Volume right) => left.CompareTo(right) > 0;
+        public static bool operator <=(Volume left, Volume right) => left.CompareTo(right) <= 0;
+        public static bool operator >=(Volume left, Volume right) => left.CompareTo(right) >= 0;
     }
 
-    public readonly struct Time
+    public readonly struct Time : IEquatable<Time>, IComparable<Time>
     {
         private readonly double m_sec;
 
@@ -377,9 +509,21 @@ namespace UnitConversion
         public static Time operator -(Time a, Time b) => FromSeconds(a.m_sec - b.m_sec);
         public static Time operator *(Time t, double scalar) => FromSeconds(t.m_sec * scalar);
         public static Time operator *(double scalar, Time t) => FromSeconds(t.m_sec * scalar);
+
+        public bool Equals(Time other) => m_sec.Equals(other.m_sec);
+        public override bool Equals(object? obj) => obj is Time other && Equals(other);
+        public override int GetHashCode() => m_sec.GetHashCode();
+        public int CompareTo(Time other) => m_sec.CompareTo(other.m_sec);
+
+        public static bool operator ==(Time left, Time right) => left.Equals(right);
+        public static bool operator !=(Time left, Time right) => !left.Equals(right);
+        public static bool operator <(Time left, Time right) => left.CompareTo(right) < 0;
+        public static bool operator >(Time left, Time right) => left.CompareTo(right) > 0;
+        public static bool operator <=(Time left, Time right) => left.CompareTo(right) <= 0;
+        public static bool operator >=(Time left, Time right) => left.CompareTo(right) >= 0;
     }
 
-    public readonly struct Acceleration
+    public readonly struct Acceleration : IEquatable<Acceleration>, IComparable<Acceleration>
     {
         private readonly double m_a;
 
@@ -412,5 +556,17 @@ namespace UnitConversion
             if (t.ToSeconds() == 0.0) throw new ArgumentException("Time cannot be zero");
             return FromMs2(acc.ToMs2() / t.ToSeconds());
         }
+
+        public bool Equals(Acceleration other) => m_a.Equals(other.m_a);
+        public override bool Equals(object? obj) => obj is Acceleration other && Equals(other);
+        public override int GetHashCode() => m_a.GetHashCode();
+        public int CompareTo(Acceleration other) => m_a.CompareTo(other.m_a);
+
+        public static bool operator ==(Acceleration left, Acceleration right) => left.Equals(right);
+        public static bool operator !=(Acceleration left, Acceleration right) => !left.Equals(right);
+        public static bool operator <(Acceleration left, Acceleration right) => left.CompareTo(right) < 0;
+        public static bool operator >(Acceleration left, Acceleration right) => left.CompareTo(right) > 0;
+        public static bool operator <=(Acceleration left, Acceleration right) => left.CompareTo(right) <= 0;
+        public static bool operator >=(Acceleration left, Acceleration right) => left.CompareTo(right) >= 0;
     }
 }

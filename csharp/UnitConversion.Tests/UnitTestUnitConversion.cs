@@ -55,6 +55,38 @@ public class UnitConversionTests
         Assert.Equal(original, s_orig.ToKmH(), 0.000001);
     }
 
+    [Fact]
+    public void TestSpeedExceptionsAndComparisons()
+    {
+        Assert.Throws<ArgumentException>(() => Speed.FromMs(-1.0));
+        Assert.Throws<ArgumentException>(() => Speed.FromMs(double.NaN));
+        Assert.Throws<ArgumentException>(() => Speed.FromMs(double.PositiveInfinity));
+
+        var s1 = Speed.FromMs(10.0);
+        var s2 = Speed.FromMs(20.0);
+        var s3 = Speed.FromMs(10.0);
+
+        Assert.True(s1 == s3);
+        Assert.False(s1 == s2);
+        Assert.True(s1 != s2);
+        Assert.False(s1 != s3);
+        Assert.True(s1 < s2);
+        Assert.True(s2 > s1);
+        Assert.True(s1 <= s3);
+        Assert.True(s1 <= s2);
+        Assert.True(s2 >= s1);
+        Assert.True(s3 >= s1);
+
+        Assert.True(s1.Equals(s3));
+        Assert.True(s1.Equals((object)s3));
+        Assert.False(s1.Equals(null));
+        Assert.False(s1.Equals("not a speed"));
+        Assert.Equal(s1.GetHashCode(), s3.GetHashCode());
+        Assert.Equal(0, s1.CompareTo(s3));
+        Assert.True(s1.CompareTo(s2) < 0);
+        Assert.True(s2.CompareTo(s1) > 0);
+    }
+
     // --- Temperature Tests ---
 
     [Fact]
@@ -78,7 +110,7 @@ public class UnitConversionTests
     }
 
     [Fact]
-    public void TestTemperatureExceptions()
+    public void TestTemperatureExceptionsAndComparisons()
     {
         var ex1 = Record.Exception(() => Temperature.FromKelvin(0.0));
         Assert.Null(ex1);
@@ -86,6 +118,29 @@ public class UnitConversionTests
         Assert.Throws<ArgumentException>(() => Temperature.FromCelsius(-273.16));
         Assert.Throws<ArgumentException>(() => Temperature.FromKelvin(-0.01));
         Assert.Throws<ArgumentException>(() => Temperature.FromCelsius(double.NaN));
+        Assert.Throws<ArgumentException>(() => Temperature.FromFahrenheit(double.NegativeInfinity));
+
+        var t1 = Temperature.FromCelsius(20.0);
+        var t2 = Temperature.FromCelsius(30.0);
+        var t3 = Temperature.FromCelsius(20.0);
+
+        Assert.True(t1 == t3);
+        Assert.False(t1 == t2);
+        Assert.True(t1 != t2);
+        Assert.True(t1 < t2);
+        Assert.True(t2 > t1);
+        Assert.True(t1 <= t3);
+        Assert.True(t1 <= t2);
+        Assert.True(t2 >= t1);
+        Assert.True(t3 >= t1);
+
+        Assert.True(t1.Equals(t3));
+        Assert.True(t1.Equals((object)t3));
+        Assert.False(t1.Equals("not temperature"));
+        Assert.Equal(t1.GetHashCode(), t3.GetHashCode());
+        Assert.Equal(0, t1.CompareTo(t3));
+        Assert.True(t1.CompareTo(t2) < 0);
+        Assert.True(t2.CompareTo(t1) > 0);
     }
 
     // --- Mass Tests ---
@@ -115,7 +170,7 @@ public class UnitConversionTests
     }
 
     [Fact]
-    public void TestMassExceptions()
+    public void TestMassExceptionsAndComparisons()
     {
         Assert.Throws<ArgumentException>(() => Mass.FromKg(-1.0));
         Assert.Throws<ArgumentException>(() => Mass.FromGram(double.NaN));
@@ -123,6 +178,28 @@ public class UnitConversionTests
 
         var ex = Record.Exception(() => Mass.FromKg(0.0));
         Assert.Null(ex);
+
+        var m1 = Mass.FromKg(10.0);
+        var m2 = Mass.FromKg(20.0);
+        var m3 = Mass.FromKg(10.0);
+
+        Assert.True(m1 == m3);
+        Assert.False(m1 == m2);
+        Assert.True(m1 != m2);
+        Assert.True(m1 < m2);
+        Assert.True(m2 > m1);
+        Assert.True(m1 <= m3);
+        Assert.True(m1 <= m2);
+        Assert.True(m2 >= m1);
+        Assert.True(m3 >= m1);
+
+        Assert.True(m1.Equals(m3));
+        Assert.True(m1.Equals((object)m3));
+        Assert.False(m1.Equals("not mass"));
+        Assert.Equal(m1.GetHashCode(), m3.GetHashCode());
+        Assert.Equal(0, m1.CompareTo(m3));
+        Assert.True(m1.CompareTo(m2) < 0);
+        Assert.True(m2.CompareTo(m1) > 0);
     }
 
     // --- Distance Tests ---
@@ -154,6 +231,33 @@ public class UnitConversionTests
 
         Assert.Throws<ArgumentException>(() => Distance.FromMm(-1.0));
         Assert.Throws<ArgumentException>(() => Distance.FromMeters(double.NaN));
+        Assert.Throws<ArgumentException>(() => Distance.FromMeters(double.PositiveInfinity));
+    }
+
+    [Fact]
+    public void TestDistanceComparisons()
+    {
+        var d1 = Distance.FromMeters(10.0);
+        var d2 = Distance.FromMeters(20.0);
+        var d3 = Distance.FromMeters(10.0);
+
+        Assert.True(d1 == d3);
+        Assert.False(d1 == d2);
+        Assert.True(d1 != d2);
+        Assert.True(d1 < d2);
+        Assert.True(d2 > d1);
+        Assert.True(d1 <= d3);
+        Assert.True(d1 <= d2);
+        Assert.True(d2 >= d1);
+        Assert.True(d3 >= d1);
+
+        Assert.True(d1.Equals(d3));
+        Assert.True(d1.Equals((object)d3));
+        Assert.False(d1.Equals("not distance"));
+        Assert.Equal(d1.GetHashCode(), d3.GetHashCode());
+        Assert.Equal(0, d1.CompareTo(d3));
+        Assert.True(d1.CompareTo(d2) < 0);
+        Assert.True(d2.CompareTo(d1) > 0);
     }
 
     // --- Pressure Tests ---
@@ -176,7 +280,7 @@ public class UnitConversionTests
     }
 
     [Fact]
-    public void TestPressureExceptions()
+    public void TestPressureExceptionsAndComparisons()
     {
         Assert.Throws<ArgumentException>(() => Pressure.FromBar(-1.0));
         Assert.Throws<ArgumentException>(() => Pressure.FromKpa(double.NaN));
@@ -184,6 +288,28 @@ public class UnitConversionTests
 
         var ex = Record.Exception(() => Pressure.FromKpa(0.0));
         Assert.Null(ex);
+
+        var p1 = Pressure.FromKpa(100.0);
+        var p2 = Pressure.FromKpa(200.0);
+        var p3 = Pressure.FromKpa(100.0);
+
+        Assert.True(p1 == p3);
+        Assert.False(p1 == p2);
+        Assert.True(p1 != p2);
+        Assert.True(p1 < p2);
+        Assert.True(p2 > p1);
+        Assert.True(p1 <= p3);
+        Assert.True(p1 <= p2);
+        Assert.True(p2 >= p1);
+        Assert.True(p3 >= p1);
+
+        Assert.True(p1.Equals(p3));
+        Assert.True(p1.Equals((object)p3));
+        Assert.False(p1.Equals("not pressure"));
+        Assert.Equal(p1.GetHashCode(), p3.GetHashCode());
+        Assert.Equal(0, p1.CompareTo(p3));
+        Assert.True(p1.CompareTo(p2) < 0);
+        Assert.True(p2.CompareTo(p1) > 0);
     }
 
     // --- Power Tests ---
@@ -205,7 +331,7 @@ public class UnitConversionTests
     }
 
     [Fact]
-    public void TestPowerExceptions()
+    public void TestPowerExceptionsAndComparisons()
     {
         Assert.Throws<ArgumentException>(() => Power.FromKw(-1.0));
         Assert.Throws<ArgumentException>(() => Power.FromKw(double.NaN));
@@ -216,6 +342,28 @@ public class UnitConversionTests
 
         var ex = Record.Exception(() => Power.FromKw(0.0));
         Assert.Null(ex);
+
+        var p1 = Power.FromKw(50.0);
+        var p2 = Power.FromKw(100.0);
+        var p3 = Power.FromKw(50.0);
+
+        Assert.True(p1 == p3);
+        Assert.False(p1 == p2);
+        Assert.True(p1 != p2);
+        Assert.True(p1 < p2);
+        Assert.True(p2 > p1);
+        Assert.True(p1 <= p3);
+        Assert.True(p1 <= p2);
+        Assert.True(p2 >= p1);
+        Assert.True(p3 >= p1);
+
+        Assert.True(p1.Equals(p3));
+        Assert.True(p1.Equals((object)p3));
+        Assert.False(p1.Equals("not power"));
+        Assert.Equal(p1.GetHashCode(), p3.GetHashCode());
+        Assert.Equal(0, p1.CompareTo(p3));
+        Assert.True(p1.CompareTo(p2) < 0);
+        Assert.True(p2.CompareTo(p1) > 0);
     }
 
     // --- Torque Tests ---
@@ -236,7 +384,7 @@ public class UnitConversionTests
     }
 
     [Fact]
-    public void TestTorqueExceptions()
+    public void TestTorqueExceptionsAndComparisons()
     {
         Assert.Throws<ArgumentException>(() => Torque.FromNm(-1.0));
         Assert.Throws<ArgumentException>(() => Torque.FromNm(double.NaN));
@@ -244,6 +392,28 @@ public class UnitConversionTests
         
         var ex = Record.Exception(() => Torque.FromNm(0.0));
         Assert.Null(ex);
+
+        var t1 = Torque.FromNm(10.0);
+        var t2 = Torque.FromNm(20.0);
+        var t3 = Torque.FromNm(10.0);
+
+        Assert.True(t1 == t3);
+        Assert.False(t1 == t2);
+        Assert.True(t1 != t2);
+        Assert.True(t1 < t2);
+        Assert.True(t2 > t1);
+        Assert.True(t1 <= t3);
+        Assert.True(t1 <= t2);
+        Assert.True(t2 >= t1);
+        Assert.True(t3 >= t1);
+
+        Assert.True(t1.Equals(t3));
+        Assert.True(t1.Equals((object)t3));
+        Assert.False(t1.Equals("not torque"));
+        Assert.Equal(t1.GetHashCode(), t3.GetHashCode());
+        Assert.Equal(0, t1.CompareTo(t3));
+        Assert.True(t1.CompareTo(t2) < 0);
+        Assert.True(t2.CompareTo(t1) > 0);
     }
 
     // --- Angle Tests ---
@@ -287,16 +457,41 @@ public class UnitConversionTests
 
         var sr2 = Angle.FromRadians(-Math.PI * 1.5).NormalizedSigned();
         Assert.Equal(Math.PI * 0.5, sr2.ToRadians(), 0.000001);
+
+        var sr3 = Angle.FromRadians(-Math.PI * 2.5).NormalizedSigned();
+        Assert.Equal(-Math.PI * 0.5, sr3.ToRadians(), 0.000001);
     }
 
     [Fact]
-    public void TestAngleExceptions()
+    public void TestAngleExceptionsAndComparisons()
     {
         Assert.Throws<ArgumentException>(() => Angle.FromRadians(double.NaN));
         Assert.Throws<ArgumentException>(() => Angle.FromDegrees(double.PositiveInfinity));
 
         var ex = Record.Exception(() => Angle.FromDegrees(0.0));
         Assert.Null(ex);
+
+        var a1 = Angle.FromDegrees(45.0);
+        var a2 = Angle.FromDegrees(90.0);
+        var a3 = Angle.FromDegrees(45.0);
+
+        Assert.True(a1 == a3);
+        Assert.False(a1 == a2);
+        Assert.True(a1 != a2);
+        Assert.True(a1 < a2);
+        Assert.True(a2 > a1);
+        Assert.True(a1 <= a3);
+        Assert.True(a1 <= a2);
+        Assert.True(a2 >= a1);
+        Assert.True(a3 >= a1);
+
+        Assert.True(a1.Equals(a3));
+        Assert.True(a1.Equals((object)a3));
+        Assert.False(a1.Equals("not angle"));
+        Assert.Equal(a1.GetHashCode(), a3.GetHashCode());
+        Assert.Equal(0, a1.CompareTo(a3));
+        Assert.True(a1.CompareTo(a2) < 0);
+        Assert.True(a2.CompareTo(a1) > 0);
     }
 
     // --- Efficiency Tests ---
@@ -320,13 +515,35 @@ public class UnitConversionTests
     }
 
     [Fact]
-    public void TestEfficiencyExceptions()
+    public void TestEfficiencyExceptionsAndComparisons()
     {
         Assert.Throws<ArgumentException>(() => Efficiency.FromKml(0.0));
         Assert.Throws<ArgumentException>(() => Efficiency.FromKml(-1.0));
         Assert.Throws<ArgumentException>(() => Efficiency.FromL100km(-5.0));
         Assert.Throws<ArgumentException>(() => Efficiency.FromKml(double.NaN));
         Assert.Throws<ArgumentException>(() => Efficiency.FromKml(double.PositiveInfinity));
+
+        var e1 = Efficiency.FromKml(10.0);
+        var e2 = Efficiency.FromKml(15.0);
+        var e3 = Efficiency.FromKml(10.0);
+
+        Assert.True(e1 == e3);
+        Assert.False(e1 == e2);
+        Assert.True(e1 != e2);
+        Assert.True(e1 < e2);
+        Assert.True(e2 > e1);
+        Assert.True(e1 <= e3);
+        Assert.True(e1 <= e2);
+        Assert.True(e2 >= e1);
+        Assert.True(e3 >= e1);
+
+        Assert.True(e1.Equals(e3));
+        Assert.True(e1.Equals((object)e3));
+        Assert.False(e1.Equals("not efficiency"));
+        Assert.Equal(e1.GetHashCode(), e3.GetHashCode());
+        Assert.Equal(0, e1.CompareTo(e3));
+        Assert.True(e1.CompareTo(e2) < 0);
+        Assert.True(e2.CompareTo(e1) > 0);
     }
 
     // --- EvEfficiency Tests ---
@@ -356,11 +573,34 @@ public class UnitConversionTests
     }
 
     [Fact]
-    public void TestEvEfficiencyExceptions()
+    public void TestEvEfficiencyExceptionsAndComparisons()
     {
         Assert.Throws<ArgumentException>(() => EvEfficiency.FromKmkWh(0.0));
         Assert.Throws<ArgumentException>(() => EvEfficiency.FromWhkm(-1.0));
         Assert.Throws<ArgumentException>(() => EvEfficiency.FromKmkWh(double.NaN));
+        Assert.Throws<ArgumentException>(() => EvEfficiency.FromKmkWh(double.PositiveInfinity));
+
+        var e1 = EvEfficiency.FromKmkWh(5.0);
+        var e2 = EvEfficiency.FromKmkWh(6.0);
+        var e3 = EvEfficiency.FromKmkWh(5.0);
+
+        Assert.True(e1 == e3);
+        Assert.False(e1 == e2);
+        Assert.True(e1 != e2);
+        Assert.True(e1 < e2);
+        Assert.True(e2 > e1);
+        Assert.True(e1 <= e3);
+        Assert.True(e1 <= e2);
+        Assert.True(e2 >= e1);
+        Assert.True(e3 >= e1);
+
+        Assert.True(e1.Equals(e3));
+        Assert.True(e1.Equals((object)e3));
+        Assert.False(e1.Equals("not evefficiency"));
+        Assert.Equal(e1.GetHashCode(), e3.GetHashCode());
+        Assert.Equal(0, e1.CompareTo(e3));
+        Assert.True(e1.CompareTo(e2) < 0);
+        Assert.True(e2.CompareTo(e1) > 0);
     }
 
     // --- Volume Tests ---
@@ -389,7 +629,7 @@ public class UnitConversionTests
     }
 
     [Fact]
-    public void TestVolumeExceptions()
+    public void TestVolumeExceptionsAndComparisons()
     {
         Assert.Throws<ArgumentException>(() => Volume.FromLiters(-1.0));
         Assert.Throws<ArgumentException>(() => Volume.FromMl(double.NaN));
@@ -397,6 +637,28 @@ public class UnitConversionTests
 
         var ex = Record.Exception(() => Volume.FromLiters(0.0));
         Assert.Null(ex);
+
+        var v1 = Volume.FromLiters(10.0);
+        var v2 = Volume.FromLiters(20.0);
+        var v3 = Volume.FromLiters(10.0);
+
+        Assert.True(v1 == v3);
+        Assert.False(v1 == v2);
+        Assert.True(v1 != v2);
+        Assert.True(v1 < v2);
+        Assert.True(v2 > v1);
+        Assert.True(v1 <= v3);
+        Assert.True(v1 <= v2);
+        Assert.True(v2 >= v1);
+        Assert.True(v3 >= v1);
+
+        Assert.True(v1.Equals(v3));
+        Assert.True(v1.Equals((object)v3));
+        Assert.False(v1.Equals("not volume"));
+        Assert.Equal(v1.GetHashCode(), v3.GetHashCode());
+        Assert.Equal(0, v1.CompareTo(v3));
+        Assert.True(v1.CompareTo(v2) < 0);
+        Assert.True(v2.CompareTo(v1) > 0);
     }
 
     // --- Time Tests ---
@@ -422,11 +684,33 @@ public class UnitConversionTests
     }
 
     [Fact]
-    public void TestTimeExceptions()
+    public void TestTimeExceptionsAndComparisons()
     {
         Assert.Throws<ArgumentException>(() => Time.FromSeconds(double.NaN));
         Assert.Throws<ArgumentException>(() => Time.FromSeconds(-1.0));
         Assert.Throws<ArgumentException>(() => Time.FromSeconds(double.PositiveInfinity));
+
+        var t1 = Time.FromSeconds(10.0);
+        var t2 = Time.FromSeconds(20.0);
+        var t3 = Time.FromSeconds(10.0);
+
+        Assert.True(t1 == t3);
+        Assert.False(t1 == t2);
+        Assert.True(t1 != t2);
+        Assert.True(t1 < t2);
+        Assert.True(t2 > t1);
+        Assert.True(t1 <= t3);
+        Assert.True(t1 <= t2);
+        Assert.True(t2 >= t1);
+        Assert.True(t3 >= t1);
+
+        Assert.True(t1.Equals(t3));
+        Assert.True(t1.Equals((object)t3));
+        Assert.False(t1.Equals("not time"));
+        Assert.Equal(t1.GetHashCode(), t3.GetHashCode());
+        Assert.Equal(0, t1.CompareTo(t3));
+        Assert.True(t1.CompareTo(t2) < 0);
+        Assert.True(t2.CompareTo(t1) > 0);
     }
 
     // --- Acceleration & Operators Tests ---
@@ -521,6 +805,31 @@ public class UnitConversionTests
     }
 
     [Fact]
+    public void TestZeroDivisionExceptions()
+    {
+        // Speed / Acceleration (zero accel)
+        Assert.Throws<ArgumentException>(() => Speed.FromMs(10.0) / Acceleration.FromMs2(0.0));
+
+        // Distance / Time (zero time)
+        Assert.Throws<ArgumentException>(() => Distance.FromMeters(100.0) / Time.FromSeconds(0.0));
+
+        // Distance / Speed (zero speed)
+        Assert.Throws<ArgumentException>(() => Distance.FromMeters(100.0) / Speed.FromMs(0.0));
+
+        // Distance / Distance (zero distance denominator)
+        Assert.Throws<ArgumentException>(() => Distance.FromMeters(100.0) / Distance.FromMeters(0.0));
+
+        // Speed / Time (zero time)
+        Assert.Throws<ArgumentException>(() => Speed.FromMs(10.0) / Time.FromSeconds(0.0));
+
+        // Time / Acceleration (zero accel)
+        Assert.Throws<ArgumentException>(() => Time.FromSeconds(10.0) / Acceleration.FromMs2(0.0));
+
+        // Acceleration / Time (zero time)
+        Assert.Throws<ArgumentException>(() => Acceleration.FromMs2(9.8) / Time.FromSeconds(0.0));
+    }
+
+    [Fact]
     public void TestScalarMultiplication()
     {
         var v = Speed.FromMs(10.0) * 0.5;
@@ -534,5 +843,34 @@ public class UnitConversionTests
 
         var a_scalar_left = 2.0 * Acceleration.FromMs2(9.8);
         Assert.Equal(19.6, a_scalar_left.ToMs2(), 1e-9);
+
+        var a_mul = Acceleration.FromMs2(9.8) * 2.0;
+        Assert.Equal(19.6, a_mul.ToMs2(), 1e-9);
+    }
+
+    [Fact]
+    public void TestAccelerationComparisons()
+    {
+        var a1 = Acceleration.FromMs2(1.0);
+        var a2 = Acceleration.FromMs2(2.0);
+        var a3 = Acceleration.FromMs2(1.0);
+
+        Assert.True(a1 == a3);
+        Assert.False(a1 == a2);
+        Assert.True(a1 != a2);
+        Assert.True(a1 < a2);
+        Assert.True(a2 > a1);
+        Assert.True(a1 <= a3);
+        Assert.True(a1 <= a2);
+        Assert.True(a2 >= a1);
+        Assert.True(a3 >= a1);
+
+        Assert.True(a1.Equals(a3));
+        Assert.True(a1.Equals((object)a3));
+        Assert.False(a1.Equals("not acceleration"));
+        Assert.Equal(a1.GetHashCode(), a3.GetHashCode());
+        Assert.Equal(0, a1.CompareTo(a3));
+        Assert.True(a1.CompareTo(a2) < 0);
+        Assert.True(a2.CompareTo(a1) > 0);
     }
 }
