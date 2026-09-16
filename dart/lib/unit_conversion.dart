@@ -16,7 +16,7 @@
 
 import 'dart:math' as math;
 
-class Speed {
+class Speed implements Comparable<Speed> {
   final double _ms;
   static const double convert_kmh_ms = 3.6;
   static const double convert_mph_ms = 0.44704;
@@ -34,10 +34,24 @@ class Speed {
   double get toKmH => _ms * convert_kmh_ms;
   double get toMph => _ms / convert_mph_ms;
   double get toMs => _ms;
+
+  @override
+  int compareTo(Speed other) => _ms.compareTo(other._ms);
+
+  @override
+  bool operator ==(Object other) => other is Speed && _ms == other._ms;
+
+  @override
+  int get hashCode => _ms.hashCode;
+
+  bool operator <(Speed other) => _ms < other._ms;
+  bool operator <=(Speed other) => _ms <= other._ms;
+  bool operator >(Speed other) => _ms > other._ms;
+  bool operator >=(Speed other) => _ms >= other._ms;
 }
 
 
-class Temperature {
+class Temperature implements Comparable<Temperature> {
   final double _celsius;
   static const double _fOffset = 32.0;
   static const double _fFactor = 1.8;
@@ -57,10 +71,24 @@ class Temperature {
   double get toCelsius => _celsius;
   double get toFahrenheit => _celsius * _fFactor + _fOffset;
   double get toKelvin => _celsius + _kOffset;
+
+  @override
+  int compareTo(Temperature other) => _celsius.compareTo(other._celsius);
+
+  @override
+  bool operator ==(Object other) => other is Temperature && _celsius == other._celsius;
+
+  @override
+  int get hashCode => _celsius.hashCode;
+
+  bool operator <(Temperature other) => _celsius < other._celsius;
+  bool operator <=(Temperature other) => _celsius <= other._celsius;
+  bool operator >(Temperature other) => _celsius > other._celsius;
+  bool operator >=(Temperature other) => _celsius >= other._celsius;
 }
 
 
-class Mass {
+class Mass implements Comparable<Mass> {
   final double _kg;
   static const double _gToKg = 0.001;
   static const double _lbToKg = 0.45359237;
@@ -81,10 +109,24 @@ class Mass {
   double get toGram => _kg / _gToKg;
   double get toLb => _kg / _lbToKg;
   double get toOz => _kg / _ozToKg;
+
+  @override
+  int compareTo(Mass other) => _kg.compareTo(other._kg);
+
+  @override
+  bool operator ==(Object other) => other is Mass && _kg == other._kg;
+
+  @override
+  int get hashCode => _kg.hashCode;
+
+  bool operator <(Mass other) => _kg < other._kg;
+  bool operator <=(Mass other) => _kg <= other._kg;
+  bool operator >(Mass other) => _kg > other._kg;
+  bool operator >=(Mass other) => _kg >= other._kg;
 }
 
 
-class Distance {
+class Distance implements Comparable<Distance> {
   final double _meters;
   static const double _kmToM = 1000.0;
   static const double _mileToM = 1609.344;
@@ -109,10 +151,24 @@ class Distance {
   double get toFeet => _meters / _ftToM;
   double get toInch => _meters / _inToM;
   double get toMm => _meters / _mmToM;
+
+  @override
+  int compareTo(Distance other) => _meters.compareTo(other._meters);
+
+  @override
+  bool operator ==(Object other) => other is Distance && _meters == other._meters;
+
+  @override
+  int get hashCode => _meters.hashCode;
+
+  bool operator <(Distance other) => _meters < other._meters;
+  bool operator <=(Distance other) => _meters <= other._meters;
+  bool operator >(Distance other) => _meters > other._meters;
+  bool operator >=(Distance other) => _meters >= other._meters;
 }
 
 
-class Pressure {
+class Pressure implements Comparable<Pressure> {
   final double _kpa;
   static const double _barToKpa = 100.0;
   static const double _psiToKpa = 6.89476;
@@ -130,10 +186,24 @@ class Pressure {
   double get toKpa => _kpa;
   double get toBar => _kpa / _barToKpa;
   double get toPsi => _kpa / _psiToKpa;
+
+  @override
+  int compareTo(Pressure other) => _kpa.compareTo(other._kpa);
+
+  @override
+  bool operator ==(Object other) => other is Pressure && _kpa == other._kpa;
+
+  @override
+  int get hashCode => _kpa.hashCode;
+
+  bool operator <(Pressure other) => _kpa < other._kpa;
+  bool operator <=(Pressure other) => _kpa <= other._kpa;
+  bool operator >(Pressure other) => _kpa > other._kpa;
+  bool operator >=(Pressure other) => _kpa >= other._kpa;
 }
 
 
-class Power {
+class Power implements Comparable<Power> {
   final double _kw;
   static const double _psToKw = 0.73549875;
   static const double _hpToKw = 0.74569987;
@@ -151,10 +221,24 @@ class Power {
   double get toKw => _kw;
   double get toPs => _kw / _psToKw;
   double get toHp => _kw / _hpToKw;
+
+  @override
+  int compareTo(Power other) => _kw.compareTo(other._kw);
+
+  @override
+  bool operator ==(Object other) => other is Power && _kw == other._kw;
+
+  @override
+  int get hashCode => _kw.hashCode;
+
+  bool operator <(Power other) => _kw < other._kw;
+  bool operator <=(Power other) => _kw <= other._kw;
+  bool operator >(Power other) => _kw > other._kw;
+  bool operator >=(Power other) => _kw >= other._kw;
 }
 
 
-class Torque {
+class Torque implements Comparable<Torque> {
   final double _nm;
   static const double _kgfmToNm = 9.80665;
   static const double _lbftToNm = 1.355817948;
@@ -169,10 +253,24 @@ class Torque {
   double get toNm => _nm;
   double get toKgfm => _nm / _kgfmToNm;
   double get toLbft => _nm / _lbftToNm;
+
+  @override
+  int compareTo(Torque other) => _nm.compareTo(other._nm);
+
+  @override
+  bool operator ==(Object other) => other is Torque && _nm == other._nm;
+
+  @override
+  int get hashCode => _nm.hashCode;
+
+  bool operator <(Torque other) => _nm < other._nm;
+  bool operator <=(Torque other) => _nm <= other._nm;
+  bool operator >(Torque other) => _nm > other._nm;
+  bool operator >=(Torque other) => _nm >= other._nm;
 }
 
 
-class Angle {
+class Angle implements Comparable<Angle> {
   final double _rad;
   static const double _degToRad = math.pi / 180.0;
   static const double _twoPi = math.pi * 2.0;
@@ -212,10 +310,24 @@ class Angle {
     }
     return Angle._(r - math.pi);
   }
+
+  @override
+  int compareTo(Angle other) => _rad.compareTo(other._rad);
+
+  @override
+  bool operator ==(Object other) => other is Angle && _rad == other._rad;
+
+  @override
+  int get hashCode => _rad.hashCode;
+
+  bool operator <(Angle other) => _rad < other._rad;
+  bool operator <=(Angle other) => _rad <= other._rad;
+  bool operator >(Angle other) => _rad > other._rad;
+  bool operator >=(Angle other) => _rad >= other._rad;
 }
 
 
-class Efficiency {
+class Efficiency implements Comparable<Efficiency> {
   final double _kml;
   static const double _mpgToKml = 0.425143707;
 
@@ -230,10 +342,24 @@ class Efficiency {
   double get toKml => _kml;
   double get toL100km => 100.0 / _kml;
   double get toMpg => _kml / _mpgToKml;
+
+  @override
+  int compareTo(Efficiency other) => _kml.compareTo(other._kml);
+
+  @override
+  bool operator ==(Object other) => other is Efficiency && _kml == other._kml;
+
+  @override
+  int get hashCode => _kml.hashCode;
+
+  bool operator <(Efficiency other) => _kml < other._kml;
+  bool operator <=(Efficiency other) => _kml <= other._kml;
+  bool operator >(Efficiency other) => _kml > other._kml;
+  bool operator >=(Efficiency other) => _kml >= other._kml;
 }
 
 
-class EvEfficiency {
+class EvEfficiency implements Comparable<EvEfficiency> {
   final double _kmPerKwh;
   static const double _mileToKm = 1.609344;
 
@@ -250,10 +376,24 @@ class EvEfficiency {
   double get toWhkm => 1000.0 / _kmPerKwh;
   double get toKwh100km => 100.0 / _kmPerKwh;
   double get toMpKwh => _kmPerKwh / _mileToKm;
+
+  @override
+  int compareTo(EvEfficiency other) => _kmPerKwh.compareTo(other._kmPerKwh);
+
+  @override
+  bool operator ==(Object other) => other is EvEfficiency && _kmPerKwh == other._kmPerKwh;
+
+  @override
+  int get hashCode => _kmPerKwh.hashCode;
+
+  bool operator <(EvEfficiency other) => _kmPerKwh < other._kmPerKwh;
+  bool operator <=(EvEfficiency other) => _kmPerKwh <= other._kmPerKwh;
+  bool operator >(EvEfficiency other) => _kmPerKwh > other._kmPerKwh;
+  bool operator >=(EvEfficiency other) => _kmPerKwh >= other._kmPerKwh;
 }
 
 
-class Volume {
+class Volume implements Comparable<Volume> {
   final double _l;
   static const double _usGal = 3.785411784;
   static const double _impGal = 4.54609;
@@ -273,10 +413,24 @@ class Volume {
   double get toMl => _l * 1000.0;
   double get toUsGallons => _l / _usGal;
   double get toImpGallons => _l / _impGal;
+
+  @override
+  int compareTo(Volume other) => _l.compareTo(other._l);
+
+  @override
+  bool operator ==(Object other) => other is Volume && _l == other._l;
+
+  @override
+  int get hashCode => _l.hashCode;
+
+  bool operator <(Volume other) => _l < other._l;
+  bool operator <=(Volume other) => _l <= other._l;
+  bool operator >(Volume other) => _l > other._l;
+  bool operator >=(Volume other) => _l >= other._l;
 }
 
 
-class Time {
+class Time implements Comparable<Time> {
   final double _s;
 
   Time._(this._s) {
@@ -292,10 +446,24 @@ class Time {
   double get toSeconds => _s;
   double get toMinutes => _s / 60.0;
   double get toHours => _s / 3600.0;
+
+  @override
+  int compareTo(Time other) => _s.compareTo(other._s);
+
+  @override
+  bool operator ==(Object other) => other is Time && _s == other._s;
+
+  @override
+  int get hashCode => _s.hashCode;
+
+  bool operator <(Time other) => _s < other._s;
+  bool operator <=(Time other) => _s <= other._s;
+  bool operator >(Time other) => _s > other._s;
+  bool operator >=(Time other) => _s >= other._s;
 }
 
 
-class Acceleration {
+class Acceleration implements Comparable<Acceleration> {
   final double _ms2;
 
   Acceleration.fromMs2(double ms2) : _ms2 = ms2 {
@@ -312,6 +480,20 @@ class Acceleration {
   }
 
   double get toMs2 => _ms2;
+
+  @override
+  int compareTo(Acceleration other) => _ms2.compareTo(other._ms2);
+
+  @override
+  bool operator ==(Object other) => other is Acceleration && _ms2 == other._ms2;
+
+  @override
+  int get hashCode => _ms2.hashCode;
+
+  bool operator <(Acceleration other) => _ms2 < other._ms2;
+  bool operator <=(Acceleration other) => _ms2 <= other._ms2;
+  bool operator >(Acceleration other) => _ms2 > other._ms2;
+  bool operator >=(Acceleration other) => _ms2 >= other._ms2;
 }
 
 

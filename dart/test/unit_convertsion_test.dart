@@ -64,6 +64,36 @@ void main() {
       expect(() => Speed.fromMs(double.nan), throwsArgumentError);
       expect(() => Speed.fromMs(double.infinity), throwsArgumentError);
     });
+
+    test('Speed Comparison, Equality and Operators', () {
+      final s1 = Speed.fromKmH(50.0);
+      final s2 = Speed.fromKmH(50.0);
+      final s3 = Speed.fromKmH(100.0);
+
+      expect(s1 == s2, isTrue);
+      expect(s1 == s3, isFalse);
+      expect(s1 == 'not a speed', isFalse);
+      expect(s1.hashCode, equals(s2.hashCode));
+
+      expect(s1.compareTo(s3), lessThan(0));
+      expect(s3.compareTo(s1), greaterThan(0));
+      expect(s1.compareTo(s2), equals(0));
+
+      expect(s1 < s3, isTrue);
+      expect(s1 <= s2, isTrue);
+      expect(s3 > s1, isTrue);
+      expect(s3 >= s1, isTrue);
+      expect(s3 < s1, isFalse);
+      expect(s3 <= s1, isFalse);
+      expect(s1 > s3, isFalse);
+      expect(s1 >= s3, isFalse);
+
+      // Speed subtraction and addition
+      final sub = Speed.fromKmH(100.0) - Speed.fromKmH(40.0);
+      expect(sub.toKmH, closeTo(60.0, epsilon));
+      final add = Speed.fromKmH(40.0) + Speed.fromKmH(60.0);
+      expect(add.toKmH, closeTo(100.0, epsilon));
+    });
   });
 
 
@@ -101,6 +131,31 @@ void main() {
 
       expect(() => Temperature.fromCelsius(double.nan), throwsArgumentError);
       expect(() => Temperature.fromCelsius(double.infinity), throwsArgumentError);
+      expect(() => Temperature.fromKelvin(double.infinity), throwsArgumentError);
+    });
+
+    test('Temperature Comparison and Operators', () {
+      final t1 = Temperature.fromCelsius(25.0);
+      final t2 = Temperature.fromCelsius(25.0);
+      final t3 = Temperature.fromCelsius(30.0);
+
+      expect(t1 == t2, isTrue);
+      expect(t1 == t3, isFalse);
+      expect(t1 == 'not a temp', isFalse);
+      expect(t1.hashCode, equals(t2.hashCode));
+
+      expect(t1.compareTo(t3), lessThan(0));
+      expect(t3.compareTo(t1), greaterThan(0));
+      expect(t1.compareTo(t2), equals(0));
+
+      expect(t1 < t3, isTrue);
+      expect(t1 <= t2, isTrue);
+      expect(t3 > t1, isTrue);
+      expect(t3 >= t1, isTrue);
+      expect(t3 < t1, isFalse);
+      expect(t3 <= t1, isFalse);
+      expect(t1 > t3, isFalse);
+      expect(t1 >= t3, isFalse);
     });
   });
 
@@ -144,6 +199,33 @@ void main() {
       expect(() => Mass.fromKg(double.nan), throwsArgumentError);
       expect(() => Mass.fromKg(double.infinity), throwsArgumentError);
     });
+
+    test('Mass Comparison and Operators', () {
+      final m1 = Mass.fromKg(10.0);
+      final m2 = Mass.fromKg(10.0);
+      final m3 = Mass.fromKg(20.0);
+
+      expect(m1 == m2, isTrue);
+      expect(m1 == m3, isFalse);
+      expect(m1 == 'not a mass', isFalse);
+      expect(m1.hashCode, equals(m2.hashCode));
+
+      expect(m1.compareTo(m3), lessThan(0));
+      expect(m3.compareTo(m1), greaterThan(0));
+      expect(m1.compareTo(m2), equals(0));
+
+      expect(m1 < m3, isTrue);
+      expect(m1 <= m2, isTrue);
+      expect(m3 > m1, isTrue);
+      expect(m3 >= m1, isTrue);
+      expect(m3 < m1, isFalse);
+      expect(m3 <= m1, isFalse);
+      expect(m1 > m3, isFalse);
+      expect(m1 >= m3, isFalse);
+
+      final multiplied = Mass.fromKg(5.0) * 2.0;
+      expect(multiplied.toKg, closeTo(10.0, 1e-9));
+    });
   });
 
 
@@ -184,6 +266,33 @@ void main() {
       expect(() => Distance.fromKm(double.nan), throwsArgumentError);
       expect(() => Distance.fromMile(double.infinity), throwsArgumentError);
     });
+
+    test('Distance Comparison, Equality and Operators', () {
+      final d1 = Distance.fromMeters(100.0);
+      final d2 = Distance.fromMeters(100.0);
+      final d3 = Distance.fromMeters(200.0);
+
+      expect(d1 == d2, isTrue);
+      expect(d1 == d3, isFalse);
+      expect(d1 == 'not a distance', isFalse);
+      expect(d1.hashCode, equals(d2.hashCode));
+
+      expect(d1.compareTo(d3), lessThan(0));
+      expect(d3.compareTo(d1), greaterThan(0));
+      expect(d1.compareTo(d2), equals(0));
+
+      expect(d1 < d3, isTrue);
+      expect(d1 <= d2, isTrue);
+      expect(d3 > d1, isTrue);
+      expect(d3 >= d1, isTrue);
+      expect(d3 < d1, isFalse);
+      expect(d3 <= d1, isFalse);
+      expect(d1 > d3, isFalse);
+      expect(d1 >= d3, isFalse);
+
+      final multiplied = Distance.fromMeters(50.0) * 2.0;
+      expect(multiplied.toMeters, closeTo(100.0, 1e-9));
+    });
   });
 
 
@@ -214,12 +323,37 @@ void main() {
       expect(() => Pressure.fromKpa(double.nan), throwsArgumentError);
       expect(() => Pressure.fromKpa(double.infinity), throwsArgumentError);
     });
+
+    test('Pressure Comparison and Operators', () {
+      final p1 = Pressure.fromKpa(100.0);
+      final p2 = Pressure.fromKpa(100.0);
+      final p3 = Pressure.fromKpa(200.0);
+
+      expect(p1 == p2, isTrue);
+      expect(p1 == p3, isFalse);
+      expect(p1 == 'not pressure', isFalse);
+      expect(p1.hashCode, equals(p2.hashCode));
+
+      expect(p1.compareTo(p3), lessThan(0));
+      expect(p3.compareTo(p1), greaterThan(0));
+      expect(p1.compareTo(p2), equals(0));
+
+      expect(p1 < p3, isTrue);
+      expect(p1 <= p2, isTrue);
+      expect(p3 > p1, isTrue);
+      expect(p3 >= p1, isTrue);
+      expect(p3 < p1, isFalse);
+      expect(p3 <= p1, isFalse);
+      expect(p1 > p3, isFalse);
+      expect(p1 >= p3, isFalse);
+    });
   });
 
   group('Power Conversion tests', () {
     test('Power Matrix and Guards', () {
       final p = Power.fromPs(100);
       expect(p.toKw, closeTo(73.549, 0.001));
+      expect(p.toHp, closeTo(p.toKw / 0.74569987, 0.001));
       
       expect(() => Power.fromKw(double.nan), throwsArgumentError);
       expect(() => Power.fromKw(double.infinity), throwsArgumentError);
@@ -232,6 +366,30 @@ void main() {
       expect(() => Power.fromHp(double.nan), throwsArgumentError);
       expect(() => Power.fromHp(double.infinity), throwsArgumentError);
       expect(() => Power.fromHp(-5.0), throwsArgumentError);
+    });
+
+    test('Power Comparison and Operators', () {
+      final p1 = Power.fromKw(50.0);
+      final p2 = Power.fromKw(50.0);
+      final p3 = Power.fromKw(100.0);
+
+      expect(p1 == p2, isTrue);
+      expect(p1 == p3, isFalse);
+      expect(p1 == 'not power', isFalse);
+      expect(p1.hashCode, equals(p2.hashCode));
+
+      expect(p1.compareTo(p3), lessThan(0));
+      expect(p3.compareTo(p1), greaterThan(0));
+      expect(p1.compareTo(p2), equals(0));
+
+      expect(p1 < p3, isTrue);
+      expect(p1 <= p2, isTrue);
+      expect(p3 > p1, isTrue);
+      expect(p3 >= p1, isTrue);
+      expect(p3 < p1, isFalse);
+      expect(p3 <= p1, isFalse);
+      expect(p1 > p3, isFalse);
+      expect(p1 >= p3, isFalse);
     });
   });
 
@@ -263,6 +421,30 @@ void main() {
       expect(() => Torque.fromKgfm(double.infinity), throwsArgumentError);
       expect(() => Torque.fromLbft(-5.0), throwsArgumentError);
    });
+
+    test('Torque Comparison and Operators', () {
+      final t1 = Torque.fromNm(100.0);
+      final t2 = Torque.fromNm(100.0);
+      final t3 = Torque.fromNm(200.0);
+
+      expect(t1 == t2, isTrue);
+      expect(t1 == t3, isFalse);
+      expect(t1 == 'not torque', isFalse);
+      expect(t1.hashCode, equals(t2.hashCode));
+
+      expect(t1.compareTo(t3), lessThan(0));
+      expect(t3.compareTo(t1), greaterThan(0));
+      expect(t1.compareTo(t2), equals(0));
+
+      expect(t1 < t3, isTrue);
+      expect(t1 <= t2, isTrue);
+      expect(t3 > t1, isTrue);
+      expect(t3 >= t1, isTrue);
+      expect(t3 < t1, isFalse);
+      expect(t3 <= t1, isFalse);
+      expect(t1 > t3, isFalse);
+      expect(t1 >= t3, isFalse);
+    });
   });
 
   group('Angle Conversion Tests', () {
@@ -303,6 +485,30 @@ void main() {
       final a2 = Angle.fromRadians(-math.pi * 1.5).normalizedSigned();
       expect(a2.toRadians, closeTo(math.pi * 0.5, epsilon));
     });
+
+    test('Angle Comparison and Operators', () {
+      final a1 = Angle.fromDegrees(45.0);
+      final a2 = Angle.fromDegrees(45.0);
+      final a3 = Angle.fromDegrees(90.0);
+
+      expect(a1 == a2, isTrue);
+      expect(a1 == a3, isFalse);
+      expect(a1 == 'not angle', isFalse);
+      expect(a1.hashCode, equals(a2.hashCode));
+
+      expect(a1.compareTo(a3), lessThan(0));
+      expect(a3.compareTo(a1), greaterThan(0));
+      expect(a1.compareTo(a2), equals(0));
+
+      expect(a1 < a3, isTrue);
+      expect(a1 <= a2, isTrue);
+      expect(a3 > a1, isTrue);
+      expect(a3 >= a1, isTrue);
+      expect(a3 < a1, isFalse);
+      expect(a3 <= a1, isFalse);
+      expect(a1 > a3, isFalse);
+      expect(a1 >= a3, isFalse);
+    });
   });
 
 
@@ -333,6 +539,31 @@ void main() {
       expect(() => Efficiency.fromKml(double.nan), throwsArgumentError);
       expect(() => Efficiency.fromL100km(double.nan), throwsArgumentError);
       expect(() => Efficiency.fromMpg(double.nan), throwsArgumentError);
+      expect(() => Efficiency.fromKml(double.infinity), throwsArgumentError);
+    });
+
+    test('Efficiency Comparison and Operators', () {
+      final e1 = Efficiency.fromKml(10.0);
+      final e2 = Efficiency.fromKml(10.0);
+      final e3 = Efficiency.fromKml(15.0);
+
+      expect(e1 == e2, isTrue);
+      expect(e1 == e3, isFalse);
+      expect(e1 == 'not efficiency', isFalse);
+      expect(e1.hashCode, equals(e2.hashCode));
+
+      expect(e1.compareTo(e3), lessThan(0));
+      expect(e3.compareTo(e1), greaterThan(0));
+      expect(e1.compareTo(e2), equals(0));
+
+      expect(e1 < e3, isTrue);
+      expect(e1 <= e2, isTrue);
+      expect(e3 > e1, isTrue);
+      expect(e3 >= e1, isTrue);
+      expect(e3 < e1, isFalse);
+      expect(e3 <= e1, isFalse);
+      expect(e1 > e3, isFalse);
+      expect(e1 >= e3, isFalse);
     });
   });
 
@@ -377,6 +608,31 @@ void main() {
       expect(() => EvEfficiency.fromMpKwh(0.0), throwsArgumentError);
       expect(() => EvEfficiency.fromKmkWh(-1.0), throwsArgumentError);
       expect(() => EvEfficiency.fromKmkWh(double.nan), throwsArgumentError);
+      expect(() => EvEfficiency.fromKmkWh(double.infinity), throwsArgumentError);
+    });
+
+    test('EvEfficiency Comparison and Operators', () {
+      final e1 = EvEfficiency.fromKmkWh(5.0);
+      final e2 = EvEfficiency.fromKmkWh(5.0);
+      final e3 = EvEfficiency.fromKmkWh(6.0);
+
+      expect(e1 == e2, isTrue);
+      expect(e1 == e3, isFalse);
+      expect(e1 == 'not evefficiency', isFalse);
+      expect(e1.hashCode, equals(e2.hashCode));
+
+      expect(e1.compareTo(e3), lessThan(0));
+      expect(e3.compareTo(e1), greaterThan(0));
+      expect(e1.compareTo(e2), equals(0));
+
+      expect(e1 < e3, isTrue);
+      expect(e1 <= e2, isTrue);
+      expect(e3 > e1, isTrue);
+      expect(e3 >= e1, isTrue);
+      expect(e3 < e1, isFalse);
+      expect(e3 <= e1, isFalse);
+      expect(e1 > e3, isFalse);
+      expect(e1 >= e3, isFalse);
     });
   });
 
@@ -418,6 +674,30 @@ void main() {
       expect(() => Volume.fromMl(double.nan), throwsArgumentError);
       expect(() => Volume.fromUsGallons(double.infinity), throwsArgumentError);
     });
+
+    test('Volume Comparison and Operators', () {
+      final v1 = Volume.fromLiters(10.0);
+      final v2 = Volume.fromLiters(10.0);
+      final v3 = Volume.fromLiters(20.0);
+
+      expect(v1 == v2, isTrue);
+      expect(v1 == v3, isFalse);
+      expect(v1 == 'not volume', isFalse);
+      expect(v1.hashCode, equals(v2.hashCode));
+
+      expect(v1.compareTo(v3), lessThan(0));
+      expect(v3.compareTo(v1), greaterThan(0));
+      expect(v1.compareTo(v2), equals(0));
+
+      expect(v1 < v3, isTrue);
+      expect(v1 <= v2, isTrue);
+      expect(v3 > v1, isTrue);
+      expect(v3 >= v1, isTrue);
+      expect(v3 < v1, isFalse);
+      expect(v3 <= v1, isFalse);
+      expect(v1 > v3, isFalse);
+      expect(v1 >= v3, isFalse);
+    });
   });
 
 
@@ -440,6 +720,38 @@ void main() {
       final t = Time.fromSeconds(60.0) / 2.0;
       expect(t.toSeconds, closeTo(30.0, 1e-9));
       expect(() => Time.fromSeconds(60.0) / 0.0, throwsArgumentError);
+    });
+
+    test('Time Comparison, Equality and Operators', () {
+      final t1 = Time.fromSeconds(30.0);
+      final t2 = Time.fromSeconds(30.0);
+      final t3 = Time.fromSeconds(60.0);
+
+      expect(t1 == t2, isTrue);
+      expect(t1 == t3, isFalse);
+      expect(t1 == 'not time', isFalse);
+      expect(t1.hashCode, equals(t2.hashCode));
+
+      expect(t1.compareTo(t3), lessThan(0));
+      expect(t3.compareTo(t1), greaterThan(0));
+      expect(t1.compareTo(t2), equals(0));
+
+      expect(t1 < t3, isTrue);
+      expect(t1 <= t2, isTrue);
+      expect(t3 > t1, isTrue);
+      expect(t3 >= t1, isTrue);
+      expect(t3 < t1, isFalse);
+      expect(t3 <= t1, isFalse);
+      expect(t1 > t3, isFalse);
+      expect(t1 >= t3, isFalse);
+
+      final multiplied = Time.fromSeconds(15.0) * 2.0;
+      expect(multiplied.toSeconds, closeTo(30.0, 1e-9));
+
+      // Time / Acceleration -> Speed test
+      final s = Time.fromSeconds(10.0) / Acceleration.fromMs2(2.0);
+      expect(s.toMs, closeTo(5.0, 1e-9));
+      expect(() => Time.fromSeconds(10.0) / Acceleration.fromMs2(0.0), throwsArgumentError);
     });
   });
 
@@ -466,6 +778,37 @@ void main() {
 
       final a = Acceleration.fromMs2(9.8);
       expect(() => a * Time.fromSeconds(-1.0), throwsArgumentError);
+    });
+
+    test('Acceleration Comparison, Equality and Operators', () {
+      final a1 = Acceleration.fromMs2(5.0);
+      final a2 = Acceleration.fromMs2(5.0);
+      final a3 = Acceleration.fromMs2(10.0);
+
+      expect(a1 == a2, isTrue);
+      expect(a1 == a3, isFalse);
+      expect(a1 == 'not acceleration', isFalse);
+      expect(a1.hashCode, equals(a2.hashCode));
+
+      expect(a1.compareTo(a3), lessThan(0));
+      expect(a3.compareTo(a1), greaterThan(0));
+      expect(a1.compareTo(a2), equals(0));
+
+      expect(a1 < a3, isTrue);
+      expect(a1 <= a2, isTrue);
+      expect(a3 > a1, isTrue);
+      expect(a3 >= a1, isTrue);
+      expect(a3 < a1, isFalse);
+      expect(a3 <= a1, isFalse);
+      expect(a1 > a3, isFalse);
+      expect(a1 >= a3, isFalse);
+
+      final multiplied = Acceleration.fromMs2(4.0) * 2.0;
+      expect(multiplied.toMs2, closeTo(8.0, 1e-9));
+
+      // AccelMul scalar multiplication / acceleration * num
+      final scaled = Acceleration.fromMs2(4.0) * 2.0;
+      expect(scaled.toMs2, closeTo(8.0, 1e-9));
     });
   });
 
