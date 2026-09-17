@@ -86,6 +86,15 @@ class TestSpeed < Minitest::Test
     assert_raises(ArgumentError) { Speed.from_kmh(-Float::INFINITY) }
     assert_raises(ArgumentError) { Speed.from_mph(-Float::INFINITY) }
     assert_raises(ArgumentError) { Speed.from_ms(-Float::INFINITY) }
+
+    s = Speed.from_ms(10.0)
+    s_sub = s - Speed.from_ms(4.0)
+    assert_in_delta(6.0, s_sub.to_ms)
+
+    assert_raises(ArgumentError) { s / 0.0 }
+    assert_raises(ArgumentError) { s / Time.from_seconds(0.0) }
+    assert_raises(ArgumentError) { s / Acceleration.from_ms2(0.0) }
+    assert_raises(ArgumentError) { s / "invalid" }
   end
 end
 
@@ -142,6 +151,27 @@ class TestTemperature < Minitest::Test
     assert_raises(ArgumentError) { Temperature.from_celsius(Float::INFINITY) }
     assert_raises(ArgumentError) { Temperature.from_fahrenheit(Float::NAN) }
     assert_raises(ArgumentError) { Temperature.from_kelvin(Float::NAN) }
+
+    t1 = Temperature.from_celsius(20.0)
+    t2 = Temperature.from_celsius(10.0)
+
+    assert_in_delta(30.0, (t1 + 10.0).to_celsius)
+    assert_in_delta(10.0, (t1 - t2))
+    assert_in_delta(10.0, (t1 - 10.0).to_celsius)
+    assert_in_delta(40.0, (t1 * 2.0).to_celsius)
+    assert_in_delta(2.0, (t1 / t2))
+    assert_in_delta(10.0, (t1 / 2.0).to_celsius)
+
+    assert_raises(ArgumentError) { t1 + t2 }
+    assert_raises(ArgumentError) { t1 + "invalid" }
+    assert_raises(ArgumentError) { t1 - "invalid" }
+    assert_raises(ArgumentError) { t1 * "invalid" }
+    assert_raises(ArgumentError) { t1 / "invalid" }
+    assert_raises(ArgumentError) { t1 / 0.0 }
+    assert_raises(ArgumentError) { t1 / Temperature.from_celsius(0.0) }
+
+    assert_raises(ArgumentError) { Temperature.from_fahrenheit(Float::INFINITY) }
+    assert_raises(ArgumentError) { Temperature.from_kelvin(Float::INFINITY) }
   end
 end
 
@@ -216,6 +246,9 @@ class TestMass < Minitest::Test
     assert_raises(ArgumentError) { Mass.from_kg(Float::NAN) }
     assert_raises(ArgumentError) { Mass.from_kg(Float::INFINITY) }
     assert_raises(ArgumentError) { Mass.from_kg(-1.0) }
+
+    m = Mass.from_kg(1.0)
+    assert_raises(ArgumentError) { m / Mass.from_kg(0.0) }
   end
 end
 
@@ -276,6 +309,10 @@ class TestDistance < Minitest::Test
     assert_raises(ArgumentError) { Distance.from_meters(Float::NAN) }
     assert_raises(ArgumentError) { Distance.from_meters(Float::INFINITY) }
     assert_raises(ArgumentError) { Distance.from_meters(-1.0) }
+
+    d = Distance.from_meters(10.0)
+    assert_raises(ArgumentError) { d / "invalid" }
+    assert_raises(ArgumentError) { Distance.from_feet(Float::INFINITY) }
   end
 end
 
@@ -311,6 +348,22 @@ class TestPressure < Minitest::Test
     assert_raises(ArgumentError) { Pressure.from_kpa(Float::NAN) }
     assert_raises(ArgumentError) { Pressure.from_kpa(Float::INFINITY) }
     assert_raises(ArgumentError) { Pressure.from_kpa(-1.0) }
+
+    p1 = Pressure.from_kpa(100.0)
+    p2 = Pressure.from_kpa(50.0)
+
+    assert_in_delta(150.0, (p1 + p2).to_kpa)
+    assert_in_delta(50.0, (p1 - p2).to_kpa)
+    assert_in_delta(200.0, (p1 * 2.0).to_kpa)
+    assert_in_delta(2.0, (p1 / p2))
+    assert_in_delta(50.0, (p1 / 2.0).to_kpa)
+
+    assert_raises(ArgumentError) { p1 + "invalid" }
+    assert_raises(ArgumentError) { p1 - "invalid" }
+    assert_raises(ArgumentError) { p1 * "invalid" }
+    assert_raises(ArgumentError) { p1 / "invalid" }
+    assert_raises(ArgumentError) { p1 / 0.0 }
+    assert_raises(ArgumentError) { p1 / Pressure.from_kpa(0.0) }
   end
 end
 
@@ -344,6 +397,22 @@ class TestPower < Minitest::Test
     assert_raises(ArgumentError) { Power.from_kw(-Float::INFINITY) }
     assert_raises(ArgumentError) { Power.from_ps(-Float::INFINITY) }
     assert_raises(ArgumentError) { Power.from_hp(-Float::INFINITY) }
+
+    p1 = Power.from_kw(10.0)
+    p2 = Power.from_kw(5.0)
+
+    assert_in_delta(15.0, (p1 + p2).to_kw)
+    assert_in_delta(5.0, (p1 - p2).to_kw)
+    assert_in_delta(20.0, (p1 * 2.0).to_kw)
+    assert_in_delta(2.0, (p1 / p2))
+    assert_in_delta(5.0, (p1 / 2.0).to_kw)
+
+    assert_raises(ArgumentError) { p1 + "invalid" }
+    assert_raises(ArgumentError) { p1 - "invalid" }
+    assert_raises(ArgumentError) { p1 * "invalid" }
+    assert_raises(ArgumentError) { p1 / "invalid" }
+    assert_raises(ArgumentError) { p1 / 0.0 }
+    assert_raises(ArgumentError) { p1 / Power.from_kw(0.0) }
   end
 end
 
@@ -355,8 +424,8 @@ class TestTorque < Minitest::Test
     assert_in_delta(135.5818, t.to_nm, 0.001)
 
     t2 = Torque.from_nm(135.5818)
-    assert_in_delta(100.0, t.to_lbft, 0.001)
-    assert_in_delta(135.5818, t.to_nm, 0.001)
+    assert_in_delta(100.0, t2.to_lbft, 0.001)
+    assert_in_delta(135.5818, t2.to_nm, 0.001)
 
     t3 = Torque.from_kgfm(1.0)
     assert_in_delta(1.0, t3.to_kgfm, 0.001)
@@ -386,6 +455,22 @@ class TestTorque < Minitest::Test
     assert_raises(ArgumentError) { Torque.from_kgfm(-Float::INFINITY) }
     assert_raises(ArgumentError) { Torque.from_lbft(-Float::INFINITY) }
     assert_raises(ArgumentError) { Torque.from_nm(-1.0) }
+
+    t1 = Torque.from_nm(10.0)
+    t2 = Torque.from_nm(5.0)
+
+    assert_in_delta(15.0, (t1 + t2).to_nm)
+    assert_in_delta(5.0, (t1 - t2).to_nm)
+    assert_in_delta(20.0, (t1 * 2.0).to_nm)
+    assert_in_delta(2.0, (t1 / t2))
+    assert_in_delta(5.0, (t1 / 2.0).to_nm)
+
+    assert_raises(ArgumentError) { t1 + "invalid" }
+    assert_raises(ArgumentError) { t1 - "invalid" }
+    assert_raises(ArgumentError) { t1 * "invalid" }
+    assert_raises(ArgumentError) { t1 / "invalid" }
+    assert_raises(ArgumentError) { t1 / 0.0 }
+    assert_raises(ArgumentError) { t1 / Torque.from_nm(0.0) }
   end
 end
 
@@ -433,6 +518,27 @@ class TestAngle < Minitest::Test
     assert_raises(ArgumentError) { Angle.from_radians(Float::NAN) }
     assert_raises(ArgumentError) { Angle.from_radians(Float::INFINITY) }
     assert_raises(ArgumentError) { Angle.from_degrees(Float::NAN) }
+
+    a1 = Angle.from_radians(2.0)
+    a2 = Angle.from_radians(1.0)
+
+    assert_in_delta(3.0, (a1 + a2).to_radians)
+    assert_in_delta(1.0, (a1 - a2).to_radians)
+    assert_in_delta(4.0, (a1 * 2.0).to_radians)
+    assert_in_delta(2.0, (a1 / a2))
+    assert_in_delta(1.0, (a1 / 2.0).to_radians)
+
+    # Additional negative test for signed normalization when negative
+    a_neg_signed = Angle.from_degrees(-270.0).normalize_signed
+    assert_in_delta(90.0, a_neg_signed.to_degrees, 0.000001)
+
+    assert_raises(ArgumentError) { a1 + "invalid" }
+    assert_raises(ArgumentError) { a1 - "invalid" }
+    assert_raises(ArgumentError) { a1 * "invalid" }
+    assert_raises(ArgumentError) { a1 / "invalid" }
+    assert_raises(ArgumentError) { a1 / 0.0 }
+    assert_raises(ArgumentError) { a1 / Angle.from_radians(0.0) }
+    assert_raises(ArgumentError) { Angle.from_degrees(Float::INFINITY) }
   end
 end
 
@@ -466,6 +572,27 @@ class TestEfficiency < Minitest::Test
     assert(e1 < e2)
     assert_nil(e1 <=> "not efficiency")
     assert_equal("10.0 km/L", e1.to_s)
+
+    assert_in_delta(25.0, (e1 + e2).to_kml)
+    assert_in_delta(5.0, (e2 - e1).to_kml)
+
+    e1 = Efficiency.from_kml(10.0)
+    e2 = Efficiency.from_kml(5.0)
+
+    assert_in_delta(15.0, (e1 + e2).to_kml)
+    assert_in_delta(5.0, (e1 - e2).to_kml)
+    assert_in_delta(20.0, (e1 * 2.0).to_kml)
+    assert_in_delta(2.0, (e1 / e2))
+    assert_in_delta(5.0, (e1 / 2.0).to_kml)
+
+    assert_raises(ArgumentError) { Efficiency.from_kml(Float::INFINITY) }
+    assert_raises(ArgumentError) { Efficiency.from_kml(-1.0) }
+    assert_raises(ArgumentError) { e1 + "invalid" }
+    assert_raises(ArgumentError) { e1 - "invalid" }
+    assert_raises(ArgumentError) { e1 * "invalid" }
+    assert_raises(ArgumentError) { e1 / "invalid" }
+    assert_raises(ArgumentError) { e1 / 0.0 }
+    assert_raises(ArgumentError) { e1 / Efficiency.from_kml(0.0) }
   end
 end
 
@@ -518,6 +645,23 @@ class TestEvEfficiency < Minitest::Test
     assert_raises(ArgumentError) { EvEfficiency.from_miles_per_kwh(0.0) }
     assert_raises(ArgumentError) { EvEfficiency.from_km_per_kwh(-1.0) }
     assert_raises(ArgumentError) { EvEfficiency.from_km_per_kwh(Float::NAN) }
+
+    e1 = EvEfficiency.from_km_per_kwh(6.0)
+    e2 = EvEfficiency.from_km_per_kwh(2.0)
+
+    assert_in_delta(8.0, (e1 + e2).to_km_per_kwh)
+    assert_in_delta(4.0, (e1 - e2).to_km_per_kwh)
+    assert_in_delta(12.0, (e1 * 2.0).to_km_per_kwh)
+    assert_in_delta(3.0, (e1 / e2))
+    assert_in_delta(3.0, (e1 / 2.0).to_km_per_kwh)
+
+    assert_raises(ArgumentError) { EvEfficiency.from_km_per_kwh(Float::INFINITY) }
+    assert_raises(ArgumentError) { e1 + "invalid" }
+    assert_raises(ArgumentError) { e1 - "invalid" }
+    assert_raises(ArgumentError) { e1 * "invalid" }
+    assert_raises(ArgumentError) { e1 / "invalid" }
+    assert_raises(ArgumentError) { e1 / 0.0 }
+    assert_raises(ArgumentError) { e1 / EvEfficiency.from_km_per_kwh(0.0) }
   end
 end
 
@@ -561,6 +705,22 @@ class TestVolume < Minitest::Test
     assert_raises(ArgumentError) { Volume.from_liters(Float::NAN) }
     assert_raises(ArgumentError) { Volume.from_liters(Float::INFINITY) }
     assert_raises(ArgumentError) { Volume.from_liters(-1.0) }
+
+    v1 = Volume.from_liters(10.0)
+    v2 = Volume.from_liters(4.0)
+
+    assert_in_delta(14.0, (v1 + v2).to_liters)
+    assert_in_delta(6.0, (v1 - v2).to_liters)
+    assert_in_delta(20.0, (v1 * 2.0).to_liters)
+    assert_in_delta(2.5, (v1 / v2))
+    assert_in_delta(5.0, (v1 / 2.0).to_liters)
+
+    assert_raises(ArgumentError) { v1 + "invalid" }
+    assert_raises(ArgumentError) { v1 - "invalid" }
+    assert_raises(ArgumentError) { v1 * "invalid" }
+    assert_raises(ArgumentError) { v1 / "invalid" }
+    assert_raises(ArgumentError) { v1 / 0.0 }
+    assert_raises(ArgumentError) { v1 / Volume.from_liters(0.0) }
   end
 end
 
@@ -628,6 +788,9 @@ class TestTime < Minitest::Test
     assert_raises(ArgumentError) { Time.from_seconds(Float::NAN) }
     assert_raises(ArgumentError) { Time.from_seconds(Float::INFINITY) }
     assert_raises(ArgumentError) { Time.from_seconds(-1.0) }
+
+    t = Time.from_seconds(10.0)
+    assert_raises(ArgumentError) { t * "invalid" }
   end
 end
 
@@ -652,6 +815,8 @@ class TestAcceleration < Minitest::Test
     assert_raises(ArgumentError) { a / 0.0 }
     assert_raises(ArgumentError) { a * Time.from_seconds(-1.0) }
     assert_raises(ArgumentError) { Acceleration.from_speed_and_time(Speed.from_ms(10.0), Time.from_seconds(0.0)) }
+
+    assert_raises(ArgumentError) { Acceleration.new(Float::INFINITY) }
   end
 end
 

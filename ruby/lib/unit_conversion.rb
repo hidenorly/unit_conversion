@@ -160,6 +160,57 @@ class Temperature
     return self.to_celsius <=> other.to_celsius
   end
 
+  def +(other)
+    case other
+    when Numeric
+      return Temperature.from_celsius(self.to_celsius + other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def -(other)
+    case other
+    when Temperature
+      return self.to_celsius - other.to_celsius
+    when Numeric
+      return Temperature.from_celsius(self.to_celsius - other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def *(other)
+    case other
+    when Numeric
+      return Temperature.from_celsius(self.to_celsius * other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def /(other)
+    case other
+    when Temperature
+      raise ArgumentError, "Division by zero" if other.to_celsius == 0
+      return self.to_celsius / other.to_celsius
+    when Numeric
+      raise ArgumentError, "Division by zero" if other == 0
+      return Temperature.from_celsius(self.to_celsius / other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def coerce(other)
+    case other
+    when Numeric
+      [self, other]
+    else
+      super
+    end
+  end
+
   def to_s
     return "#{@celsius} °C"
   end
@@ -443,6 +494,55 @@ class Pressure
     return self.to_kpa <=> other.to_kpa
   end
 
+  def +(other)
+    case other
+    when Pressure
+      return Pressure.from_kpa(self.to_kpa + other.to_kpa)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def -(other)
+    case other
+    when Pressure
+      return Pressure.from_kpa(self.to_kpa - other.to_kpa)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def *(other)
+    case other
+    when Numeric
+      return Pressure.from_kpa(self.to_kpa * other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def /(other)
+    case other
+    when Pressure
+      raise ArgumentError, "Division by zero" if other.to_kpa == 0
+      return self.to_kpa / other.to_kpa
+    when Numeric
+      raise ArgumentError, "Division by zero" if other == 0
+      return Pressure.from_kpa(self.to_kpa / other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def coerce(other)
+    case other
+    when Numeric
+      [self, other]
+    else
+      super
+    end
+  end
+
   def to_s
     return "#{@kpa} kPa"
   end
@@ -490,6 +590,55 @@ class Power
     return self.to_kw <=> other.to_kw
   end
 
+  def +(other)
+    case other
+    when Power
+      return Power.from_kw(self.to_kw + other.to_kw)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def -(other)
+    case other
+    when Power
+      return Power.from_kw(self.to_kw - other.to_kw)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def *(other)
+    case other
+    when Numeric
+      return Power.from_kw(self.to_kw * other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def /(other)
+    case other
+    when Power
+      raise ArgumentError, "Division by zero" if other.to_kw == 0
+      return self.to_kw / other.to_kw
+    when Numeric
+      raise ArgumentError, "Division by zero" if other == 0
+      return Power.from_kw(self.to_kw / other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def coerce(other)
+    case other
+    when Numeric
+      [self, other]
+    else
+      super
+    end
+  end
+
   def to_s
     return "#{@kw} kW"
   end
@@ -535,6 +684,55 @@ class Torque
   def <=>(other)
     return nil unless other.is_a?(Torque)
     return self.to_nm <=> other.to_nm
+  end
+
+  def +(other)
+    case other
+    when Torque
+      return Torque.from_nm(self.to_nm + other.to_nm)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def -(other)
+    case other
+    when Torque
+      return Torque.from_nm(self.to_nm - other.to_nm)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def *(other)
+    case other
+    when Numeric
+      return Torque.from_nm(self.to_nm * other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def /(other)
+    case other
+    when Torque
+      raise ArgumentError, "Division by zero" if other.to_nm == 0
+      return self.to_nm / other.to_nm
+    when Numeric
+      raise ArgumentError, "Division by zero" if other == 0
+      return Torque.from_nm(self.to_nm / other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def coerce(other)
+    case other
+    when Numeric
+      [self, other]
+    else
+      super
+    end
   end
 
   def to_s
@@ -592,6 +790,55 @@ class Angle
     return self.to_radians <=> other.to_radians
   end
 
+  def +(other)
+    case other
+    when Angle
+      return Angle.from_radians(self.to_radians + other.to_radians)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def -(other)
+    case other
+    when Angle
+      return Angle.from_radians(self.to_radians - other.to_radians)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def *(other)
+    case other
+    when Numeric
+      return Angle.from_radians(self.to_radians * other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def /(other)
+    case other
+    when Angle
+      raise ArgumentError, "Division by zero" if other.to_radians == 0
+      return self.to_radians / other.to_radians
+    when Numeric
+      raise ArgumentError, "Division by zero" if other == 0
+      return Angle.from_radians(self.to_radians / other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def coerce(other)
+    case other
+    when Numeric
+      [self, other]
+    else
+      super
+    end
+  end
+
   def to_s
     return "#{@rad} rad"
   end
@@ -638,6 +885,55 @@ class Efficiency
   def <=>(other)
     return nil unless other.is_a?(Efficiency)
     return self.to_kml <=> other.to_kml
+  end
+
+  def +(other)
+    case other
+    when Efficiency
+      return Efficiency.from_kml(self.to_kml + other.to_kml)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def -(other)
+    case other
+    when Efficiency
+      return Efficiency.from_kml(self.to_kml - other.to_kml)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def *(other)
+    case other
+    when Numeric
+      return Efficiency.from_kml(self.to_kml * other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def /(other)
+    case other
+    when Efficiency
+      raise ArgumentError, "Division by zero" if other.to_kml == 0
+      return self.to_kml / other.to_kml
+    when Numeric
+      raise ArgumentError, "Division by zero" if other == 0
+      return Efficiency.from_kml(self.to_kml / other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def coerce(other)
+    case other
+    when Numeric
+      [self, other]
+    else
+      super
+    end
   end
 
   def to_s
@@ -696,6 +992,55 @@ class EvEfficiency
     return self.to_km_per_kwh <=> other.to_km_per_kwh
   end
 
+  def +(other)
+    case other
+    when EvEfficiency
+      return EvEfficiency.from_km_per_kwh(self.to_km_per_kwh + other.to_km_per_kwh)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def -(other)
+    case other
+    when EvEfficiency
+      return EvEfficiency.from_km_per_kwh(self.to_km_per_kwh - other.to_km_per_kwh)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def *(other)
+    case other
+    when Numeric
+      return EvEfficiency.from_km_per_kwh(self.to_km_per_kwh * other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def /(other)
+    case other
+    when EvEfficiency
+      raise ArgumentError, "Division by zero" if other.to_km_per_kwh == 0
+      return self.to_km_per_kwh / other.to_km_per_kwh
+    when Numeric
+      raise ArgumentError, "Division by zero" if other == 0
+      return EvEfficiency.from_km_per_kwh(self.to_km_per_kwh / other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def coerce(other)
+    case other
+    when Numeric
+      [self, other]
+    else
+      super
+    end
+  end
+
   def to_s
     return "#{@v} km/kWh"
   end
@@ -749,6 +1094,55 @@ class Volume
   def <=>(other)
     return nil unless other.is_a?(Volume)
     return self.to_liters <=> other.to_liters
+  end
+
+  def +(other)
+    case other
+    when Volume
+      return Volume.from_liters(self.to_liters + other.to_liters)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def -(other)
+    case other
+    when Volume
+      return Volume.from_liters(self.to_liters - other.to_liters)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def *(other)
+    case other
+    when Numeric
+      return Volume.from_liters(self.to_liters * other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def /(other)
+    case other
+    when Volume
+      raise ArgumentError, "Division by zero" if other.to_liters == 0
+      return self.to_liters / other.to_liters
+    when Numeric
+      raise ArgumentError, "Division by zero" if other == 0
+      return Volume.from_liters(self.to_liters / other)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def coerce(other)
+    case other
+    when Numeric
+      [self, other]
+    else
+      super
+    end
   end
 
   def to_s
