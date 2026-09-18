@@ -47,6 +47,7 @@ class TestSpeed(unittest.TestCase):
 
         # test output stream / repr
         self.assertTrue(str(s1) != "")
+        self.assertEqual(repr(s1), str(s1))
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -80,6 +81,7 @@ class TestTemperature(unittest.TestCase):
         self.assertAlmostEqual(t3.to_celsius, 0.0, places=3)
 
         self.assertTrue(str(t1) != "")
+        self.assertEqual(repr(t1), str(t1))
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -96,6 +98,15 @@ class TestTemperature(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             Temperature.from_celsius(float('inf'))
+
+        with self.assertRaises(ValueError):
+            Temperature.from_fahrenheit(-500.0)
+
+        with self.assertRaises(ValueError):
+            Temperature.from_fahrenheit(float('nan'))
+
+        with self.assertRaises(ValueError):
+            Temperature.from_kelvin(float('inf'))
 
         t = Temperature.from_fahrenheit(-459.67) # Absolute Zero
         self.assertAlmostEqual(t.to_celsius, -273.15, places=3)
@@ -128,6 +139,7 @@ class TestMass(unittest.TestCase):
         self.assertEqual(w4.to_oz, 8.0)
 
         self.assertTrue(str(w1) != "")
+        self.assertEqual(repr(w1), str(w1))
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -138,6 +150,12 @@ class TestMass(unittest.TestCase):
             Mass.from_lb(float('inf'))
         with self.assertRaises(ValueError):
             Mass.from_oz(float('-inf'))
+        with self.assertRaises(ValueError):
+            Mass.from_gram(-1.0)
+        with self.assertRaises(ValueError):
+            Mass.from_lb(-1.0)
+        with self.assertRaises(ValueError):
+            Mass.from_oz(-1.0)
 
 
 class TestDistance(unittest.TestCase):
@@ -173,6 +191,7 @@ class TestDistance(unittest.TestCase):
         self.assertEqual(d5.to_inch, 16.0)
 
         self.assertTrue(str(d1) != "")
+        self.assertEqual(repr(d1), str(d1))
 
     def test_guards(self):
         d6 = Distance.from_mm(1000.0)
@@ -184,6 +203,12 @@ class TestDistance(unittest.TestCase):
             Distance.from_meters(float('nan'))
         with self.assertRaises(ValueError):
             Distance.from_mile(float('inf'))
+        with self.assertRaises(ValueError):
+            Distance.from_km(-1.0)
+        with self.assertRaises(ValueError):
+            Distance.from_feet(float('nan'))
+        with self.assertRaises(ValueError):
+            Distance.from_inch(float('-inf'))
 
 
 class TestPressure(unittest.TestCase):
@@ -201,6 +226,7 @@ class TestPressure(unittest.TestCase):
         self.assertAlmostEqual(p_psi.to_kpa, 250.0, places=3)
 
         self.assertTrue(str(p_bar) != "")
+        self.assertEqual(repr(p_bar), str(p_bar))
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -209,6 +235,12 @@ class TestPressure(unittest.TestCase):
             Pressure.from_kpa(float('nan'))
         with self.assertRaises(ValueError):
             Pressure.from_psi(float('inf'))
+        with self.assertRaises(ValueError):
+            Pressure.from_kpa(-1.0)
+        with self.assertRaises(ValueError):
+            Pressure.from_psi(-1.0)
+        with self.assertRaises(ValueError):
+            Pressure.from_bar(float('inf'))
 
 
 class TestPower(unittest.TestCase):
@@ -219,6 +251,7 @@ class TestPower(unittest.TestCase):
         self.assertAlmostEqual(p.to_hp, 200.0, places=2)
 
         self.assertTrue(str(p) != "")
+        self.assertEqual(repr(p), str(p))
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -244,6 +277,10 @@ class TestPower(unittest.TestCase):
             Power.from_ps(float('-inf'))
         with self.assertRaises(ValueError):
             Power.from_hp(float('-inf'))
+        with self.assertRaises(ValueError):
+            Power.from_ps(-1.0)
+        with self.assertRaises(ValueError):
+            Power.from_hp(-1.0)
 
 
 class TestTorque(unittest.TestCase):
@@ -264,6 +301,7 @@ class TestTorque(unittest.TestCase):
         self.assertAlmostEqual(t3.to_kgfm, 1.0, places=5)
 
         self.assertTrue(str(t) != "")
+        self.assertEqual(repr(t), str(t))
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -288,6 +326,10 @@ class TestTorque(unittest.TestCase):
             Torque.from_kgfm(float('-inf'))
         with self.assertRaises(ValueError):
             Torque.from_lbft(float('-inf'))
+        with self.assertRaises(ValueError):
+            Torque.from_kgfm(-1.0)
+        with self.assertRaises(ValueError):
+            Torque.from_lbft(-1.0)
 
 
 class TestAngle(unittest.TestCase):
@@ -301,6 +343,7 @@ class TestAngle(unittest.TestCase):
         self.assertAlmostEqual(a2.to_degrees, 90.0, places=6)
 
         self.assertTrue(str(a) != "")
+        self.assertEqual(repr(a), str(a))
 
     def test_normalization(self):
         # Test normalize degrees (e.g. 450° -> 90°, -90° -> 270°)
@@ -340,6 +383,10 @@ class TestAngle(unittest.TestCase):
             Angle.from_radians(float('nan'))
         with self.assertRaises(ValueError):
             Angle.from_degrees(float('inf'))
+        with self.assertRaises(ValueError):
+            Angle.from_degrees(float('nan'))
+        with self.assertRaises(ValueError):
+            Angle.from_radians(float('inf'))
 
 
 class TestEfficiency(unittest.TestCase):
@@ -355,6 +402,7 @@ class TestEfficiency(unittest.TestCase):
         self.assertAlmostEqual(e2.to_l100km, 10.0, delta=0.0001)
 
         self.assertTrue(str(e) != "")
+        self.assertEqual(repr(e), str(e))
 
     def test_invalid_values(self):
         with self.assertRaises(ValueError):
@@ -372,6 +420,16 @@ class TestEfficiency(unittest.TestCase):
             Efficiency.from_mpg(float('nan'))
         with self.assertRaises(ValueError):
             Efficiency.from_kml(float('inf'))
+        with self.assertRaises(ValueError):
+            Efficiency.from_kml(-1.0)
+        with self.assertRaises(ValueError):
+            Efficiency.from_l100km(-1.0)
+        with self.assertRaises(ValueError):
+            Efficiency.from_mpg(-1.0)
+        with self.assertRaises(ValueError):
+            Efficiency.from_l100km(float('inf'))
+        with self.assertRaises(ValueError):
+            Efficiency.from_mpg(float('inf'))
 
 
 class TestEvEfficiency(unittest.TestCase):
@@ -383,6 +441,7 @@ class TestEvEfficiency(unittest.TestCase):
         self.assertAlmostEqual(e.to_miles_per_kwh, 3.728, delta=0.001)
 
         self.assertTrue(str(e) != "")
+        self.assertEqual(repr(e), str(e))
 
     def test_from_wh_per_km_all_to(self):
         e = EvEfficiency.from_wh_per_km(200.0)
@@ -420,6 +479,24 @@ class TestEvEfficiency(unittest.TestCase):
             EvEfficiency.from_miles_per_kwh(-5.0)
         with self.assertRaises(ValueError):
             EvEfficiency.from_wh_per_km(float('inf'))
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_kwh_per_100km(-1.0)
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_wh_per_km(float('nan'))
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_kwh_per_100km(float('nan'))
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_miles_per_kwh(float('nan'))
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_km_per_kwh(-1.0)
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_wh_per_km(-1.0)
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_kwh_per_100km(float('inf'))
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_km_per_kwh(float('inf'))
+        with self.assertRaises(ValueError):
+            EvEfficiency.from_miles_per_kwh(float('inf'))
 
 
 class TestVolume(unittest.TestCase):
@@ -458,6 +535,24 @@ class TestVolume(unittest.TestCase):
             Volume.from_ml(float('nan'))
         with self.assertRaises(ValueError):
             Volume.from_us_gallons(float('inf'))
+        with self.assertRaises(ValueError):
+            Volume.from_ml(-1.0)
+        with self.assertRaises(ValueError):
+            Volume.from_us_gallons(-1.0)
+        with self.assertRaises(ValueError):
+            Volume.from_imp_gallons(-1.0)
+        with self.assertRaises(ValueError):
+            Volume.from_liters(float('nan'))
+        with self.assertRaises(ValueError):
+            Volume.from_liters(float('inf'))
+        with self.assertRaises(ValueError):
+            Volume.from_ml(float('inf'))
+        with self.assertRaises(ValueError):
+            Volume.from_us_gallons(float('nan'))
+        with self.assertRaises(ValueError):
+            Volume.from_imp_gallons(float('nan'))
+        with self.assertRaises(ValueError):
+            Volume.from_imp_gallons(float('inf'))
 
 
 class TestTime(unittest.TestCase):
@@ -483,6 +578,7 @@ class TestTime(unittest.TestCase):
         self.assertAlmostEqual(t0.to_hours, 0)
 
         self.assertTrue(str(t) != "")
+        self.assertEqual(repr(t), str(t))
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -491,6 +587,18 @@ class TestTime(unittest.TestCase):
             Time.from_seconds(-1.0)
         with self.assertRaises(ValueError):
             Time.from_seconds(float('inf'))
+        with self.assertRaises(ValueError):
+            Time.from_minutes(-1.0)
+        with self.assertRaises(ValueError):
+            Time.from_minutes(float('nan'))
+        with self.assertRaises(ValueError):
+            Time.from_minutes(float('inf'))
+        with self.assertRaises(ValueError):
+            Time.from_hours(-1.0)
+        with self.assertRaises(ValueError):
+            Time.from_hours(float('nan'))
+        with self.assertRaises(ValueError):
+            Time.from_hours(float('inf'))
 
 
 class TestAcceleration(unittest.TestCase):
@@ -500,6 +608,7 @@ class TestAcceleration(unittest.TestCase):
         accel = Acceleration.from_speed_and_time(s, t)
         self.assertEqual(accel.to_ms2, 5.0)
         self.assertTrue(str(accel) != "")
+        self.assertEqual(repr(accel), str(accel))
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -508,6 +617,10 @@ class TestAcceleration(unittest.TestCase):
             Acceleration(float('inf'))
         with self.assertRaises(ValueError): 
             Acceleration.from_speed_and_time(Speed.from_ms(10.0), Time.from_seconds(0.0))
+        with self.assertRaises(ValueError):
+            Acceleration.from_speed_and_time(Speed.from_ms(float('nan')), Time.from_seconds(1.0))
+        with self.assertRaises(ValueError):
+            Acceleration.from_speed_and_time(Speed.from_ms(1.0), Time.from_seconds(float('nan')))
 
 
 class TestOperation(unittest.TestCase):
@@ -520,6 +633,8 @@ class TestOperation(unittest.TestCase):
             Speed.from_ms(10.0) * Time.from_seconds(-1.0)
         with self.assertRaises(ValueError):
             Speed.from_ms(10.0) * Time.from_seconds(float('nan'))
+        with self.assertRaises(ValueError):
+            Speed.from_ms(10.0) * Time.from_seconds(float('inf'))
 
     def test_speed_add_sub(self):
         v1 = Speed.from_ms(20.0)
@@ -673,6 +788,14 @@ class TestOperation(unittest.TestCase):
             Time.from_seconds(1.0) / 0.0
         with self.assertRaises(ValueError):
             Mass.from_kg(1.0) / 0.0
+        with self.assertRaises(TypeError):
+            Speed.from_ms(10.0) + 1.0
+        with self.assertRaises(TypeError):
+            1.0 + Speed.from_ms(10.0)
+        with self.assertRaises(TypeError):
+            Speed.from_ms(10.0) - 1.0
+        with self.assertRaises(TypeError):
+            Speed.from_ms(10.0) / Speed.from_ms(10.0)
 
 
 if __name__ == '__main__':

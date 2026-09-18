@@ -34,14 +34,14 @@ class Speed:
 
     @classmethod
     def from_kmh(cls, value: float):
-        if math.isnan(value) or math.isinf(value) or value < 0:
-            raise ValueError("Speed must be a non-negative finite number")
+        if math.isnan(value) or math.isinf(value):
+            raise ValueError("Speed must be a finite number")
         return cls(value / cls.KMH_TO_MS)
 
     @classmethod
     def from_mph(cls, value: float):
-        if math.isnan(value) or math.isinf(value) or value < 0:
-            raise ValueError("Speed must be a non-negative finite number")
+        if math.isnan(value) or math.isinf(value):
+            raise ValueError("Speed must be a finite number")
         return cls(value * cls.MPH_TO_MS)
 
     @property
@@ -55,6 +55,15 @@ class Speed:
     @property
     def to_ms(self) -> float:
         return self._ms
+
+    def compare_to(self, other: 'Speed') -> int:
+        if not isinstance(other, Speed):
+            raise TypeError("Comparison requires a Speed instance")
+        if self._ms < other._ms:
+            return -1
+        elif self._ms > other._ms:
+            return 1
+        return 0
 
     def __eq__(self, other):
         if not isinstance(other, Speed):
@@ -118,7 +127,7 @@ class Temperature:
 
     def __init__(self, celsius: float):
         if math.isnan(celsius) or celsius < self.ABS_ZERO_C or math.isinf(celsius):
-            raise ValueError(f"Invalid temperature: {celsius}")
+            raise ValueError(f"Below absolute zero or invalid value: {celsius}")
         self._celsius = celsius
 
     @classmethod
@@ -140,6 +149,15 @@ class Temperature:
 
     @property
     def to_kelvin(self): return self._celsius + self._K_OFFSET
+
+    def compare_to(self, other: 'Temperature') -> int:
+        if not isinstance(other, Temperature):
+            raise TypeError("Comparison requires a Temperature instance")
+        if self._celsius < other._celsius:
+            return -1
+        elif self._celsius > other._celsius:
+            return 1
+        return 0
 
     def __eq__(self, other):
         if not isinstance(other, Temperature):
@@ -198,6 +216,15 @@ class Mass:
     def to_oz(self):
         return self._kg / self._OZ_TO_KG
 
+    def compare_to(self, other: 'Mass') -> int:
+        if not isinstance(other, Mass):
+            raise TypeError("Comparison requires a Mass instance")
+        if self._kg < other._kg:
+            return -1
+        elif self._kg > other._kg:
+            return 1
+        return 0
+
     def __eq__(self, other):
         if not isinstance(other, Mass):
             return NotImplemented
@@ -253,7 +280,7 @@ class Distance:
 
     def __init__(self, meter: float):
         if math.isnan(meter) or meter < 0 or math.isinf(meter):
-            raise ValueError("Invalid")
+            raise ValueError("Invalid distance")
         self._meters = meter
 
     @classmethod
@@ -303,6 +330,15 @@ class Distance:
     @property
     def to_mm(self):
         return self._meters / self._MM_TO_M
+
+    def compare_to(self, other: 'Distance') -> int:
+        if not isinstance(other, Distance):
+            raise TypeError("Comparison requires a Distance instance")
+        if self._meters < other._meters:
+            return -1
+        elif self._meters > other._meters:
+            return 1
+        return 0
 
     def __eq__(self, other):
         if not isinstance(other, Distance):
@@ -391,6 +427,15 @@ class Pressure:
     def to_psi(self):
         return self._kpa / self._PSI_TO_KPA
 
+    def compare_to(self, other: 'Pressure') -> int:
+        if not isinstance(other, Pressure):
+            raise TypeError("Comparison requires a Pressure instance")
+        if self._kpa < other._kpa:
+            return -1
+        elif self._kpa > other._kpa:
+            return 1
+        return 0
+
     def __eq__(self, other):
         if not isinstance(other, Pressure):
             return NotImplemented
@@ -412,7 +457,7 @@ class Power:
 
     def __init__(self, kw: float):
         if math.isnan(kw) or kw < 0 or math.isinf(kw):
-            raise ValueError(f"Invalid power value: {kw}")
+            raise ValueError(f"Power must be a non-negative finite number: {kw}")
         self._kw = kw
 
     @classmethod
@@ -439,6 +484,15 @@ class Power:
     def to_hp(self):
         return self._kw / self._HP_TO_KW
 
+    def compare_to(self, other: 'Power') -> int:
+        if not isinstance(other, Power):
+            raise TypeError("Comparison requires a Power instance")
+        if self._kw < other._kw:
+            return -1
+        elif self._kw > other._kw:
+            return 1
+        return 0
+
     def __eq__(self, other):
         if not isinstance(other, Power):
             return NotImplemented
@@ -459,7 +513,8 @@ class Torque:
     _LBFT_TO_NM = 1.355817948
 
     def __init__(self, nm: float):
-        if math.isnan(nm) or nm < 0 or math.isinf(nm): raise ValueError("Invalid torque")
+        if math.isnan(nm) or nm < 0 or math.isinf(nm): 
+            raise ValueError("Torque must be a non-negative finite number")
         self._nm = nm
 
     @classmethod
@@ -486,6 +541,15 @@ class Torque:
     def to_lbft(self):
         return self._nm / self._LBFT_TO_NM
 
+    def compare_to(self, other: 'Torque') -> int:
+        if not isinstance(other, Torque):
+            raise TypeError("Comparison requires a Torque instance")
+        if self._nm < other._nm:
+            return -1
+        elif self._nm > other._nm:
+            return 1
+        return 0
+
     def __eq__(self, other):
         if not isinstance(other, Torque):
             return NotImplemented
@@ -506,7 +570,7 @@ class Angle:
 
     def __init__(self, rad: float):
         if math.isnan(rad) or math.isinf(rad):
-            raise ValueError("Angle must be finite")
+            raise ValueError("Invalid Angle")
         self._rad = rad
 
     @classmethod
@@ -539,7 +603,11 @@ class Angle:
         return Angle.from_degrees(r)
 
     def normalized(self) -> 'Angle':
-        return self.normalize_degrees()
+        two_pi = 2.0 * math.pi
+        r = self._rad % two_pi
+        if r < 0.0:
+            r += two_pi
+        return Angle.from_radians(r)
 
     def normalize_signed_radians(self) -> 'Angle':
         two_pi = 2.0 * math.pi
@@ -555,7 +623,21 @@ class Angle:
         return Angle.from_degrees(r - 180.0)
 
     def normalized_signed(self) -> 'Angle':
-        return self.normalize_signed_degrees()
+        two_pi = 2.0 * math.pi
+        r = (self._rad + math.pi) % two_pi
+        if r < 0.0:
+            r += two_pi
+        r -= math.pi
+        return Angle.from_radians(r)
+
+    def compare_to(self, other: 'Angle') -> int:
+        if not isinstance(other, Angle):
+            raise TypeError("Comparison requires an Angle instance")
+        if self._rad < other._rad:
+            return -1
+        elif self._rad > other._rad:
+            return 1
+        return 0
 
     def __eq__(self, other):
         if not isinstance(other, Angle):
@@ -605,6 +687,15 @@ class Efficiency:
     @property
     def to_mpg(self):
         return self._kml / self._MPG_TO_KML
+
+    def compare_to(self, other: 'Efficiency') -> int:
+        if not isinstance(other, Efficiency):
+            raise TypeError("Comparison requires an Efficiency instance")
+        if self._kml < other._kml:
+            return -1
+        elif self._kml > other._kml:
+            return 1
+        return 0
 
     def __eq__(self, other):
         if not isinstance(other, Efficiency):
@@ -665,6 +756,15 @@ class EvEfficiency:
     def to_miles_per_kwh(self):
         return self._v / self._MILE_TO_KM
 
+    def compare_to(self, other: 'EvEfficiency') -> int:
+        if not isinstance(other, EvEfficiency):
+            raise TypeError("Comparison requires an EvEfficiency instance")
+        if self._v < other._v:
+            return -1
+        elif self._v > other._v:
+            return 1
+        return 0
+
     def __eq__(self, other):
         if not isinstance(other, EvEfficiency):
             return NotImplemented
@@ -721,6 +821,15 @@ class Volume:
     def to_imp_gallons(self):
         return self._l / self._IMP_GAL
 
+    def compare_to(self, other: 'Volume') -> int:
+        if not isinstance(other, Volume):
+            raise TypeError("Comparison requires a Volume instance")
+        if self._l < other._l:
+            return -1
+        elif self._l > other._l:
+            return 1
+        return 0
+
     def __eq__(self, other):
         if not isinstance(other, Volume):
             return NotImplemented
@@ -765,6 +874,15 @@ class Time:
     @property
     def to_hours(self):
         return self._s / 3600.0
+
+    def compare_to(self, other: 'Time') -> int:
+        if not isinstance(other, Time):
+            raise TypeError("Comparison requires a Time instance")
+        if self._s < other._s:
+            return -1
+        elif self._s > other._s:
+            return 1
+        return 0
 
     def __eq__(self, other):
         if not isinstance(other, Time):
@@ -813,6 +931,10 @@ class Time:
             if other.to_ms2 == 0:
                 raise ValueError("Division by zero acceleration")
             return Speed.from_ms(self.to_seconds / other.to_ms2)
+        elif isinstance(other, Time):
+            if other.to_seconds == 0:
+                raise ValueError("Time cannot be zero")
+            return self.to_seconds / other.to_seconds
         return NotImplemented
 
     def __repr__(self):
@@ -822,7 +944,8 @@ class Time:
 @total_ordering
 class Acceleration:
     def __init__(self, a: float):
-        if math.isnan(a) or math.isinf(a): raise ValueError("Invalid Acceleration")
+        if math.isnan(a) or math.isinf(a): 
+            raise ValueError("Invalid Acceleration")
         self._a = a
 
     @classmethod
@@ -839,6 +962,15 @@ class Acceleration:
     @property
     def to_ms2(self):
         return self._a
+
+    def compare_to(self, other: 'Acceleration') -> int:
+        if not isinstance(other, Acceleration):
+            raise TypeError("Comparison requires an Acceleration instance")
+        if self._a < other._a:
+            return -1
+        elif self._a > other._a:
+            return 1
+        return 0
 
     def __eq__(self, other):
         if not isinstance(other, Acceleration):
@@ -869,6 +1001,10 @@ class Acceleration:
             if other == 0:
                 raise ValueError("Division by zero")
             return Acceleration.from_ms2(self.to_ms2 / other)
+        elif isinstance(other, Acceleration):
+            if other.to_ms2 == 0:
+                raise ValueError("Acceleration cannot be zero")
+            return self.to_ms2 / other.to_ms2
         return NotImplemented
 
     def __repr__(self):
