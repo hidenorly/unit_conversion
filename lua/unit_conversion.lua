@@ -42,6 +42,33 @@ local function create_class(name)
         end
         error("Invalid subtraction")
     end
+    cls.__eq = function(a, b)
+        local meta_a = getmetatable(a)
+        local meta_b = getmetatable(b)
+        if meta_a == meta_b then
+            return a.val == b.val
+        end
+        return false
+    end
+    cls.__lt = function(a, b)
+        local meta_a = getmetatable(a)
+        local meta_b = getmetatable(b)
+        if meta_a == meta_b then
+            return a.val < b.val
+        end
+        error("Invalid comparison")
+    end
+    cls.__le = function(a, b)
+        local meta_a = getmetatable(a)
+        local meta_b = getmetatable(b)
+        if meta_a == meta_b then
+            return a.val <= b.val
+        end
+        error("Invalid comparison")
+    end
+    cls.__tostring = function(a)
+        return string.format("%s(%f)", a.__type, a.val)
+    end
     return cls
 end
 
