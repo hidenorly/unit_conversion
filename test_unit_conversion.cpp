@@ -16,6 +16,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <limits>
 #include <gtest/gtest.h>
 #include "unit_conversion.hpp"
 
@@ -95,8 +96,8 @@ TEST(SpeedTest, OstreamOperator) {
     EXPECT_EQ(oss.str(), "10 m/s");
 }
 
-// test for validation and exceptions in Speed
-TEST(SpeedTest, Invalid) {
+// test for validation, exceptions and extreme values in Speed
+TEST(SpeedTest, InvalidAndExtreme) {
     EXPECT_THROW(Speed::fromKmH(-1.0), std::invalid_argument);
     EXPECT_THROW(Speed::fromMph(-1.0), std::invalid_argument);
     EXPECT_THROW(Speed::fromMs(-1.0), std::invalid_argument);
@@ -105,6 +106,11 @@ TEST(SpeedTest, Invalid) {
     EXPECT_THROW(Speed::fromKmH(std::numeric_limits<double>::infinity()), std::invalid_argument);
 
     EXPECT_NO_THROW(Speed::fromKmH(0.0));
+
+    // Extreme high value test
+    double huge_val = 1e12;
+    auto huge_speed = Speed::fromKmH(huge_val);
+    EXPECT_NEAR(huge_speed.toKmH(), huge_val, 1e-3);
 }
 
 
@@ -152,7 +158,7 @@ TEST(TemperatureTest, Invalid) {
     EXPECT_THROW(Temperature::fromKelvin(-0.01), std::invalid_argument);
     EXPECT_THROW(Temperature::fromCelsius(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
     EXPECT_THROW(Temperature::fromCelsius(std::numeric_limits<double>::infinity()), std::invalid_argument);
-    EXPECT_THROW(Temperature::fromFahrenheit(-500.0), std::invalid_argument); // Extended lower bound check if applicable
+    EXPECT_THROW(Temperature::fromFahrenheit(-500.0), std::invalid_argument);
 }
 
 TEST(TemperatureTest, OstreamOperator) {
@@ -205,7 +211,7 @@ TEST(MassTest, Comparison) {
     EXPECT_TRUE(m3 > m1);
 }
 
-TEST(MassTest, Invalid) {
+TEST(MassTest, InvalidAndExtreme) {
     EXPECT_THROW(Mass::fromKg(-1.0), std::invalid_argument);
     EXPECT_THROW(Mass::fromGram(-100.0), std::invalid_argument);
     EXPECT_THROW(Mass::fromLb(-1.0), std::invalid_argument);
@@ -215,6 +221,11 @@ TEST(MassTest, Invalid) {
     EXPECT_THROW(Mass::fromKg(std::numeric_limits<double>::infinity()), std::invalid_argument);
 
     EXPECT_NO_THROW(Mass::fromKg(0.0));
+
+    // Extreme value test
+    double massive = 1e15;
+    auto m_extreme = Mass::fromKg(massive);
+    EXPECT_DOUBLE_EQ(m_extreme.toKg(), massive);
 }
 
 TEST(MassTest, OstreamOperator) {
@@ -267,7 +278,7 @@ TEST(DistanceTest, Comparison) {
     EXPECT_TRUE(d3 > d1);
 }
 
-TEST(DistanceTest, Mm) {
+TEST(DistanceTest, MmAndInvalid) {
     auto d = Distance::fromMm(1000.0);
     EXPECT_NEAR(d.toMeters(), 1.0, 0.000001);
 
@@ -336,17 +347,14 @@ TEST(PressureTest, OstreamOperator) {
 // --- test case for power
 
 TEST(PowerTest, KwPsHpToAll) {
-    // fromKw -> all to
     auto p1 = Power::fromKw(100.0);
     EXPECT_NEAR(p1.toKw(), 100.0, 1e-9);
     EXPECT_NEAR(p1.toPs(), 135.962, 0.001);
     EXPECT_NEAR(p1.toHp(), 134.102, 0.001);
 
-    // fromPs -> all to
     auto p2 = Power::fromPs(135.962);
     EXPECT_NEAR(p2.toKw(), 100.0, 0.01);
 
-    // fromHp -> all to
     auto p3 = Power::fromHp(134.102);
     EXPECT_NEAR(p3.toKw(), 100.0, 0.01);
 }
@@ -374,7 +382,6 @@ TEST(PowerTest, invalid) {
     EXPECT_THROW(Power::fromHp(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
     EXPECT_THROW(Power::fromHp(std::numeric_limits<double>::infinity()), std::invalid_argument);
 
-    // 0.0
     EXPECT_NO_THROW(Power::fromKw(0.0));
 }
 
@@ -427,7 +434,6 @@ TEST(TorqueTest, invalid) {
     EXPECT_THROW(Torque::fromLbft(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
     EXPECT_THROW(Torque::fromLbft(std::numeric_limits<double>::infinity()), std::invalid_argument);
 
-    // 0.0
     EXPECT_NO_THROW(Torque::fromNm(0.0));
 }
 
@@ -448,7 +454,7 @@ TEST(AngleTest, DegreesToRadians) {
 }
 
 TEST(AngleTest, RadiansToDegrees) {
-    auto a = Angle::fromRadians(1.5707963268); // π/2
+    auto a = Angle::fromRadians(1.5707963268);
     EXPECT_NEAR(a.toRadians(), 1.5707963268, 0.000001);
     EXPECT_NEAR(a.toDegrees(), 90.0, 0.000001);
 }
@@ -490,7 +496,7 @@ TEST(AngleTest, OstreamOperator) {
 TEST(EfficiencyTest, L100kmToKml) {
     auto e = Efficiency::fromL100km(10.0);
     EXPECT_DOUBLE_EQ(e.toL100km(), 10.0);
-    EXPECT_DOUBLE_EQ(e.toKml(), 10.0); // 10L/100km = 10km/L
+    EXPECT_DOUBLE_EQ(e.toKml(), 10.0);
 }
 
 TEST(EfficiencyTest, MpgToKml) {
@@ -502,8 +508,8 @@ TEST(EfficiencyTest, MpgToKml) {
 TEST(EfficiencyTest, KmlToL100andMPG) {
     auto e = Efficiency::fromKml(10.0);
     EXPECT_DOUBLE_EQ(e.toKml(), 10.0);
-    EXPECT_DOUBLE_EQ(e.toL100km(), 10.0);     // 100 / 10 = 10
-    EXPECT_NEAR(e.toMpg(), 23.5215, 0.001);   // 10 / 0.42514...
+    EXPECT_DOUBLE_EQ(e.toL100km(), 10.0);
+    EXPECT_NEAR(e.toMpg(), 23.5215, 0.001);
 }
 
 TEST(EfficiencyTest, Comparison) {
@@ -521,11 +527,9 @@ TEST(EfficiencyTest, EfficiencyFactoryException) {
     EXPECT_THROW(Efficiency::fromKml(-1.0), std::invalid_argument);
     EXPECT_THROW(Efficiency::fromL100km(-5.0), std::invalid_argument);
 
-    // NaN
     EXPECT_THROW(Efficiency::fromKml(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
     EXPECT_THROW(Efficiency::fromL100km(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
     EXPECT_THROW(Efficiency::fromMpg(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
-    // infinite
     EXPECT_THROW(Efficiency::fromKml(std::numeric_limits<double>::infinity()), std::invalid_argument);
     EXPECT_THROW(Efficiency::fromL100km(std::numeric_limits<double>::infinity()), std::invalid_argument);
     EXPECT_THROW(Efficiency::fromMpg(std::numeric_limits<double>::infinity()), std::invalid_argument);
@@ -550,7 +554,7 @@ TEST(EvEfficiencyTest, fromKmkWh) {
 }
 
 TEST(EvEfficiencyTest, fromWhkm) {
-    auto e = EvEfficiency::fromWhkm(200.0); // 1000/200 = 5km/kWh
+    auto e = EvEfficiency::fromWhkm(200.0);
     EXPECT_NEAR(e.toWhkm(), 200.0, 0.001);
     EXPECT_NEAR(e.toKmkWh(), 5.0, 0.01);
     EXPECT_NEAR(e.toKwh100km(), 20.0, 0.01);
@@ -558,7 +562,7 @@ TEST(EvEfficiencyTest, fromWhkm) {
 }
 
 TEST(EvEfficiencyTest, fromKwh100km) {
-    auto e = EvEfficiency::fromKwh100km(20.0); // 100/20 = 5km/kWh
+    auto e = EvEfficiency::fromKwh100km(20.0);
     EXPECT_NEAR(e.toKwh100km(), 20.0, 0.1);
     EXPECT_DOUBLE_EQ(e.toKmkWh(), 5.0);
     EXPECT_NEAR(e.toWhkm(), 200.0, 0.001);
@@ -586,9 +590,7 @@ TEST(EvEfficiencyTest, invalid) {
     EXPECT_THROW(EvEfficiency::fromWhkm(-1.0), std::invalid_argument);
     EXPECT_THROW(EvEfficiency::fromWhkm(0.0), std::invalid_argument);
 
-    // NaN
     EXPECT_THROW(EvEfficiency::fromKmkWh(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
-    // infinite
     EXPECT_THROW(EvEfficiency::fromKmkWh(std::numeric_limits<double>::infinity()), std::invalid_argument);
 }
 
@@ -742,14 +744,12 @@ TEST(AccelerationTest, Comparison) {
 }
 
 TEST(AccelerationTest, DerivedFromDeltaSpeed) {
-    // (20m/s - 0m/s) / 5s = 4m/s^2
     auto v1 = Speed::fromMs(20.0);
     auto v2 = Speed::fromMs(0.0);
     auto t = Time::fromSeconds(5.0);
     auto a = (v1 - v2) / t;
     EXPECT_NEAR(a.toMs2(), 4.0, 1e-9);
 
-    // Time=0 (divide by zero)
     EXPECT_THROW((v1 - v2) / Time::fromSeconds(0.0), std::invalid_argument);
 }
 
@@ -862,7 +862,6 @@ TEST(PhysicsOpsTest, SpeedDivAccelerationEqualsTime) {
     EXPECT_THROW(s / Acceleration::fromMs2(0.0), std::invalid_argument);
 }
 
-// Time / Acceleration = Speed
 TEST(PhysicsOpsTest, TimeDivAccelerationEqualsSpeed) {
     auto t = Time::fromSeconds(10.0);
     auto a = Acceleration::fromMs2(2.0);
@@ -871,6 +870,8 @@ TEST(PhysicsOpsTest, TimeDivAccelerationEqualsSpeed) {
 
     EXPECT_THROW(t / Acceleration::fromMs2(0.0), std::invalid_argument);
 }
+
+// --- Comprehensive Same-Dimension Division & Ratio Checks ---
 
 TEST(PhysicsOpsTest, SameDimensionDivisionRatio) {
     // Distance / Distance
