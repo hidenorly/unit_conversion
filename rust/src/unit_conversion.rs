@@ -808,3 +808,47 @@ impl std::ops::Div<Mass> for Mass {
         self.to_kg() / rhs.to_kg()
     }
 }
+
+// Pressure / Pressure = Scalar (f64)
+impl std::ops::Div<Pressure> for Pressure {
+    type Output = f64;
+    fn div(self, rhs: Pressure) -> Self::Output {
+        if rhs.to_kpa() == 0.0 {
+            panic!("Pressure cannot be zero");
+        }
+        self.to_kpa() / rhs.to_kpa()
+    }
+}
+
+// Power / Power = Scalar (f64)
+impl std::ops::Div<Power> for Power {
+    type Output = f64;
+    fn div(self, rhs: Power) -> Self::Output {
+        if rhs.to_kw() == 0.0 {
+            panic!("Power cannot be zero");
+        }
+        self.to_kw() / rhs.to_kw()
+    }
+}
+
+// Torque / Torque = Scalar (f64)
+impl std::ops::Div<Torque> for Torque {
+    type Output = f64;
+    fn div(self, rhs: Torque) -> Self::Output {
+        if rhs.to_nm() == 0.0 {
+            panic!("Torque cannot be zero");
+        }
+        self.to_nm() / rhs.to_nm()
+    }
+}
+
+// Angle / Angle = Scalar (f64)
+impl std::ops::Div<Angle> for Angle {
+    type Output = f64;
+    fn div(self, rhs: Angle) -> Self::Output {
+        if rhs.to_radians() == 0.0 {
+            panic!("Angle cannot be zero");
+        }
+        self.to_radians() / rhs.to_radians()
+    }
+}

@@ -64,6 +64,11 @@ mod tests {
 
         assert_eq!(s_a, Speed::from_ms(10.0));
         assert!(s_a.partial_cmp(&s_b) == Some(std::cmp::Ordering::Less));
+
+        // extreme value
+        let huge = 1e12;
+        let s_huge = Speed::from_kmh(huge);
+        assert!((s_huge.to_kmh() - huge).abs() < 1e-3);
     }
 
     #[test]
@@ -126,6 +131,11 @@ mod tests {
         assert!(ta != tb);
         assert_eq!(ta, Temperature::from_celsius(10.0));
         assert!(ta.partial_cmp(&tb) == Some(std::cmp::Ordering::Less));
+
+        // Kelvin boundary
+        let tk = Temperature::from_kelvin(0.0);
+        assert!((tk.to_celsius() + 273.15).abs() < 1e-9);
+        assert!((tk.to_fahrenheit() + 459.67).abs() < EPSILON);
     }
 
     #[test]
@@ -211,6 +221,16 @@ mod tests {
         assert!(m1 != m2);
         assert_eq!(m1, Mass::from_kg(1.0));
         assert!(m1.partial_cmp(&m2) == Some(std::cmp::Ordering::Less));
+
+        // zero is valid for every constructor
+        assert!(std::panic::catch_unwind(|| Mass::from_kg(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Mass::from_gram(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Mass::from_lb(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Mass::from_oz(0.0)).is_ok());
+
+        // extreme value
+        let massive = 1e15;
+        assert_eq!(Mass::from_kg(massive).to_kg(), massive);
     }
 
     #[test]
@@ -277,6 +297,14 @@ mod tests {
         assert!(da != db);
         assert_eq!(da, Distance::from_meters(10.0));
         assert!(da.partial_cmp(&db) == Some(std::cmp::Ordering::Less));
+
+        // zero is valid for every constructor
+        assert!(std::panic::catch_unwind(|| Distance::from_meters(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Distance::from_km(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Distance::from_mile(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Distance::from_feet(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Distance::from_inch(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Distance::from_mm(0.0)).is_ok());
     }
 
     #[test]
@@ -346,6 +374,11 @@ mod tests {
         assert!(pa != pb);
         assert_eq!(pa, Pressure::from_bar(1.0));
         assert!(pa.partial_cmp(&pb) == Some(std::cmp::Ordering::Less));
+
+        // zero is valid for every constructor
+        assert!(std::panic::catch_unwind(|| Pressure::from_bar(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Pressure::from_kpa(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Pressure::from_psi(0.0)).is_ok());
     }
 
     #[test]
@@ -399,6 +432,11 @@ mod tests {
         assert!(pa != pb);
         assert_eq!(pa, Power::from_kw(50.0));
         assert!(pa.partial_cmp(&pb) == Some(std::cmp::Ordering::Less));
+
+        // zero is valid for every constructor
+        assert!(std::panic::catch_unwind(|| Power::from_kw(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Power::from_ps(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Power::from_hp(0.0)).is_ok());
     }
 
     #[test]
@@ -492,6 +530,11 @@ mod tests {
         assert!(ta != tb);
         assert_eq!(ta, Torque::from_nm(10.0));
         assert!(ta.partial_cmp(&tb) == Some(std::cmp::Ordering::Less));
+
+        // zero is valid for every constructor
+        assert!(std::panic::catch_unwind(|| Torque::from_nm(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Torque::from_kgfm(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Torque::from_lbft(0.0)).is_ok());
     }
 
     #[test]
@@ -784,6 +827,12 @@ mod tests {
         assert!(va != vb);
         assert_eq!(va, Volume::from_liters(1.0));
         assert!(va.partial_cmp(&vb) == Some(std::cmp::Ordering::Less));
+
+        // zero is valid for every constructor
+        assert!(std::panic::catch_unwind(|| Volume::from_liters(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Volume::from_ml(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Volume::from_us_gallons(0.0)).is_ok());
+        assert!(std::panic::catch_unwind(|| Volume::from_imp_gallons(0.0)).is_ok());
     }
 
     #[test]
@@ -1116,6 +1165,63 @@ mod tests {
     #[should_panic(expected = "Mass cannot be zero")]
     fn test_mass_div_zero_mass() {
         let _ = Mass::from_kg(50.0) / Mass::from_kg(0.0);
+    }
+
+
+    #[test]
+    fn test_pressure_div_pressure() {
+        let p1 = Pressure::from_kpa(200.0);
+        let p2 = Pressure::from_kpa(50.0);
+        let ratio = p1 / p2;
+        assert!((ratio - 4.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_pressure_div_zero_pressure() {
+        let _ = Pressure::from_kpa(200.0) / Pressure::from_kpa(0.0);
+    }
+
+    #[test]
+    fn test_power_div_power() {
+        let p1 = Power::from_kw(150.0);
+        let p2 = Power::from_kw(30.0);
+        let ratio = p1 / p2;
+        assert!((ratio - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_power_div_zero_power() {
+        let _ = Power::from_kw(150.0) / Power::from_kw(0.0);
+    }
+
+    #[test]
+    fn test_torque_div_torque() {
+        let t1 = Torque::from_nm(100.0);
+        let t2 = Torque::from_nm(25.0);
+        let ratio = t1 / t2;
+        assert!((ratio - 4.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_torque_div_zero_torque() {
+        let _ = Torque::from_nm(100.0) / Torque::from_nm(0.0);
+    }
+
+    #[test]
+    fn test_angle_div_angle() {
+        let a1 = Angle::from_degrees(180.0);
+        let a2 = Angle::from_degrees(45.0);
+        let ratio = a1 / a2;
+        assert!((ratio - 4.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_angle_div_zero_angle() {
+        let _ = Angle::from_degrees(180.0) / Angle::from_degrees(0.0);
     }
 
     // -- Added tests for scalar division and guards --
