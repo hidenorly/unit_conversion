@@ -46,11 +46,19 @@ namespace UnitConversion
         public static Speed operator *(Speed s, double scalar) => FromMs(s.m_ms * scalar);
         public static Speed operator *(double scalar, Speed s) => FromMs(s.m_ms * scalar);
         public static Distance operator *(Speed s, Time t) => Distance.FromMeters(s.m_ms * t.ToSeconds());
+
+        public static double operator /(Speed a, Speed b)
+        {
+            if (b.ToMs() == 0.0) throw new ArgumentException("Speed cannot be zero");
+            return a.m_ms / b.m_ms;
+        }
+
         public static Acceleration operator /(Speed s, Time t)
         {
             if (t.ToSeconds() == 0.0) throw new ArgumentException("Time cannot be zero");
             return Acceleration.FromMs2(s.m_ms / t.ToSeconds());
         }
+
         public static Time operator /(Speed s, Acceleration a)
         {
             if (a.ToMs2() == 0.0) throw new ArgumentException("Acceleration cannot be zero");
@@ -133,6 +141,12 @@ namespace UnitConversion
         public double ToOz() => mWeightKg / OzToKg;
 
         public override string ToString() => $"{ToKg()} kg";
+
+        public static double operator /(Mass a, Mass b)
+        {
+            if (b.ToKg() == 0.0) throw new ArgumentException("Mass cannot be zero");
+            return a.mWeightKg / b.mWeightKg;
+        }
 
         public bool Equals(Mass other) => mWeightKg.Equals(other.mWeightKg);
         public override bool Equals(object? obj) => obj is Mass other && Equals(other);
@@ -235,6 +249,12 @@ namespace UnitConversion
 
         public override string ToString() => $"{ToKpa()} kPa";
 
+        public static double operator /(Pressure a, Pressure b)
+        {
+            if (b.ToKpa() == 0.0) throw new ArgumentException("Pressure cannot be zero");
+            return a.m_kpa / b.m_kpa;
+        }
+
         public bool Equals(Pressure other) => m_kpa.Equals(other.m_kpa);
         public override bool Equals(object? obj) => obj is Pressure other && Equals(other);
         public override int GetHashCode() => m_kpa.GetHashCode();
@@ -271,6 +291,12 @@ namespace UnitConversion
 
         public override string ToString() => $"{ToKw()} kW";
 
+        public static double operator /(Power a, Power b)
+        {
+            if (b.ToKw() == 0.0) throw new ArgumentException("Power cannot be zero");
+            return a.m_kw / b.m_kw;
+        }
+
         public bool Equals(Power other) => m_kw.Equals(other.m_kw);
         public override bool Equals(object? obj) => obj is Power other && Equals(other);
         public override int GetHashCode() => m_kw.GetHashCode();
@@ -306,6 +332,12 @@ namespace UnitConversion
         public double ToLbft() => m_nm / LbftToNm;
 
         public override string ToString() => $"{ToNm()} Nm";
+
+        public static double operator /(Torque a, Torque b)
+        {
+            if (b.ToNm() == 0.0) throw new ArgumentException("Torque cannot be zero");
+            return a.m_nm / b.m_nm;
+        }
 
         public bool Equals(Torque other) => m_nm.Equals(other.m_nm);
         public override bool Equals(object? obj) => obj is Torque other && Equals(other);
@@ -359,6 +391,12 @@ namespace UnitConversion
                 r += TwoPi;
             }
             return new Angle(r - Math.PI);
+        }
+
+        public static double operator /(Angle a, Angle b)
+        {
+            if (b.ToRadians() == 0.0) throw new ArgumentException("Angle cannot be zero");
+            return a.m_rad / b.m_rad;
         }
 
         public bool Equals(Angle other) => m_rad.Equals(other.m_rad);
@@ -509,6 +547,12 @@ namespace UnitConversion
         public static Time operator -(Time a, Time b) => FromSeconds(a.m_sec - b.m_sec);
         public static Time operator *(Time t, double scalar) => FromSeconds(t.m_sec * scalar);
         public static Time operator *(double scalar, Time t) => FromSeconds(t.m_sec * scalar);
+
+        public static double operator /(Time a, Time b)
+        {
+            if (b.ToSeconds() == 0.0) throw new ArgumentException("Time cannot be zero");
+            return a.m_sec / b.m_sec;
+        }
 
         public bool Equals(Time other) => m_sec.Equals(other.m_sec);
         public override bool Equals(object? obj) => obj is Time other && Equals(other);

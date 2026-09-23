@@ -389,7 +389,7 @@ public class UnitConversionTests
         Assert.Throws<ArgumentException>(() => Torque.FromNm(-1.0));
         Assert.Throws<ArgumentException>(() => Torque.FromNm(double.NaN));
         Assert.Throws<ArgumentException>(() => Torque.FromNm(double.PositiveInfinity));
-        
+
         var ex = Record.Exception(() => Torque.FromNm(0.0));
         Assert.Null(ex);
 
@@ -802,6 +802,75 @@ public class UnitConversionTests
 
         var t_mul_left = 2.0 * Time.FromSeconds(10.0);
         Assert.Equal(20.0, t_mul_left.ToSeconds(), 1e-9);
+    }
+
+    // --- Same-Dimension Division & Ratio Tests ---
+
+    [Fact]
+    public void TestSameDimensionDivisionRatio()
+    {
+        // Mass / Mass
+        var m1 = Mass.FromKg(10.0);
+        var m2 = Mass.FromKg(2.0);
+        var massRatio = m1 / m2;
+        Assert.Equal(5.0, massRatio, 1e-9);
+
+        Assert.Throws<ArgumentException>(
+            () => Mass.FromKg(10.0) / Mass.FromKg(0.0));
+
+        // Speed / Speed
+        var s1 = Speed.FromMs(60.0);
+        var s2 = Speed.FromMs(15.0);
+        var speedRatio = s1 / s2;
+        Assert.Equal(4.0, speedRatio, 1e-9);
+
+        Assert.Throws<ArgumentException>(
+            () => Speed.FromMs(60.0) / Speed.FromMs(0.0));
+
+        // Time / Time
+        var t1 = Time.FromSeconds(120.0);
+        var t2 = Time.FromSeconds(30.0);
+        var timeRatio = t1 / t2;
+        Assert.Equal(4.0, timeRatio, 1e-9);
+
+        Assert.Throws<ArgumentException>(
+            () => Time.FromSeconds(120.0) / Time.FromSeconds(0.0));
+
+        // Pressure / Pressure
+        var p1 = Pressure.FromKpa(200.0);
+        var p2 = Pressure.FromKpa(50.0);
+        var pressureRatio = p1 / p2;
+        Assert.Equal(4.0, pressureRatio, 1e-9);
+
+        Assert.Throws<ArgumentException>(
+            () => Pressure.FromKpa(200.0) / Pressure.FromKpa(0.0));
+
+        // Power / Power
+        var pow1 = Power.FromKw(150.0);
+        var pow2 = Power.FromKw(30.0);
+        var powerRatio = pow1 / pow2;
+        Assert.Equal(5.0, powerRatio, 1e-9);
+
+        Assert.Throws<ArgumentException>(
+            () => Power.FromKw(150.0) / Power.FromKw(0.0));
+
+        // Torque / Torque
+        var tr1 = Torque.FromNm(100.0);
+        var tr2 = Torque.FromNm(25.0);
+        var torqueRatio = tr1 / tr2;
+        Assert.Equal(4.0, torqueRatio, 1e-9);
+
+        Assert.Throws<ArgumentException>(
+            () => Torque.FromNm(100.0) / Torque.FromNm(0.0));
+
+        // Angle / Angle
+        var ang1 = Angle.FromDegrees(180.0);
+        var ang2 = Angle.FromDegrees(45.0);
+        var angleRatio = ang1 / ang2;
+        Assert.Equal(4.0, angleRatio, 1e-9);
+
+        Assert.Throws<ArgumentException>(
+            () => Angle.FromDegrees(180.0) / Angle.FromDegrees(0.0));
     }
 
     [Fact]
