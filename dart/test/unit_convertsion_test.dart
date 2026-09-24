@@ -94,6 +94,15 @@ void main() {
       final add = Speed.fromKmH(40.0) + Speed.fromKmH(60.0);
       expect(add.toKmH, closeTo(100.0, epsilon));
     });
+
+    test('Speed / Speed -> Ratio (double)', () {
+      final s1 = Speed.fromMs(20.0);
+      final s2 = Speed.fromMs(5.0);
+      final ratio = s1 / s2;
+      expect(ratio, closeTo(4.0, 1e-9));
+
+      expect(() => Speed.fromMs(20.0) / Speed.fromMs(0.0), throwsArgumentError);
+    });
   });
 
 
@@ -347,7 +356,17 @@ void main() {
       expect(p1 > p3, isFalse);
       expect(p1 >= p3, isFalse);
     });
+
+    test('Pressure / Pressure -> Ratio (double)', () {
+      final p1 = Pressure.fromKpa(200.0);
+      final p2 = Pressure.fromKpa(50.0);
+      final ratio = p1 / p2;
+      expect(ratio, closeTo(4.0, 1e-9));
+
+      expect(() => Pressure.fromKpa(200.0) / Pressure.fromKpa(0.0), throwsArgumentError);
+    });
   });
+
 
   group('Power Conversion tests', () {
     test('Power Matrix and Guards', () {
@@ -390,6 +409,15 @@ void main() {
       expect(p3 <= p1, isFalse);
       expect(p1 > p3, isFalse);
       expect(p1 >= p3, isFalse);
+    });
+
+    test('Power / Power -> Ratio (double)', () {
+      final p1 = Power.fromKw(100.0);
+      final p2 = Power.fromKw(25.0);
+      final ratio = p1 / p2;
+      expect(ratio, closeTo(4.0, 1e-9));
+
+      expect(() => Power.fromKw(100.0) / Power.fromKw(0.0), throwsArgumentError);
     });
   });
 
@@ -444,6 +472,15 @@ void main() {
       expect(t3 <= t1, isFalse);
       expect(t1 > t3, isFalse);
       expect(t1 >= t3, isFalse);
+    });
+
+    test('Torque / Torque -> Ratio (double)', () {
+      final t1 = Torque.fromNm(200.0);
+      final t2 = Torque.fromNm(50.0);
+      final ratio = t1 / t2;
+      expect(ratio, closeTo(4.0, 1e-9));
+
+      expect(() => Torque.fromNm(200.0) / Torque.fromNm(0.0), throwsArgumentError);
     });
   });
 
@@ -508,6 +545,15 @@ void main() {
       expect(a3 <= a1, isFalse);
       expect(a1 > a3, isFalse);
       expect(a1 >= a3, isFalse);
+    });
+
+    test('Angle / Angle -> Ratio (double)', () {
+      final a1 = Angle.fromDegrees(180.0);
+      final a2 = Angle.fromDegrees(45.0);
+      final ratio = a1 / a2;
+      expect(ratio, closeTo(4.0, 1e-9));
+
+      expect(() => Angle.fromDegrees(180.0) / Angle.fromDegrees(0.0), throwsArgumentError);
     });
   });
 
@@ -753,6 +799,15 @@ void main() {
       expect(s.toMs, closeTo(5.0, 1e-9));
       expect(() => Time.fromSeconds(10.0) / Acceleration.fromMs2(0.0), throwsArgumentError);
     });
+
+    test('Time / Time -> Ratio (double)', () {
+      final t1 = Time.fromSeconds(60.0);
+      final t2 = Time.fromSeconds(15.0);
+      final ratio = t1 / t2;
+      expect(ratio, closeTo(4.0, 1e-9));
+
+      expect(() => Time.fromSeconds(60.0) / Time.fromSeconds(0.0), throwsArgumentError);
+    });
   });
 
 
@@ -942,6 +997,15 @@ void main() {
       expect(s.toMs, closeTo(5.0, 1e-9));
 
       expect(() => Time.fromSeconds(10.0) / Acceleration.fromMs2(0.0), throwsArgumentError);
+    });
+
+    test('Time / Time -> Ratio (double)', () {
+      final t1 = Time.fromSeconds(60.0);
+      final t2 = Time.fromSeconds(15.0);
+      final ratio = t1 / t2;
+      expect(ratio, closeTo(4.0, 1e-9));
+
+      expect(() => Time.fromSeconds(60.0) / Time.fromSeconds(0.0), throwsArgumentError);
     });
   });
 

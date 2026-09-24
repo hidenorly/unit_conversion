@@ -554,6 +554,9 @@ extension SpeedDiv on Speed {
     } else if (other is Acceleration) {
       if (other.toMs2 == 0.0) throw ArgumentError('Acceleration cannot be zero');
       return Time.fromSeconds(this.toMs / other.toMs2);
+    } else if (other is Speed) {
+      if (other.toMs == 0.0) throw ArgumentError('Speed cannot be zero');
+      return this.toMs / other.toMs;
     } else if (other is num) {
       if (other.toDouble() == 0.0) throw ArgumentError('Division by zero');
       return Speed.fromMs(this.toMs / other.toDouble());
@@ -594,6 +597,7 @@ extension NumToDistanceMul on num {
   }
 }
 
+
 extension TimeOps on Time {
   Time operator +(Time other) => Time.fromSeconds(this.toSeconds + other.toSeconds);
   Time operator -(Time other) => Time.fromSeconds(this.toSeconds - other.toSeconds);
@@ -609,6 +613,9 @@ extension TimeOps on Time {
     } else if (other is Acceleration) {
       if (other.toMs2 == 0.0) throw ArgumentError('Acceleration cannot be zero');
       return Speed.fromMs(this.toSeconds / other.toMs2);
+    } else if (other is Time) {
+      if (other.toSeconds == 0.0) throw ArgumentError('Time cannot be zero');
+      return this.toSeconds / other.toSeconds;
     }
     throw ArgumentError('Unsupported type for division');
   }
@@ -619,6 +626,7 @@ extension NumToTimeMul on num {
     return Time.fromSeconds(time.toSeconds * this.toDouble());
   }
 }
+
 
 extension MassOps on Mass {
   Mass operator +(Mass other) => Mass.fromKg(this.toKg + other.toKg);
@@ -643,5 +651,49 @@ extension MassOps on Mass {
 extension NumToMassMul on num {
   Mass operator *(Mass mass) {
     return Mass.fromKg(mass.toKg * this.toDouble());
+  }
+}
+
+
+extension PressureOps on Pressure {
+  dynamic operator /(dynamic other) {
+    if (other is Pressure) {
+      if (other.toKpa == 0.0) throw ArgumentError('Pressure cannot be zero');
+      return this.toKpa / other.toKpa;
+    }
+    throw ArgumentError('Unsupported type for division');
+  }
+}
+
+
+extension PowerOps on Power {
+  dynamic operator /(dynamic other) {
+    if (other is Power) {
+      if (other.toKw == 0.0) throw ArgumentError('Power cannot be zero');
+      return this.toKw / other.toKw;
+    }
+    throw ArgumentError('Unsupported type for division');
+  }
+}
+
+
+extension TorqueOps on Torque {
+  dynamic operator /(dynamic other) {
+    if (other is Torque) {
+      if (other.toNm == 0.0) throw ArgumentError('Torque cannot be zero');
+      return this.toNm / other.toNm;
+    }
+    throw ArgumentError('Unsupported type for division');
+  }
+}
+
+
+extension AngleOps on Angle {
+  dynamic operator /(dynamic other) {
+    if (other is Angle) {
+      if (other.toRadians == 0.0) throw ArgumentError('Angle cannot be zero');
+      return this.toRadians / other.toRadians;
+    }
+    throw ArgumentError('Unsupported type for division');
   }
 }
