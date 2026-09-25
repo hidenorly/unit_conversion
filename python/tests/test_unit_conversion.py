@@ -18,6 +18,7 @@ import unittest
 import math
 from unit_conversion import Speed,Temperature,Mass,Distance,Pressure,Power,Torque,Angle,Efficiency,EvEfficiency,Volume,Time,Acceleration
 
+
 class TestSpeed(unittest.TestCase):
     def test_conversion(self):
         # test conversion km/h -> mph
@@ -42,12 +43,24 @@ class TestSpeed(unittest.TestCase):
 
         # test identicality
         original = 120.5
-        s4 = Speed.from_kmh(original);
-        self.assertAlmostEqual(s4.to_kmh, original, places = 3)
+        s4 = Speed.from_kmh(original)
+        self.assertAlmostEqual(s4.to_kmh, original, places=3)
 
         # test output stream / repr
         self.assertTrue(str(s1) != "")
         self.assertEqual(repr(s1), str(s1))
+
+    def test_comparison(self):
+        s1 = Speed.from_ms(10.0)
+        s2 = Speed.from_kmh(72.0)  # 20 m/s
+        s3 = Speed.from_ms(10.0)
+
+        self.assertTrue(s1 < s2)
+        self.assertTrue(s1 <= s2)
+        self.assertTrue(s2 > s1)
+        self.assertTrue(s2 >= s1)
+        self.assertEqual(s1, s3)
+        self.assertNotEqual(s1, s2)
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -75,13 +88,25 @@ class TestTemperature(unittest.TestCase):
         self.assertAlmostEqual(t3.to_celsius, 0.0, places=3)
         self.assertEqual(t3.to_kelvin, 273.15)
 
-        # 0 C -> 273.15 K
+        # 273.15 K -> 0 C
         t4 = Temperature.from_kelvin(273.15)
         self.assertEqual(t4.to_kelvin, 273.15)
-        self.assertAlmostEqual(t3.to_celsius, 0.0, places=3)
+        self.assertAlmostEqual(t4.to_celsius, 0.0, places=3)
 
         self.assertTrue(str(t1) != "")
         self.assertEqual(repr(t1), str(t1))
+
+    def test_comparison(self):
+        t1 = Temperature.from_celsius(0.0)
+        t2 = Temperature.from_celsius(100.0)
+        t3 = Temperature.from_fahrenheit(32.0)
+
+        self.assertTrue(t1 < t2)
+        self.assertTrue(t1 <= t2)
+        self.assertTrue(t2 > t1)
+        self.assertTrue(t2 >= t1)
+        self.assertEqual(t1, t3)
+        self.assertNotEqual(t1, t2)
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -141,6 +166,17 @@ class TestMass(unittest.TestCase):
         self.assertTrue(str(w1) != "")
         self.assertEqual(repr(w1), str(w1))
 
+    def test_comparison(self):
+        m1 = Mass.from_kg(1.0)
+        m2 = Mass.from_gram(2000.0)
+        m3 = Mass.from_lb(1.0)
+
+        self.assertTrue(m1 < m2)
+        self.assertTrue(m1 <= m2)
+        self.assertTrue(m2 > m1)
+        self.assertTrue(m2 >= m1)
+        self.assertNotEqual(m1, m2)
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Mass.from_kg(-1.0)
@@ -193,6 +229,18 @@ class TestDistance(unittest.TestCase):
         self.assertTrue(str(d1) != "")
         self.assertEqual(repr(d1), str(d1))
 
+    def test_comparison(self):
+        d1 = Distance.from_meters(10.0)
+        d2 = Distance.from_meters(20.0)
+        d3 = Distance.from_cm(1000.0) if hasattr(Distance, "from_cm") else Distance.from_meters(10.0)
+
+        self.assertTrue(d1 < d2)
+        self.assertTrue(d1 <= d2)
+        self.assertTrue(d2 > d1)
+        self.assertTrue(d2 >= d1)
+        self.assertEqual(d1, d3)
+        self.assertNotEqual(d1, d2)
+
     def test_guards(self):
         d6 = Distance.from_mm(1000.0)
         self.assertEqual(d6.to_meters, 1.0)
@@ -228,6 +276,18 @@ class TestPressure(unittest.TestCase):
         self.assertTrue(str(p_bar) != "")
         self.assertEqual(repr(p_bar), str(p_bar))
 
+    def test_comparison(self):
+        p1 = Pressure.from_kpa(100.0)
+        p2 = Pressure.from_bar(2.0)
+        p3 = Pressure.from_psi(14.5038)
+
+        self.assertTrue(p1 < p2)
+        self.assertTrue(p1 <= p2)
+        self.assertTrue(p2 > p1)
+        self.assertTrue(p2 >= p1)
+        self.assertAlmostEqual(p3.to_kpa, p1.to_kpa, places=3)
+        self.assertNotEqual(p1, p2)
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Pressure.from_bar(-1.0)
@@ -252,6 +312,18 @@ class TestPower(unittest.TestCase):
 
         self.assertTrue(str(p) != "")
         self.assertEqual(repr(p), str(p))
+
+    def test_comparison(self):
+        p1 = Power.from_kw(100.0)
+        p2 = Power.from_kw(200.0)
+        p3 = Power.from_hp(100.0)
+
+        self.assertTrue(p1 < p2)
+        self.assertTrue(p1 <= p2)
+        self.assertTrue(p2 > p1)
+        self.assertTrue(p2 >= p1)
+        self.assertAlmostEqual(p3.to_kw, 74.569987, places=5)
+        self.assertNotEqual(p1, p2)
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -303,6 +375,19 @@ class TestTorque(unittest.TestCase):
         self.assertTrue(str(t) != "")
         self.assertEqual(repr(t), str(t))
 
+    def test_comparison(self):
+        t1 = Torque.from_nm(10.0)
+        t2 = Torque.from_nm(20.0)
+        t3 = Torque.from_kgfm(10.0 / 9.80665)
+
+        self.assertTrue(t1 < t2)
+        self.assertTrue(t1 <= t2)
+        self.assertTrue(t2 > t1)
+        self.assertTrue(t2 >= t1)
+        self.assertAlmostEqual(t3.to_nm, t1.to_nm, places=6)
+        self.assertEqual(t1, t3)
+        self.assertNotEqual(t1, t2)
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Torque.from_nm(float('nan'))
@@ -344,6 +429,18 @@ class TestAngle(unittest.TestCase):
 
         self.assertTrue(str(a) != "")
         self.assertEqual(repr(a), str(a))
+
+    def test_comparison(self):
+        a1 = Angle.from_degrees(90.0)
+        a2 = Angle.from_degrees(180.0)
+        a3 = Angle.from_radians(math.pi / 2.0)
+
+        self.assertTrue(a1 < a2)
+        self.assertTrue(a1 <= a2)
+        self.assertTrue(a2 > a1)
+        self.assertTrue(a2 >= a1)
+        self.assertEqual(a1, a3)
+        self.assertNotEqual(a1, a2)
 
     def test_normalization(self):
         # Test normalize degrees (e.g. 450° -> 90°, -90° -> 270°)
@@ -404,6 +501,18 @@ class TestEfficiency(unittest.TestCase):
         self.assertTrue(str(e) != "")
         self.assertEqual(repr(e), str(e))
 
+    def test_comparison(self):
+        e1 = Efficiency.from_kml(10.0)
+        e2 = Efficiency.from_kml(20.0)
+        e3 = Efficiency.from_l100km(10.0)
+
+        self.assertTrue(e1 < e2)
+        self.assertTrue(e1 <= e2)
+        self.assertTrue(e2 > e1)
+        self.assertTrue(e2 >= e1)
+        self.assertEqual(e1, e3)
+        self.assertNotEqual(e1, e2)
+
     def test_invalid_values(self):
         with self.assertRaises(ValueError):
             Efficiency.from_kml(0.0)
@@ -463,6 +572,18 @@ class TestEvEfficiency(unittest.TestCase):
         self.assertAlmostEqual(e.to_wh_per_km, 621.371, delta=0.001)
         self.assertAlmostEqual(e.to_kwh_per_100km, 62.137, delta=0.001)
         self.assertEqual(e.to_miles_per_kwh, 1.0)
+
+    def test_comparison(self):
+        e1 = EvEfficiency.from_km_per_kwh(5.0)
+        e2 = EvEfficiency.from_km_per_kwh(10.0)
+        e3 = EvEfficiency.from_kwh_per_100km(20.0)
+
+        self.assertTrue(e1 < e2)
+        self.assertTrue(e1 <= e2)
+        self.assertTrue(e2 > e1)
+        self.assertTrue(e2 >= e1)
+        self.assertEqual(e1, e3)
+        self.assertNotEqual(e1, e2)
 
     def test_invalid_values(self):
         with self.assertRaises(ValueError):
@@ -528,6 +649,18 @@ class TestVolume(unittest.TestCase):
         self.assertAlmostEqual(v4.to_liters, 45.4609, places=4)
         self.assertAlmostEqual(v4.to_ml, 45460.9, places=1)
 
+    def test_comparison(self):
+        v1 = Volume.from_liters(1.0)
+        v2 = Volume.from_liters(2.0)
+        v3 = Volume.from_ml(1000.0)
+
+        self.assertTrue(v1 < v2)
+        self.assertTrue(v1 <= v2)
+        self.assertTrue(v2 > v1)
+        self.assertTrue(v2 >= v1)
+        self.assertEqual(v1, v3)
+        self.assertNotEqual(v1, v2)
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Volume.from_liters(-1.0)
@@ -563,13 +696,13 @@ class TestTime(unittest.TestCase):
         self.assertAlmostEqual(t.to_hours, 1)
 
         t_s = Time.from_seconds(60.0)
-        self.assertAlmostEqual(t_s.to_seconds, 60.0);
-        self.assertAlmostEqual(t_s.to_minutes, 1.0);
+        self.assertAlmostEqual(t_s.to_seconds, 60.0)
+        self.assertAlmostEqual(t_s.to_minutes, 1.0)
         self.assertAlmostEqual(t_s.to_hours, 1.0/60.0)
 
         t_m = Time.from_minutes(1.0)
-        self.assertAlmostEqual(t_m.to_seconds, 60.0);
-        self.assertAlmostEqual(t_m.to_minutes, 1.0);
+        self.assertAlmostEqual(t_m.to_seconds, 60.0)
+        self.assertAlmostEqual(t_m.to_minutes, 1.0)
         self.assertAlmostEqual(t_m.to_hours, 1.0/60.0)
 
         t0 = Time.from_hours(0)
@@ -579,6 +712,18 @@ class TestTime(unittest.TestCase):
 
         self.assertTrue(str(t) != "")
         self.assertEqual(repr(t), str(t))
+
+    def test_comparison(self):
+        t1 = Time.from_seconds(10.0)
+        t2 = Time.from_seconds(20.0)
+        t3 = Time.from_minutes(10.0 / 60.0)
+
+        self.assertTrue(t1 < t2)
+        self.assertTrue(t1 <= t2)
+        self.assertTrue(t2 > t1)
+        self.assertTrue(t2 >= t1)
+        self.assertEqual(t1, t3)
+        self.assertNotEqual(t1, t2)
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -610,12 +755,27 @@ class TestAcceleration(unittest.TestCase):
         self.assertTrue(str(accel) != "")
         self.assertEqual(repr(accel), str(accel))
 
+    def test_comparison(self):
+        a1 = Acceleration(5.0)
+        a2 = Acceleration(10.0)
+        a3 = Acceleration.from_speed_and_time(
+            Speed.from_ms(10.0),
+            Time.from_seconds(2.0)
+        )
+
+        self.assertTrue(a1 < a2)
+        self.assertTrue(a1 <= a2)
+        self.assertTrue(a2 > a1)
+        self.assertTrue(a2 >= a1)
+        self.assertEqual(a1, a3)
+        self.assertNotEqual(a1, a2)
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Acceleration(float('nan'))
         with self.assertRaises(ValueError):
             Acceleration(float('inf'))
-        with self.assertRaises(ValueError): 
+        with self.assertRaises(ValueError):
             Acceleration.from_speed_and_time(Speed.from_ms(10.0), Time.from_seconds(0.0))
         with self.assertRaises(ValueError):
             Acceleration.from_speed_and_time(Speed.from_ms(float('nan')), Time.from_seconds(1.0))
@@ -713,7 +873,7 @@ class TestOperation(unittest.TestCase):
     def test_distance_div(self):
         d1 = Distance.from_meters(100.0)
         d2 = Distance.from_meters(20.0)
-        
+
         ratio = d1 / d2
         self.assertEqual(ratio, 5.0)
 
@@ -727,6 +887,48 @@ class TestOperation(unittest.TestCase):
         m1 = Mass.from_kg(10.0)
         m2 = Mass.from_kg(2.0)
         self.assertEqual(m1 / m2, 5.0)
+
+    def test_speed_div(self):
+        s1 = Speed.from_ms(20.0)
+        s2 = Speed.from_kmh(36.0)
+
+        ratio = s1 / s2
+        self.assertAlmostEqual(ratio, 2.0, places=6)
+
+    def test_time_div(self):
+        t1 = Time.from_seconds(20.0)
+        t2 = Time.from_minutes(1.0 / 3.0)
+
+        ratio = t1 / t2
+        self.assertAlmostEqual(ratio, 1.0, places=6)
+
+    def test_pressure_div(self):
+        p1 = Pressure.from_kpa(200.0)
+        p2 = Pressure.from_bar(1.0)
+
+        ratio = p1 / p2
+        self.assertAlmostEqual(ratio, 2.0, places=6)
+
+    def test_power_div(self):
+        p1 = Power.from_kw(100.0)
+        p2 = Power.from_hp(100.0)
+
+        ratio = p1 / p2
+        self.assertAlmostEqual(ratio, 100.0 / p2.to_kw, places=6)
+
+    def test_torque_div(self):
+        t1 = Torque.from_nm(20.0)
+        t2 = Torque.from_kgfm(1.0)
+
+        ratio = t1 / t2
+        self.assertAlmostEqual(ratio, 20.0 / 9.80665, places=6)
+
+    def test_angle_div(self):
+        a1 = Angle.from_degrees(180.0)
+        a2 = Angle.from_degrees(90.0)
+
+        ratio = a1 / a2
+        self.assertAlmostEqual(ratio, 2.0, places=6)
 
     def test_advanced_divisions(self):
         # Time / Acceleration = Speed
@@ -747,10 +949,10 @@ class TestOperation(unittest.TestCase):
 
         a = 0.5 * Acceleration(10.0)
         self.assertEqual(a.to_ms2, 5.0)
-        
+
         t = 3.0 * Time.from_seconds(10.0)
         self.assertEqual(t.to_seconds, 30.0)
-        
+
         d = 4.0 * Distance.from_meters(10.0)
         self.assertEqual(d.to_meters, 40.0)
 
@@ -773,6 +975,18 @@ class TestOperation(unittest.TestCase):
         with self.assertRaises(ValueError):
             Mass.from_kg(10.0) / Mass.from_kg(0.0)
         with self.assertRaises(ValueError):
+            Speed.from_ms(10.0) / Speed.from_ms(0.0)
+        with self.assertRaises(ValueError):
+            Time.from_seconds(10.0) / Time.from_seconds(0.0)
+        with self.assertRaises(ValueError):
+            Pressure.from_kpa(10.0) / Pressure.from_kpa(0.0)
+        with self.assertRaises(ValueError):
+            Power.from_kw(10.0) / Power.from_kw(0.0)
+        with self.assertRaises(ValueError):
+            Torque.from_nm(10.0) / Torque.from_nm(0.0)
+        with self.assertRaises(ValueError):
+            Angle.from_degrees(10.0) / Angle.from_degrees(0.0)
+        with self.assertRaises(ValueError):
             Time.from_seconds(10.0) / Acceleration(0.0)
         with self.assertRaises(ValueError):
             Speed.from_ms(10.0) / Acceleration(0.0)
@@ -794,8 +1008,12 @@ class TestOperation(unittest.TestCase):
             1.0 + Speed.from_ms(10.0)
         with self.assertRaises(TypeError):
             Speed.from_ms(10.0) - 1.0
-        with self.assertRaises(TypeError):
-            Speed.from_ms(10.0) / Speed.from_ms(10.0)
+
+        # Speed / Speed is a supported same-dimension ratio.
+        self.assertEqual(
+            Speed.from_ms(10.0) / Speed.from_ms(10.0),
+            1.0
+        )
 
 
 if __name__ == '__main__':

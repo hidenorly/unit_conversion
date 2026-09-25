@@ -94,6 +94,10 @@ class Speed:
             if other.to_ms2 == 0:
                 raise ValueError("Acceleration cannot be zero")
             return Time.from_seconds(self.to_ms / other.to_ms2)
+        elif isinstance(other, Speed):
+            if other.to_ms == 0:
+                raise ValueError("Speed cannot be zero")
+            return self.to_ms / other.to_ms
         elif isinstance(other, (int, float)):
             if other == 0:
                 raise ValueError("Division by zero")
@@ -449,6 +453,13 @@ class Pressure:
     def __repr__(self):
         return f"{self._kpa} kPa"
 
+    def __truediv__(self, other):
+        if isinstance(other, Pressure):
+            if other.to_kpa == 0:
+                raise ValueError("Pressure cannot be zero")
+            return self.to_kpa / other.to_kpa
+        return NotImplemented
+
 
 @total_ordering
 class Power:
@@ -506,6 +517,12 @@ class Power:
     def __repr__(self):
         return f"{self._kw} kW"
 
+    def __truediv__(self, other):
+        if isinstance(other, Power):
+            if other.to_kw == 0:
+                raise ValueError("Power cannot be zero")
+            return self.to_kw / other.to_kw
+        return NotImplemented
 
 @total_ordering
 class Torque:
@@ -559,6 +576,13 @@ class Torque:
         if not isinstance(other, Torque):
             return NotImplemented
         return self._nm < other._nm
+
+    def __truediv__(self, other):
+        if isinstance(other, Torque):
+            if other.to_nm == 0:
+                raise ValueError("Torque cannot be zero")
+            return self.to_nm / other.to_nm
+        return NotImplemented
 
     def __repr__(self):
         return f"{self._nm} Nm"
@@ -648,6 +672,13 @@ class Angle:
         if not isinstance(other, Angle):
             return NotImplemented
         return self._rad < other._rad
+
+    def __truediv__(self, other):
+        if isinstance(other, Angle):
+            if other.to_radians == 0:
+                raise ValueError("Angle cannot be zero")
+            return self.to_radians / other.to_radians
+        return NotImplemented
 
     def __repr__(self):
         return f"{self._rad} rad"
