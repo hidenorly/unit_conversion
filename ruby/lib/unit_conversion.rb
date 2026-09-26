@@ -86,6 +86,9 @@ class Speed
 
   def /(other)
     case other
+    when Speed
+      raise ArgumentError, "Division by zero" if other.to_ms == 0
+      return self.to_ms / other.to_ms
     when Time
       raise ArgumentError, "Division by zero" if other.to_seconds == 0
       return Acceleration.from_ms2(self.to_ms / other.to_seconds)
@@ -1260,10 +1263,6 @@ class Acceleration
     @a = val
   end
 
-  def self.new(a)
-    super(a)
-  end
-
   def self.from_speed_and_time(s, t)
     raise ArgumentError if t.to_seconds == 0
     return new(s.to_ms / t.to_seconds)
@@ -1287,7 +1286,7 @@ class Acceleration
     when Time
       return Speed.from_ms(self.to_ms2 * other.to_seconds)
     when Numeric
-      return Acceleration.new(self.to_ms2 * other)
+      return Acceleration.from_ms2(self.to_ms2 * other)
     else
       raise ArgumentError, "Unsupported type: #{other.class}"
     end
@@ -1297,7 +1296,7 @@ class Acceleration
     case other
     when Numeric
       raise ArgumentError, "Division by zero" if other == 0
-      return Acceleration.new(self.to_ms2 / other)
+      return Acceleration.from_ms2(self.to_ms2 / other)
     else
       raise ArgumentError, "Unsupported type: #{other.class}"
     end

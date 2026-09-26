@@ -761,13 +761,13 @@ class TestTime < Minitest::Test
     dist = t1 * Speed.from_ms(10.0)
     assert_in_delta(100.0, dist.to_meters)
 
-    spd = t1 * Acceleration.new(2.0)
+    spd = t1 * Acceleration.from_ms2(2.0)
     assert_in_delta(20.0, spd.to_ms)
 
     ratio = t2 / t1
     assert_in_delta(2.0, ratio)
 
-    spd_div = t1 / Acceleration.new(2.0)
+    spd_div = t1 / Acceleration.from_ms2(2.0)
     assert_in_delta(5.0, spd_div.to_ms)
 
     t6 = t2 / 2.0
@@ -780,7 +780,7 @@ class TestTime < Minitest::Test
     assert_raises(ArgumentError) { t1 * "invalid" }
     assert_raises(ArgumentError) { t1 / "invalid" }
     assert_raises(ArgumentError) { t1 / 0.0 }
-    assert_raises(ArgumentError) { t1 / Acceleration.new(0.0) }
+    assert_raises(ArgumentError) { t1 / Acceleration.from_ms2(0.0) }
     assert_raises(ArgumentError) { t1 / Time.from_seconds(0.0) }
   end
 
@@ -797,26 +797,26 @@ end
 
 class TestAcceleration < Minitest::Test
   def test_full_coverage
-    a = Acceleration.new(9.8)
+    a = Acceleration.from_ms2(9.8)
     s = a * Time.from_seconds(2.0)
     assert_in_delta(19.6, s.to_ms)
     
     a2 = Acceleration.from_speed_and_time(Speed.from_ms(20.0), Time.from_seconds(4.0))
     assert_in_delta(5.0, a2.to_ms2)
 
-    assert(Acceleration.new(5.0) < Acceleration.new(10.0))
-    assert_nil(Acceleration.new(5.0) <=> "not acceleration")
+    assert(Acceleration.from_ms2(5.0) < Acceleration.from_ms2(10.0))
+    assert_nil(Acceleration.from_ms2(5.0) <=> "not acceleration")
     assert_equal("9.8 m/s^2", a.to_s)
 
-    assert_raises(ArgumentError) { Acceleration.new(Float::NAN) }
-    assert_raises(ArgumentError) { Acceleration.new(Float::INFINITY) }
+    assert_raises(ArgumentError) { Acceleration.from_ms2(Float::NAN) }
+    assert_raises(ArgumentError) { Acceleration.from_ms2(Float::INFINITY) }
     assert_raises(ArgumentError) { a * "invalid" }
     assert_raises(ArgumentError) { a / "invalid" }
     assert_raises(ArgumentError) { a / 0.0 }
     assert_raises(ArgumentError) { a * Time.from_seconds(-1.0) }
     assert_raises(ArgumentError) { Acceleration.from_speed_and_time(Speed.from_ms(10.0), Time.from_seconds(0.0)) }
 
-    assert_raises(ArgumentError) { Acceleration.new(Float::INFINITY) }
+    assert_raises(ArgumentError) { Acceleration.from_ms2(Float::INFINITY) }
   end
 end
 
@@ -838,7 +838,7 @@ class TestOperation < Minitest::Test
     accel = Speed.from_ms(20.0) / Time.from_seconds(4.0)
     assert_in_delta(5.0, accel.to_ms2)
 
-    tm = Speed.from_ms(20.0) / Acceleration.new(2.0)
+    tm = Speed.from_ms(20.0) / Acceleration.from_ms2(2.0)
     assert_in_delta(10.0, tm.to_seconds)
 
     sp = Speed.from_ms(20.0) / 2.0
@@ -867,7 +867,7 @@ class TestOperation < Minitest::Test
 
   def test_velocity_change
     v = Speed.from_ms(10.0)
-    v_delta = Acceleration.new(2.0) * Time.from_seconds(5.0)
+    v_delta = Acceleration.from_ms2(2.0) * Time.from_seconds(5.0)
     v2 = v + v_delta
     assert_in_delta(20.0, v2.to_ms)
   end
@@ -884,13 +884,13 @@ class TestOperation < Minitest::Test
   end
 
   def test_acceleration_scalar_mul
-    a = Acceleration.new(9.8) * 0.5
+    a = Acceleration.from_ms2(9.8) * 0.5
     assert_in_delta(4.9, a.to_ms2)
 
-    a_coerced = 0.5 * Acceleration.new(9.8)
+    a_coerced = 0.5 * Acceleration.from_ms2(9.8)
     assert_in_delta(4.9, a_coerced.to_ms2)
 
-    zero = Acceleration.new(9.8) * 0.0
+    zero = Acceleration.from_ms2(9.8) * 0.0
     assert_in_delta(0.0, zero.to_ms2)
   end
 
@@ -911,13 +911,60 @@ class TestOperation < Minitest::Test
     assert_in_delta(10.0, v.to_ms)
   end
 
+  def test_same_dimension_div
+    # Speed / Speed = scalar
+    speed_ratio = Speed.from_ms(20.0) / Speed.from_ms(5.0)
+    assert_in_delta(4.0, speed_ratio)
+
+    # Time / Time = scalar
+    time_ratio = Time.from_seconds(20.0) / Time.from_seconds(5.0)
+    assert_in_delta(4.0, time_ratio)
+
+    # Pressure / Pressure = scalar
+    pressure_ratio = Pressure.from_kpa(200.0) / Pressure.from_kpa(50.0)
+    assert_in_delta(4.0, pressure_ratio)
+
+    # Power / Power = scalar
+    power_ratio = Power.from_kw(200.0) / Power.from_kw(50.0)
+    assert_in_delta(4.0, power_ratio)
+
+    # Torque / Torque = scalar
+    torque_ratio = Torque.from_nm(200.0) / Torque.from_nm(50.0)
+    assert_in_delta(4.0, torque_ratio)
+
+    # Angle / Angle = scalar
+    angle_ratio = Angle.from_degrees(180.0) / Angle.from_degrees(45.0)
+    assert_in_delta(4.0, angle_ratio)
+
+    # Mass / Mass = scalar
+    mass_ratio = Mass.from_kg(20.0) / Mass.from_kg(5.0)
+    assert_in_delta(4.0, mass_ratio)
+
+    # Distance / Distance = scalar
+    distance_ratio = Distance.from_meters(20.0) / Distance.from_meters(5.0)
+    assert_in_delta(4.0, distance_ratio)
+
+    # Efficiency / Efficiency = scalar
+    efficiency_ratio = Efficiency.from_kml(20.0) / Efficiency.from_kml(5.0)
+    assert_in_delta(4.0, efficiency_ratio)
+
+    # EV efficiency / EV efficiency = scalar
+    ev_efficiency_ratio =
+      EvEfficiency.from_km_per_kwh(20.0) / EvEfficiency.from_km_per_kwh(5.0)
+    assert_in_delta(4.0, ev_efficiency_ratio)
+
+    # Volume / Volume = scalar
+    volume_ratio = Volume.from_liters(20.0) / Volume.from_liters(5.0)
+    assert_in_delta(4.0, volume_ratio)
+  end
+
   def test_scalar_mul_operations
     # Speed * scalar
     v = Speed.from_ms(10.0) * 2.0
     assert_in_delta(20.0, v.to_ms)
 
     # Acceleration * scalar
-    a = Acceleration.new(10.0) * 0.5
+    a = Acceleration.from_ms2(10.0) * 0.5
     assert_in_delta(5.0, a.to_ms2)
 
     # Time * scalar
@@ -933,12 +980,227 @@ class TestOperation < Minitest::Test
     assert_in_delta(40.0, d_coerced.to_meters)
   end
 
+  def test_scalar_div_operations
+    # Speed / scalar
+    v = Speed.from_ms(10.0) / 2.0
+    assert_in_delta(5.0, v.to_ms)
+
+    # Acceleration / scalar
+    a = Acceleration.from_ms2(10.0) / 2.0
+    assert_in_delta(5.0, a.to_ms2)
+
+    # Time / scalar
+    t = Time.from_seconds(10.0) / 2.0
+    assert_in_delta(5.0, t.to_seconds)
+
+    # Distance / scalar
+    d = Distance.from_meters(10.0) / 2.0
+    assert_in_delta(5.0, d.to_meters)
+
+    # Mass / scalar
+    m = Mass.from_kg(10.0) / 2.0
+    assert_in_delta(5.0, m.to_kg)
+  end
+
+  def test_rmul_operations
+    # scalar * Speed
+    v = 2.0 * Speed.from_ms(10.0)
+    assert_in_delta(20.0, v.to_ms)
+
+    # scalar * Acceleration
+    a = 2.0 * Acceleration.from_ms2(10.0)
+    assert_in_delta(20.0, a.to_ms2)
+
+    # scalar * Time
+    t = 2.0 * Time.from_seconds(10.0)
+    assert_in_delta(20.0, t.to_seconds)
+
+    # scalar * Distance
+    d = 2.0 * Distance.from_meters(10.0)
+    assert_in_delta(20.0, d.to_meters)
+
+    # scalar * Mass
+    m = 2.0 * Mass.from_kg(10.0)
+    assert_in_delta(20.0, m.to_kg)
+  end
+
+  def test_physical_dimension_operations
+    # Speed * Time = Distance
+    distance = Speed.from_ms(10.0) * Time.from_seconds(5.0)
+    assert_in_delta(50.0, distance.to_meters)
+
+    # Time * Speed = Distance
+    distance2 = Time.from_seconds(5.0) * Speed.from_ms(10.0)
+    assert_in_delta(50.0, distance2.to_meters)
+
+    # Distance / Time = Speed
+    speed = Distance.from_meters(100.0) / Time.from_seconds(10.0)
+    assert_in_delta(10.0, speed.to_ms)
+
+    # Distance / Speed = Time
+    time = Distance.from_meters(100.0) / Speed.from_ms(10.0)
+    assert_in_delta(10.0, time.to_seconds)
+
+    # Speed / Time = Acceleration
+    acceleration = Speed.from_ms(20.0) / Time.from_seconds(4.0)
+    assert_in_delta(5.0, acceleration.to_ms2)
+
+    # Speed / Acceleration = Time
+    time2 = Speed.from_ms(20.0) / Acceleration.from_ms2(2.0)
+    assert_in_delta(10.0, time2.to_seconds)
+
+    # Acceleration * Time = Speed
+    speed2 = Acceleration.from_ms2(2.0) * Time.from_seconds(5.0)
+    assert_in_delta(10.0, speed2.to_ms)
+
+    # Time * Acceleration = Speed
+    speed3 = Time.from_seconds(5.0) * Acceleration.from_ms2(2.0)
+    assert_in_delta(10.0, speed3.to_ms)
+
+    # Time / Acceleration = Time^2 / Speed
+    # This operation is intentionally not duplicated here because
+    # the library defines the result as a Time value according to
+    # its current API semantics.
+  end
+
   def test_div_guards
     assert_raises(ArgumentError) { Distance.from_meters(10.0) / Distance.from_meters(0.0) }
     assert_raises(ArgumentError) { Distance.from_meters(10.0) / Speed.from_ms(0.0) }
     assert_raises(ArgumentError) { Distance.from_meters(10.0) / Time.from_seconds(0.0) }
+
+    assert_raises(ArgumentError) { Speed.from_ms(10.0) / Speed.from_ms(0.0) }
     assert_raises(ArgumentError) { Speed.from_ms(10.0) / Time.from_seconds(0.0) }
-    assert_raises(ArgumentError) { Speed.from_ms(10.0) / Acceleration.new(0.0) }
+    assert_raises(ArgumentError) { Speed.from_ms(10.0) / Acceleration.from_ms2(0.0) }
+
     assert_raises(ArgumentError) { Time.from_seconds(10.0) / Time.from_seconds(0.0) }
+    assert_raises(ArgumentError) { Time.from_seconds(10.0) / Acceleration.from_ms2(0.0) }
+
+    assert_raises(ArgumentError) { Pressure.from_kpa(100.0) / Pressure.from_kpa(0.0) }
+    assert_raises(ArgumentError) { Power.from_kw(100.0) / Power.from_kw(0.0) }
+    assert_raises(ArgumentError) { Torque.from_nm(100.0) / Torque.from_nm(0.0) }
+    assert_raises(ArgumentError) { Angle.from_degrees(180.0) / Angle.from_degrees(0.0) }
+
+    assert_raises(ArgumentError) { Mass.from_kg(10.0) / Mass.from_kg(0.0) }
+    assert_raises(ArgumentError) { Efficiency.from_kml(10.0) / Efficiency.from_kml(0.0) }
+    assert_raises(ArgumentError) {
+      EvEfficiency.from_km_per_kwh(10.0) / EvEfficiency.from_km_per_kwh(0.0)
+    }
+    assert_raises(ArgumentError) { Volume.from_liters(10.0) / Volume.from_liters(0.0) }
+  end
+
+  def test_cross_unit_comparison
+    # Speed: 36 km/h == 10 m/s
+    speed1 = Speed.from_kmh(36.0)
+    speed2 = Speed.from_ms(10.0)
+    assert(speed1 == speed2)
+    assert(speed1 <= speed2)
+    assert(speed1 >= speed2)
+
+    # Temperature: 0 °C == 273.15 K
+    temp1 = Temperature.from_celsius(0.0)
+    temp2 = Temperature.from_kelvin(273.15)
+    assert_in_delta(0.0, temp1.to_celsius)
+    assert_in_delta(0.0, temp2.to_celsius)
+    assert(temp1 == temp2)
+    assert(temp1 <= temp2)
+    assert(temp1 >= temp2)
+
+    # Mass: 1 kg == 1000 g
+    mass1 = Mass.from_kg(1.0)
+    mass2 = Mass.from_gram(1000.0)
+    assert(mass1 == mass2)
+    assert(mass1 <= mass2)
+    assert(mass1 >= mass2)
+
+    # Distance: 1 km == 1000 m
+    distance1 = Distance.from_km(1.0)
+    distance2 = Distance.from_meters(1000.0)
+    assert(distance1 == distance2)
+    assert(distance1 <= distance2)
+    assert(distance1 >= distance2)
+
+    # Pressure: 1 bar == 100 kPa
+    pressure1 = Pressure.from_bar(1.0)
+    pressure2 = Pressure.from_kpa(100.0)
+    assert(pressure1 == pressure2)
+    assert(pressure1 <= pressure2)
+    assert(pressure1 >= pressure2)
+
+    # Power: 1 kW == 1 kW
+    power1 = Power.from_kw(1.0)
+    power2 = Power.from_kw(1.0)
+    assert(power1 == power2)
+    assert(power1 <= power2)
+    assert(power1 >= power2)
+
+    # Torque: 1 kgf·m == 9.80665 Nm
+    torque1 = Torque.from_kgfm(1.0)
+    torque2 = Torque.from_nm(9.80665)
+    assert_in_delta(torque1.to_nm, torque2.to_nm, 0.000001)
+
+    # Angle: 180° == pi rad
+    angle1 = Angle.from_degrees(180.0)
+    angle2 = Angle.from_radians(Math::PI)
+    assert_in_delta(angle1.to_radians, angle2.to_radians, 0.000001)
+
+    # Efficiency: 10 km/L == 10 km/L
+    efficiency1 = Efficiency.from_kml(10.0)
+    efficiency2 = Efficiency.from_l100km(10.0)
+    assert(efficiency1 == efficiency2)
+
+    # EV efficiency: 5 km/kWh == 200 Wh/km
+    ev1 = EvEfficiency.from_km_per_kwh(5.0)
+    ev2 = EvEfficiency.from_wh_per_km(200.0)
+    assert_in_delta(ev1.to_km_per_kwh, ev2.to_km_per_kwh, 0.000001)
+
+    # Volume: 1 L == 1000 mL
+    volume1 = Volume.from_liters(1.0)
+    volume2 = Volume.from_ml(1000.0)
+    assert(volume1 == volume2)
+
+    # Time: 60 seconds == 1 minute
+    time1 = Time.from_seconds(60.0)
+    time2 = Time.from_minutes(1.0)
+    assert(time1 == time2)
+
+    # Acceleration: same canonical value
+    acceleration1 = Acceleration.from_ms2(9.8)
+    acceleration2 = Acceleration.from_ms2(9.8)
+    assert(acceleration1 == acceleration2)
+  end
+
+  def test_comparison_boundaries
+    speed1 = Speed.from_ms(10.0)
+    speed2 = Speed.from_ms(20.0)
+
+    assert(speed1 != speed2)
+    assert(speed1 < speed2)
+    assert(speed1 <= speed2)
+    assert(speed2 > speed1)
+    assert(speed2 >= speed1)
+    assert(speed1 <= speed1)
+    assert(speed1 >= speed1)
+
+    distance1 = Distance.from_meters(10.0)
+    distance2 = Distance.from_meters(20.0)
+
+    assert(distance1 != distance2)
+    assert(distance1 < distance2)
+    assert(distance1 <= distance2)
+    assert(distance2 > distance1)
+    assert(distance2 >= distance1)
+    assert(distance1 <= distance1)
+    assert(distance1 >= distance1)
+
+    mass1 = Mass.from_kg(10.0)
+    mass2 = Mass.from_kg(20.0)
+
+    assert(mass1 != mass2)
+    assert(mass1 < mass2)
+    assert(mass1 <= mass2)
+    assert(mass2 > mass1)
+    assert(mass2 >= mass1)
+    assert(mass1 <= mass1)
+    assert(mass1 >= mass1)
   end
 end
