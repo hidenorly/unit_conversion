@@ -199,6 +199,11 @@ local s7 = s2 / 2.0
 assert_eq(s7:toMs(), 10.0, "Speed / scalar")
 assert_fail(function() local _ = s1 / 0.0 end)
 
+-- same-dimension division
+local speed_ratio = s2 / s1
+assert_eq(speed_ratio, 2.0, "Speed / Speed")
+assert_fail(function() local _ = s1 / M.Speed.fromMs(0.0) end)
+
 local dist = s1 * t
 assert_eq(dist:toMeters(), 50.0, "Speed * Time = Distance")
 local dist2 = t * s1
@@ -310,5 +315,142 @@ assert(comp_s2 >= comp_s1, "Speed greater than or equal")
 -- Cross-type comparison or invalid comparisons should fail or return false cleanly
 assert(comp_s1 ~= d1, "Different unit types should not be equal")
 assert_fail(function() local _ = comp_s1 < d1 end)
+
+-- ============================================================
+-- Comparison coverage for all value types
+-- ============================================================
+
+local function assert_comparable(lower, higher, equal_value, invalid, name)
+    assert(lower < higher, name .. " less than")
+    assert(lower <= higher, name .. " less than or equal")
+    assert(higher > lower, name .. " greater than")
+    assert(higher >= lower, name .. " greater than or equal")
+
+    assert(lower == equal_value, name .. " equality")
+    assert(lower ~= higher, name .. " inequality")
+
+    assert(lower ~= invalid, name .. " different type inequality")
+
+    -- Invalid type comparison should not silently produce a valid ordering.
+    assert_fail(function()
+        local _ = lower < invalid
+    end)
+
+    assert_fail(function()
+        local _ = lower <= invalid
+    end)
+
+    assert_fail(function()
+        local _ = lower > invalid
+    end)
+
+    assert_fail(function()
+        local _ = lower >= invalid
+    end)
+end
+
+assert_comparable(
+    M.Speed.fromMs(10.0),
+    M.Speed.fromMs(20.0),
+    M.Speed.fromMs(10.0),
+    d1,
+    "Speed"
+)
+
+assert_comparable(
+    M.Temperature.fromCelsius(10.0),
+    M.Temperature.fromCelsius(20.0),
+    M.Temperature.fromCelsius(10.0),
+    M.Mass.fromKg(1.0),
+    "Temperature"
+)
+
+assert_comparable(
+    M.Mass.fromKg(10.0),
+    M.Mass.fromKg(20.0),
+    M.Mass.fromKg(10.0),
+    d1,
+    "Mass"
+)
+
+assert_comparable(
+    M.Distance.fromMeters(10.0),
+    M.Distance.fromMeters(20.0),
+    M.Distance.fromMeters(10.0),
+    M.Speed.fromMs(1.0),
+    "Distance"
+)
+
+assert_comparable(
+    M.Pressure.fromKpa(10.0),
+    M.Pressure.fromKpa(20.0),
+    M.Pressure.fromKpa(10.0),
+    M.Power.fromKw(1.0),
+    "Pressure"
+)
+
+assert_comparable(
+    M.Power.fromKw(10.0),
+    M.Power.fromKw(20.0),
+    M.Power.fromKw(10.0),
+    M.Torque.fromNm(1.0),
+    "Power"
+)
+
+assert_comparable(
+    M.Torque.fromNm(10.0),
+    M.Torque.fromNm(20.0),
+    M.Torque.fromNm(10.0),
+    M.Power.fromKw(1.0),
+    "Torque"
+)
+
+assert_comparable(
+    M.Angle.fromRadians(1.0),
+    M.Angle.fromRadians(2.0),
+    M.Angle.fromRadians(1.0),
+    M.Distance.fromMeters(1.0),
+    "Angle"
+)
+
+assert_comparable(
+    M.Efficiency.fromKml(10.0),
+    M.Efficiency.fromKml(20.0),
+    M.Efficiency.fromKml(10.0),
+    M.EvEfficiency.fromKmkWh(1.0),
+    "Efficiency"
+)
+
+assert_comparable(
+    M.EvEfficiency.fromKmkWh(10.0),
+    M.EvEfficiency.fromKmkWh(20.0),
+    M.EvEfficiency.fromKmkWh(10.0),
+    M.Efficiency.fromKml(1.0),
+    "EvEfficiency"
+)
+
+assert_comparable(
+    M.Volume.fromLiters(10.0),
+    M.Volume.fromLiters(20.0),
+    M.Volume.fromLiters(10.0),
+    M.Distance.fromMeters(1.0),
+    "Volume"
+)
+
+assert_comparable(
+    M.Time.fromSeconds(10.0),
+    M.Time.fromSeconds(20.0),
+    M.Time.fromSeconds(10.0),
+    M.Distance.fromMeters(1.0),
+    "Time"
+)
+
+assert_comparable(
+    M.Acceleration.fromMs2(10.0),
+    M.Acceleration.fromMs2(20.0),
+    M.Acceleration.fromMs2(10.0),
+    M.Speed.fromMs(1.0),
+    "Acceleration"
+)
 
 print("All tests passed: Logic, Operators, Comparisons, and Validation coverage 100%.")

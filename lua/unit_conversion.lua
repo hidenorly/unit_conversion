@@ -111,8 +111,12 @@ function M.Speed:toMph() return self.val / 0.44704 end
 M.Speed.__mul = function(a, b)
     local meta_a = getmetatable(a)
     local meta_b = getmetatable(b)
-    if meta_a == M.Speed and meta_b == M.Time then return M.Distance.fromMeters(a.val * b.val) end
-    if meta_b == M.Speed and meta_a == M.Time then return M.Distance.fromMeters(b.val * a.val) end
+    if meta_a == M.Speed and meta_b == M.Time then
+        return M.Distance.fromMeters(a.val * b.val)
+    end
+    if meta_b == M.Speed and meta_a == M.Time then
+        return M.Distance.fromMeters(b.val * a.val)
+    end
     if meta_a == M.Speed and type(b) == "number" then
         return M.Speed.fromMs(a.val * b)
     elseif type(a) == "number" and meta_b == M.Speed then
@@ -124,7 +128,12 @@ end
 M.Speed.__div = function(a, b)
     local meta_a = getmetatable(a)
     local meta_b = getmetatable(b)
-    if meta_a == M.Speed and meta_b == M.Time then
+
+    -- Speed / Speed = dimensionless ratio
+    if meta_a == M.Speed and meta_b == M.Speed then
+        if b.val == 0 then error("Speed cannot be zero") end
+        return a.val / b.val
+    elseif meta_a == M.Speed and meta_b == M.Time then
         if b.val == 0 then error("Time cannot be zero") end
         return M.Acceleration.fromMs2(a.val / b.val)
     elseif meta_a == M.Speed and meta_b == M.Acceleration then
@@ -250,7 +259,7 @@ M.Power = setup_meta(create_class("Power"))
 function M.Power.fromKw(v)
     check(v, "Power")
     if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Power must be non-negative") end
-    return setmetatable({val = v}, M.Power) 
+    return setmetatable({val = v}, M.Power)
 end
 function M.Power.fromPs(v) return M.Power.fromKw(v * 0.73549875) end
 function M.Power.fromHp(v) return M.Power.fromKw(v * 0.74569987) end
@@ -261,7 +270,7 @@ function M.Power:toHp() return self.val / 0.74569987 end
 
 -- Torque
 M.Torque = setup_meta(create_class("Torque"))
-function M.Torque.fromNm(v) 
+function M.Torque.fromNm(v)
     check(v, "Torque")
     if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Torque must be non-negative") end
     return setmetatable({val = v}, M.Torque)
@@ -392,17 +401,21 @@ function M.Acceleration.fromMs2(v)
     if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Acceleration must be non-negative") end
     return setmetatable({val = v}, M.Acceleration)
 end
-function M.Acceleration.fromSpeedAndTime(s, t) 
+function M.Acceleration.fromSpeedAndTime(s, t)
     if t:toSeconds() == 0 then error("Time cannot be zero") end
-    return M.Acceleration.fromMs2(s:toMs() / t:toSeconds()) 
+    return M.Acceleration.fromMs2(s:toMs() / t:toSeconds())
 end
 function M.Acceleration:toMs2() return self.val end
 
 M.Acceleration.__mul = function(a, b)
     local meta_a = getmetatable(a)
     local meta_b = getmetatable(b)
-    if meta_a == M.Acceleration and meta_b == M.Time then return M.Speed.fromMs(a.val * b.val) end
-    if meta_b == M.Acceleration and meta_a == M.Time then return M.Speed.fromMs(b.val * a.val) end
+    if meta_a == M.Acceleration and meta_b == M.Time then
+        return M.Speed.fromMs(a.val * b.val)
+    end
+    if meta_b == M.Acceleration and meta_a == M.Time then
+        return M.Speed.fromMs(b.val * a.val)
+    end
     if meta_a == M.Acceleration and type(b) == "number" then
         return M.Acceleration.fromMs2(a.val * b)
     elseif type(a) == "number" and meta_b == M.Acceleration then
