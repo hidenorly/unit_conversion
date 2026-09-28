@@ -518,11 +518,11 @@ public:
 // --- operator overloads
 
 // Acceleration * Time = Speed
-inline Speed operator*(const Acceleration& a, const Time& t) noexcept {
+inline Speed operator*(const Acceleration& a, const Time& t) {
     return Speed::fromMs(a.toMs2() * t.toSeconds());
 }
 
-inline Speed operator*(const Time& t, const Acceleration& a) noexcept {
+inline Speed operator*(const Time& t, const Acceleration& a) {
     return a * t;
 }
 
@@ -545,11 +545,11 @@ inline Time operator/(const Speed& s, const Acceleration& a) {
 }
 
 // Speed * Time = Distance
-inline Distance operator*(const Speed& s, const Time& t) noexcept {
+inline Distance operator*(const Speed& s, const Time& t) {
     return Distance::fromMeters(s.toMs() * t.toSeconds());
 }
 
-inline Distance operator*(const Time& t, const Speed& s) noexcept {
+inline Distance operator*(const Time& t, const Speed& s) {
     return s * t;
 }
 
@@ -608,51 +608,51 @@ inline double operator/(const Angle& a, const Angle& b) {
 }
 
 // Speed - Speed
-inline Speed operator-(const Speed& a, const Speed& b) noexcept {
+inline Speed operator-(const Speed& a, const Speed& b) {
     return Speed::fromMs(a.toMs() - b.toMs());
 }
 
 // Speed + Speed
-inline Speed operator+(const Speed& a, const Speed& b) noexcept {
+inline Speed operator+(const Speed& a, const Speed& b) {
     return Speed::fromMs(a.toMs() + b.toMs());
 }
 
 // Distance - Distance
-inline Distance operator-(const Distance& a, const Distance& b) noexcept {
+inline Distance operator-(const Distance& a, const Distance& b) {
     return Distance::fromMeters(a.toMeters() - b.toMeters());
 }
 
 // Distance + Distance
-inline Distance operator+(const Distance& a, const Distance& b) noexcept {
+inline Distance operator+(const Distance& a, const Distance& b) {
     return Distance::fromMeters(a.toMeters() + b.toMeters());
 }
 
 // Time - Time
-inline Time operator-(const Time& a, const Time& b) noexcept {
+inline Time operator-(const Time& a, const Time& b) {
     return Time::fromSeconds(a.toSeconds() - b.toSeconds());
 }
 
 // Time + Time
-inline Time operator+(const Time& a, const Time& b) noexcept {
+inline Time operator+(const Time& a, const Time& b) {
     return Time::fromSeconds(a.toSeconds() + b.toSeconds());
 }
 
 // Mass - Mass
-inline Mass operator-(const Mass& a, const Mass& b) noexcept {
+inline Mass operator-(const Mass& a, const Mass& b) {
     return Mass::fromKg(a.toKg() - b.toKg());
 }
 
 // Mass + Mass
-inline Mass operator+(const Mass& a, const Mass& b) noexcept {
+inline Mass operator+(const Mass& a, const Mass& b) {
     return Mass::fromKg(a.toKg() + b.toKg());
 }
 
 // Speed * scalar / scalar * Speed
-inline Speed operator*(const Speed& s, double scalar) noexcept {
+inline Speed operator*(const Speed& s, double scalar) {
     return Speed::fromMs(s.toMs() * scalar);
 }
 
-inline Speed operator*(double scalar, const Speed& s) noexcept {
+inline Speed operator*(double scalar, const Speed& s) {
     return s * scalar;
 }
 
@@ -663,11 +663,11 @@ inline Speed operator/(const Speed& s, double scalar) {
 }
 
 // Distance * scalar / scalar * Distance
-inline Distance operator*(const Distance& d, double scalar) noexcept {
+inline Distance operator*(const Distance& d, double scalar) {
     return Distance::fromMeters(d.toMeters() * scalar);
 }
 
-inline Distance operator*(double scalar, const Distance& d) noexcept {
+inline Distance operator*(double scalar, const Distance& d) {
     return d * scalar;
 }
 
@@ -678,11 +678,11 @@ inline Distance operator/(const Distance& d, double scalar) {
 }
 
 // Acceleration * scalar / scalar * Acceleration
-inline Acceleration operator*(const Acceleration& a, double scalar) noexcept {
+inline Acceleration operator*(const Acceleration& a, double scalar) {
     return Acceleration::fromMs2(a.toMs2() * scalar);
 }
 
-inline Acceleration operator*(double scalar, const Acceleration& a) noexcept {
+inline Acceleration operator*(double scalar, const Acceleration& a) {
     return a * scalar;
 }
 
@@ -693,11 +693,11 @@ inline Acceleration operator/(const Acceleration& a, double scalar) {
 }
 
 // Time * scalar / scalar * Time
-inline Time operator*(const Time& t, double scalar) noexcept {
+inline Time operator*(const Time& t, double scalar) {
     return Time::fromSeconds(t.toSeconds() * scalar);
 }
 
-inline Time operator*(double scalar, const Time& t) noexcept {
+inline Time operator*(double scalar, const Time& t) {
     return t * scalar;
 }
 
@@ -708,11 +708,11 @@ inline Time operator/(const Time& t, double scalar) {
 }
 
 // Mass * scalar / scalar * Mass
-inline Mass operator*(const Mass& m, double scalar) noexcept {
+inline Mass operator*(const Mass& m, double scalar) {
     return Mass::fromKg(m.toKg() * scalar);
 }
 
-inline Mass operator*(double scalar, const Mass& m) noexcept {
+inline Mass operator*(double scalar, const Mass& m) {
     return m * scalar;
 }
 
