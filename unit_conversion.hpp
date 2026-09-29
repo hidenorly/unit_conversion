@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-#ifndef __UNIT_CONVERSION_HPP__
-#define __UNIT_CONVERSION_HPP__
+#ifndef UNIT_CONVERSION_HPP
+#define UNIT_CONVERSION_HPP
 
 #include <cmath>
 #include <stdexcept>
@@ -29,17 +29,17 @@ class Speed {
 private:
     double m_ms; // internal value is based on m/s
     explicit Speed(double ms) : m_ms(ms) {
-        if (std::isnan(ms) || std::isinf(ms)) {
+        if (!std::isfinite(ms)) {
             throw std::invalid_argument("Speed must be finite");
         }        
 #ifdef NO_NEGATIVE_ALLOWED
-        if (ms<0.0f) {
+        if (ms<0.0) {
             throw std::invalid_argument("Speed must be non-negative");
         }        
 #endif // NO_NEGATIVE_ALLOWED
     }
-    static constexpr double convert_kmh_ms = 3.6f;
-    static constexpr double convert_mph_ms = 0.44704f;
+    static constexpr double convert_kmh_ms = 3.6;
+    static constexpr double convert_mph_ms = 0.44704;
 
 public:
     static Speed fromKmH(double value) { return Speed(value / convert_kmh_ms); }
@@ -72,8 +72,8 @@ private:
     static constexpr double K_OFFSET = 273.15;
 
     explicit Temperature(double c) : m_celsius(c) {
-        if (std::isnan(c) || c < ABSOLUTE_ZERO_C || std::isinf(c)) {
-            throw std::invalid_argument("Temperature below absolute zero or invalid");
+        if (!std::isfinite(c) || c < ABSOLUTE_ZERO_C) {
+            throw std::invalid_argument("Temperature must be finite and above absolute zero");
         }
     }
 
@@ -107,7 +107,7 @@ private:
     static constexpr double OZ_TO_KG = 0.0283495231;
 
     explicit Mass(double kg) : mWeightKg(kg) {
-        if (std::isnan(kg) || std::isinf(kg)) {
+        if (!std::isfinite(kg)) {
             throw std::invalid_argument("Mass must be finite");
         }
 #ifdef NO_NEGATIVE_ALLOWED
@@ -151,7 +151,7 @@ private:
     static constexpr double MM_TO_M = 0.001;
 
     explicit Distance(double meters) : m_meters(meters) {
-        if (std::isnan(meters) || std::isinf(meters)) {
+        if (!std::isfinite(meters)) {
             throw std::invalid_argument("Distance must be finite");
         }
 #ifdef NO_NEGATIVE_ALLOWED
@@ -196,7 +196,7 @@ private:
     static constexpr double PSI_TO_KPA = 6.89476;
 
     explicit Pressure(double kpa) : m_kpa(kpa) {
-        if (std::isnan(kpa) || std::isinf(kpa)) {
+        if (!std::isfinite(kpa)) {
             throw std::invalid_argument("Pressure must be finite");
         }
 #ifdef NO_NEGATIVE_ALLOWED
@@ -235,8 +235,8 @@ private:
     static constexpr double HP_TO_KW = 0.74569987;
 
     explicit Power(double kw) : m_kw(kw) {
-        if (std::isnan(kw) || std::isinf(kw)) {
-            throw std::invalid_argument("Power must be a finite number");
+        if (!std::isfinite(kw)) {
+            throw std::invalid_argument("Power must be finite");
         }
 #ifdef NO_NEGATIVE_ALLOWED
         if (kw < 0.0) {
@@ -274,8 +274,8 @@ private:
     static constexpr double LBFT_TO_NM = 1.355817948;
 
     explicit Torque(double nm) : m_nm(nm) {
-        if (std::isnan(nm) || std::isinf(nm)){
-            throw std::invalid_argument("Invalid torque");
+        if (!std::isfinite(nm)){
+            throw std::invalid_argument("Torque must be finite");
         }
 #ifdef NO_NEGATIVE_ALLOWED
         if (nm < 0.0) {
@@ -312,7 +312,7 @@ private:
     static constexpr double DEG_TO_RAD = 3.14159265358979323846 / 180.0;
 
     explicit Angle(double rad) : m_rad(rad) {
-        if (std::isnan(rad) || std::isinf(rad)) {
+        if (!std::isfinite(rad)) {
             throw std::invalid_argument("Angle must be finite");
         }
     }
@@ -359,8 +359,8 @@ private:
     static constexpr double MPG_TO_KML = 0.425143707;
 
     explicit Efficiency(double kml) : m_kml(kml) {
-        if( std::isnan(kml) || (std::isinf(kml)) || m_kml <= 0.0 ){
-            throw std::invalid_argument("Must be positive");
+        if( !std::isfinite(kml) || m_kml <= 0.0 ){
+            throw std::invalid_argument("Efficiency must be positive");
         }
     }
 
@@ -392,8 +392,8 @@ private:
     static constexpr double MILE_TO_KM = 1.609344;
 
     explicit EvEfficiency(double km_per_kwh) : m_km_per_kwh(km_per_kwh) {
-        if( std::isnan(km_per_kwh) || std::isinf(km_per_kwh) || km_per_kwh <= 0.0 ){
-            throw std::invalid_argument("Must be positive");
+        if( !std::isfinite(km_per_kwh) || km_per_kwh <= 0.0 ){
+            throw std::invalid_argument("EV efficiency must be positive");
         }
     }
 
@@ -427,7 +427,7 @@ private:
     static constexpr double US_GAL_TO_L = 3.785411784;
     static constexpr double IMP_GAL_TO_L = 4.54609;
     explicit Volume(double l) : m_liters(l) {
-        if (std::isnan(l) || std::isinf(l)) {
+        if (!std::isfinite(l)) {
             throw std::invalid_argument("Volume must be finite");
         }
 #ifdef NO_NEGATIVE_ALLOWED
@@ -465,7 +465,7 @@ class Time {
 private:
     double m_sec;
     explicit Time(double s) : m_sec(s) {
-        if (std::isnan(s) || s < 0.0 || std::isinf(s)) throw std::invalid_argument("Invalid Time");
+        if (!std::isfinite(s) || s < 0.0) throw std::invalid_argument("Time must be finite and non-negative");
     }
 
 public:
@@ -494,7 +494,7 @@ class Acceleration {
     double m_a;
 public:
     explicit Acceleration(double a) : m_a(a) {
-        if (std::isnan(a) || std::isinf(a)) throw std::invalid_argument("Invalid Accel");
+        if (!std::isfinite(a)) throw std::invalid_argument("Acceleration must be finite");
     }
     static Acceleration fromMs2(double a) { return Acceleration(a); }
     static Acceleration fromSpeedAndTime(const Speed& s, const Time& t) {
@@ -722,4 +722,4 @@ inline Mass operator/(const Mass& m, double scalar) {
     return Mass::fromKg(m.toKg() / scalar);
 }
 
-#endif // __UNIT_CONVERSION_HPP__
+#endif // UNIT_CONVERSION_HPP
