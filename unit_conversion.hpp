@@ -607,6 +607,26 @@ inline double operator/(const Angle& a, const Angle& b) {
     return a.toRadians() / b.toRadians();
 }
 
+inline double operator/(const Acceleration& a, const Acceleration& b) {
+    if (b.toMs2() == 0.0) throw std::invalid_argument("Acceleration cannot be zero");
+    return a.toMs2() / b.toMs2();
+}
+
+inline double operator/(const Efficiency& a, const Efficiency& b) {
+    if (b.toKml() == 0.0) throw std::invalid_argument("Efficiency cannot be zero");
+    return a.toKml() / b.toKml();
+}
+
+inline double operator/(const EvEfficiency& a, const EvEfficiency& b) {
+    if (b.toKmkWh() == 0.0) throw std::invalid_argument("EV efficiency cannot be zero");
+    return a.toKmkWh() / b.toKmkWh();
+}
+
+inline double operator/(const Volume& a, const Volume& b) {
+    if (b.toLiters() == 0.0) throw std::invalid_argument("Volume cannot be zero");
+    return a.toLiters() / b.toLiters();
+}
+
 // Speed - Speed
 inline Speed operator-(const Speed& a, const Speed& b) {
     return Speed::fromMs(a.toMs() - b.toMs());

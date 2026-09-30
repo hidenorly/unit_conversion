@@ -921,4 +921,27 @@ TEST(PhysicsOpsTest, SameDimensionDivisionRatio) {
     auto ang2 = Angle::fromDegrees(45.0);
     EXPECT_NEAR(ang1 / ang2, 4.0, 1e-9);
     EXPECT_THROW(ang1 / Angle::fromDegrees(0.0), std::invalid_argument);
+
+
+    // Acceleration / Acceleration
+    auto a1 = Acceleration::fromMs2(12.0);
+    auto a2 = Acceleration::fromMs2(3.0);
+    EXPECT_NEAR(a1 / a2, 4.0, 1e-9);
+    EXPECT_THROW(a1 / Acceleration::fromMs2(0.0), std::invalid_argument);
+
+    // Efficiency / Efficiency
+    auto e1 = Efficiency::fromKml(20.0);
+    auto e2 = Efficiency::fromKml(5.0);
+    EXPECT_NEAR(e1 / e2, 4.0, 1e-9);
+
+    // EvEfficiency / EvEfficiency
+    auto ev1 = EvEfficiency::fromKmkWh(8.0);
+    auto ev2 = EvEfficiency::fromKmkWh(2.0);
+    EXPECT_NEAR(ev1 / ev2, 4.0, 1e-9);
+
+    // Volume / Volume
+    auto vol1 = Volume::fromLiters(20.0);
+    auto vol2 = Volume::fromLiters(5.0);
+    EXPECT_NEAR(vol1 / vol2, 4.0, 1e-9);
+    EXPECT_THROW(vol1 / Volume::fromLiters(0.0), std::invalid_argument);
 }
