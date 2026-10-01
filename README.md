@@ -145,6 +145,54 @@ gem build unit_conversion.gemspec
 gem install ./unit_conversion-0.1.0.gem
 ```
 
+## lua
+
+### how-to use
+
+```
+local M = require("unit_conversion")
+
+local s = M.Speed.fromMs(10.0)
+local s2 = s:toKmH()
+```
+
+### test
+
+```
+cd lua
+lua test_unit_conversion.lua
+```
+
+## csharp
+
+### how-to use
+
+```
+using UnitConversion;
+
+class Program
+{
+    static void Main()
+    {
+        var speed = Speed.FromKmH(60.0);
+        Console.WriteLine(speed.ToMs());
+    }
+}
+```
+
+### install
+
+```
+cd csharp
+dotnet build --configuration Release
+dotnet pack --configuration Release --no-build
+mkdir -p ~/work/sample
+cp UnitConversion/bin/Release/*.nupkg ~/work/sample/
+cd ~/work/sample
+dotnet nuget add source ~/work/sample --name LocalFeed
+dotnet add package UnitConversion
+```
+
 
 # all test
 
