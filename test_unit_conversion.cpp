@@ -945,3 +945,465 @@ TEST(PhysicsOpsTest, SameDimensionDivisionRatio) {
     EXPECT_NEAR(vol1 / vol2, 4.0, 1e-9);
     EXPECT_THROW(vol1 / Volume::fromLiters(0.0), std::invalid_argument);
 }
+// --- same-dimension arithmetic operations
+
+TEST(ArithmeticTest, AccelerationAddSub) {
+    auto a1 = Acceleration::fromMs2(10.0);
+    auto a2 = Acceleration::fromMs2(3.0);
+
+    EXPECT_NEAR((a1 + a2).toMs2(), 13.0, 1e-9);
+    EXPECT_NEAR((a1 - a2).toMs2(), 7.0, 1e-9);
+
+    EXPECT_NO_THROW(a1 + a2);
+    EXPECT_NO_THROW(a1 - a2);
+}
+
+TEST(ArithmeticTest, PressureAddSub) {
+    auto p1 = Pressure::fromKpa(200.0);
+    auto p2 = Pressure::fromKpa(50.0);
+
+    EXPECT_NEAR((p1 + p2).toKpa(), 250.0, 1e-9);
+    EXPECT_NEAR((p1 - p2).toKpa(), 150.0, 1e-9);
+
+    EXPECT_THROW(Pressure::fromKpa(50.0) - Pressure::fromKpa(100.0),
+                 std::invalid_argument);
+}
+
+TEST(rithmeticTest, PowerAddSub) {
+    auto p1 = Power::fromKw(100.0);
+    auto p2 = Power::fromKw(25.0);
+
+    EXPECT_NEAR((p1 + p2).toKw(), 125.0, 1e-9);
+    EXPECT_NEAR((p1 - p2).toKw(), 75.0, 1e-9);
+
+    EXPECT_THROW(Power::fromKw(25.0) - Power::fromKw(50.0),
+                 std::invalid_argument);
+}
+
+TEST(ArithmeticTest, TorqueAddSub) {
+    auto t1 = Torque::fromNm(100.0);
+    auto t2 = Torque::fromNm(25.0);
+
+    EXPECT_NEAR((t1 + t2).toNm(), 125.0, 1e-9);
+    EXPECT_NEAR((t1 - t2).toNm(), 75.0, 1e-9);
+
+    EXPECT_THROW(Torque::fromNm(25.0) - Torque::fromNm(50.0),
+                 std::invalid_argument);
+}
+
+TEST(ArithmeticTest, AngleAddSub) {
+    auto a1 = Angle::fromDegrees(120.0);
+    auto a2 = Angle::fromDegrees(30.0);
+
+    EXPECT_NEAR((a1 + a2).toDegrees(), 150.0, 1e-9);
+    EXPECT_NEAR((a1 - a2).toDegrees(), 90.0, 1e-9);
+}
+
+TEST(ArithmeticTest, VolumeAddSub) {
+    auto v1 = Volume::fromLiters(10.0);
+    auto v2 = Volume::fromLiters(2.5);
+
+    EXPECT_NEAR((v1 + v2).toLiters(), 12.5, 1e-9);
+    EXPECT_NEAR((v1 - v2).toLiters(), 7.5, 1e-9);
+
+    EXPECT_THROW(Volume::fromLiters(2.0) - Volume::fromLiters(5.0),
+                 std::invalid_argument);
+}
+
+
+// --- compound assignment
+
+TEST(CompoundAssignmentTest, SpeedAddSubAssign) {
+    auto speed = Speed::fromMs(10.0);
+
+    speed += Speed::fromMs(5.0);
+    EXPECT_NEAR(speed.toMs(), 15.0, 1e-9);
+
+    speed -= Speed::fromMs(3.0);
+    EXPECT_NEAR(speed.toMs(), 12.0, 1e-9);
+
+    EXPECT_THROW(speed -= Speed::fromMs(20.0), std::invalid_argument);
+}
+
+TEST(CompoundAssignmentTest, DistanceAddSubAssign) {
+    auto distance = Distance::fromMeters(100.0);
+
+    distance += Distance::fromMeters(50.0);
+    EXPECT_NEAR(distance.toMeters(), 150.0, 1e-9);
+
+    distance -= Distance::fromMeters(25.0);
+    EXPECT_NEAR(distance.toMeters(), 125.0, 1e-9);
+
+    EXPECT_THROW(distance -= Distance::fromMeters(200.0), std::invalid_argument);
+}
+
+TEST(CompoundAssignmentTest, TimeAddSubAssign) {
+    auto time = Time::fromSeconds(60.0);
+
+    time += Time::fromSeconds(30.0);
+    EXPECT_NEAR(time.toSeconds(), 90.0, 1e-9);
+
+    time -= Time::fromSeconds(10.0);
+    EXPECT_NEAR(time.toSeconds(), 80.0, 1e-9);
+
+    EXPECT_THROW(time -= Time::fromSeconds(100.0), std::invalid_argument);
+}
+
+TEST(CompoundAssignmentTest, MassAddSubAssign) {
+    auto mass = Mass::fromKg(10.0);
+
+    mass += Mass::fromKg(5.0);
+    EXPECT_NEAR(mass.toKg(), 15.0, 1e-9);
+
+    mass -= Mass::fromKg(3.0);
+    EXPECT_NEAR(mass.toKg(), 12.0, 1e-9);
+
+    EXPECT_THROW(mass -= Mass::fromKg(20.0), std::invalid_argument);
+}
+
+TEST(CompoundAssignmentTest, AccelerationAddSubAssign) {
+    auto acceleration = Acceleration::fromMs2(10.0);
+
+    acceleration += Acceleration::fromMs2(5.0);
+    EXPECT_NEAR(acceleration.toMs2(), 15.0, 1e-9);
+
+    acceleration -= Acceleration::fromMs2(3.0);
+    EXPECT_NEAR(acceleration.toMs2(), 12.0, 1e-9);
+
+    // Acceleration permits signed values, so negative results are valid.
+    acceleration -= Acceleration::fromMs2(20.0);
+    EXPECT_NEAR(acceleration.toMs2(), -8.0, 1e-9);
+}
+
+TEST(CompoundAssignmentTest, PressureAddSubAssign) {
+    auto pressure = Pressure::fromKpa(100.0);
+
+    pressure += Pressure::fromKpa(25.0);
+    EXPECT_NEAR(pressure.toKpa(), 125.0, 1e-9);
+
+    pressure -= Pressure::fromKpa(25.0);
+    EXPECT_NEAR(pressure.toKpa(), 100.0, 1e-9);
+
+    EXPECT_THROW(pressure -= Pressure::fromKpa(150.0), std::invalid_argument);
+}
+
+TEST(CompoundAssignmentTest, PowerAddSubAssign) {
+    auto power = Power::fromKw(100.0);
+
+    power += Power::fromKw(20.0);
+    EXPECT_NEAR(power.toKw(), 120.0, 1e-9);
+
+    power -= Power::fromKw(20.0);
+    EXPECT_NEAR(power.toKw(), 100.0, 1e-9);
+
+    EXPECT_THROW(power -= Power::fromKw(150.0), std::invalid_argument);
+}
+
+TEST(CompoundAssignmentTest, TorqueAddSubAssign) {
+    auto torque = Torque::fromNm(100.0);
+
+    torque += Torque::fromNm(20.0);
+    EXPECT_NEAR(torque.toNm(), 120.0, 1e-9);
+
+    torque -= Torque::fromNm(20.0);
+    EXPECT_NEAR(torque.toNm(), 100.0, 1e-9);
+
+    EXPECT_THROW(torque -= Torque::fromNm(150.0), std::invalid_argument);
+}
+
+TEST(CompoundAssignmentTest, AngleAddSubAssign) {
+    auto angle = Angle::fromDegrees(100.0);
+
+    angle += Angle::fromDegrees(20.0);
+    EXPECT_NEAR(angle.toDegrees(), 120.0, 1e-9);
+
+    angle -= Angle::fromDegrees(30.0);
+    EXPECT_NEAR(angle.toDegrees(), 90.0, 1e-9);
+
+    // Angle itself can be negative; normalization is a separate operation.
+    angle -= Angle::fromDegrees(120.0);
+    EXPECT_NEAR(angle.toDegrees(), -30.0, 1e-9);
+}
+
+TEST(CompoundAssignmentTest, VolumeAddSubAssign) {
+    auto volume = Volume::fromLiters(10.0);
+
+    volume += Volume::fromLiters(2.0);
+    EXPECT_NEAR(volume.toLiters(), 12.0, 1e-9);
+
+    volume -= Volume::fromLiters(5.0);
+    EXPECT_NEAR(volume.toLiters(), 7.0, 1e-9);
+
+    EXPECT_THROW(volume -= Volume::fromLiters(10.0), std::invalid_argument);
+}
+
+
+// --- Tier 2 test cases: scalar operations
+
+TEST(Tier2ScalarOpsTest, PressureScalarOperations) {
+    auto p = Pressure::fromKpa(100.0);
+
+    EXPECT_NEAR((p * 2.0).toKpa(), 200.0, 1e-9);
+    EXPECT_NEAR((2.0 * p).toKpa(), 200.0, 1e-9);
+    EXPECT_NEAR((p / 2.0).toKpa(), 50.0, 1e-9);
+
+    EXPECT_THROW(p / 0.0, std::invalid_argument);
+    EXPECT_THROW((p * -1.0).toKpa(), std::invalid_argument);
+}
+
+TEST(Tier2ScalarOpsTest, PowerScalarOperations) {
+    auto p = Power::fromKw(100.0);
+
+    EXPECT_NEAR((p * 2.0).toKw(), 200.0, 1e-9);
+    EXPECT_NEAR((2.0 * p).toKw(), 200.0, 1e-9);
+    EXPECT_NEAR((p / 2.0).toKw(), 50.0, 1e-9);
+
+    EXPECT_THROW(p / 0.0, std::invalid_argument);
+    EXPECT_THROW((p * -1.0).toKw(), std::invalid_argument);
+}
+
+TEST(Tier2ScalarOpsTest, TorqueScalarOperations) {
+    auto t = Torque::fromNm(100.0);
+
+    EXPECT_NEAR((t * 2.0).toNm(), 200.0, 1e-9);
+    EXPECT_NEAR((2.0 * t).toNm(), 200.0, 1e-9);
+    EXPECT_NEAR((t / 2.0).toNm(), 50.0, 1e-9);
+
+    EXPECT_THROW(t / 0.0, std::invalid_argument);
+    EXPECT_THROW((t * -1.0).toNm(), std::invalid_argument);
+}
+
+TEST(Tier2ScalarOpsTest, AngleScalarOperations) {
+    auto a = Angle::fromDegrees(30.0);
+
+    EXPECT_NEAR((a * 2.0).toDegrees(), 60.0, 1e-9);
+    EXPECT_NEAR((2.0 * a).toDegrees(), 60.0, 1e-9);
+    EXPECT_NEAR((a / 2.0).toDegrees(), 15.0, 1e-9);
+
+    EXPECT_THROW(a / 0.0, std::invalid_argument);
+}
+
+TEST(Tier2ScalarOpsTest, VolumeScalarOperations) {
+    auto v = Volume::fromLiters(10.0);
+
+    EXPECT_NEAR((v * 2.0).toLiters(), 20.0, 1e-9);
+    EXPECT_NEAR((2.0 * v).toLiters(), 20.0, 1e-9);
+    EXPECT_NEAR((v / 2.0).toLiters(), 5.0, 1e-9);
+
+    EXPECT_THROW(v / 0.0, std::invalid_argument);
+    EXPECT_THROW((v * -1.0).toLiters(), std::invalid_argument);
+}
+
+TEST(Tier2ScalarOpsTest, EfficiencyScalarOperations) {
+    auto e = Efficiency::fromKml(10.0);
+
+    EXPECT_NEAR((e * 2.0).toKml(), 20.0, 1e-9);
+    EXPECT_NEAR((2.0 * e).toKml(), 20.0, 1e-9);
+    EXPECT_NEAR((e / 2.0).toKml(), 5.0, 1e-9);
+
+    EXPECT_THROW(e / 0.0, std::invalid_argument);
+    EXPECT_THROW((e * -1.0).toKml(), std::invalid_argument);
+}
+
+TEST(Tier2ScalarOpsTest, EvEfficiencyScalarOperations) {
+    auto e = EvEfficiency::fromKmkWh(10.0);
+
+    EXPECT_NEAR((e * 2.0).toKmkWh(), 20.0, 1e-9);
+    EXPECT_NEAR((2.0 * e).toKmkWh(), 20.0, 1e-9);
+    EXPECT_NEAR((e / 2.0).toKmkWh(), 5.0, 1e-9);
+
+    EXPECT_THROW(e / 0.0, std::invalid_argument);
+    EXPECT_THROW((e * -1.0).toKmkWh(), std::invalid_argument);
+}
+
+
+// --- Tier 2 test cases: scalar compound assignment
+
+TEST(Tier2ScalarCompoundAssignmentTest, Speed) {
+    auto speed = Speed::fromMs(10.0);
+
+    speed *= 2.0;
+    EXPECT_NEAR(speed.toMs(), 20.0, 1e-9);
+
+    speed /= 4.0;
+    EXPECT_NEAR(speed.toMs(), 5.0, 1e-9);
+
+    EXPECT_THROW(speed /= 0.0, std::invalid_argument);
+    EXPECT_THROW(speed *= -1.0, std::invalid_argument);
+}
+
+TEST(Tier2ScalarCompoundAssignmentTest, Distance) {
+    auto distance = Distance::fromMeters(10.0);
+
+    distance *= 3.0;
+    EXPECT_NEAR(distance.toMeters(), 30.0, 1e-9);
+
+    distance /= 2.0;
+    EXPECT_NEAR(distance.toMeters(), 15.0, 1e-9);
+
+    EXPECT_THROW(distance /= 0.0, std::invalid_argument);
+    EXPECT_THROW(distance *= -1.0, std::invalid_argument);
+}
+
+TEST(Tier2ScalarCompoundAssignmentTest, Acceleration) {
+    auto acceleration = Acceleration::fromMs2(10.0);
+
+    acceleration *= 2.0;
+    EXPECT_NEAR(acceleration.toMs2(), 20.0, 1e-9);
+
+    acceleration /= 4.0;
+    EXPECT_NEAR(acceleration.toMs2(), 5.0, 1e-9);
+
+    acceleration *= -2.0;
+    EXPECT_NEAR(acceleration.toMs2(), -10.0, 1e-9);
+
+    EXPECT_THROW(acceleration /= 0.0, std::invalid_argument);
+}
+
+TEST(Tier2ScalarCompoundAssignmentTest, Time) {
+    auto time = Time::fromSeconds(10.0);
+
+    time *= 3.0;
+    EXPECT_NEAR(time.toSeconds(), 30.0, 1e-9);
+
+    time /= 2.0;
+    EXPECT_NEAR(time.toSeconds(), 15.0, 1e-9);
+
+    EXPECT_THROW(time /= 0.0, std::invalid_argument);
+    EXPECT_THROW(time *= -1.0, std::invalid_argument);
+}
+
+TEST(Tier2ScalarCompoundAssignmentTest, Mass) {
+    auto mass = Mass::fromKg(10.0);
+
+    mass *= 3.0;
+    EXPECT_NEAR(mass.toKg(), 30.0, 1e-9);
+
+    mass /= 2.0;
+    EXPECT_NEAR(mass.toKg(), 15.0, 1e-9);
+
+    EXPECT_THROW(mass /= 0.0, std::invalid_argument);
+    EXPECT_THROW(mass *= -1.0, std::invalid_argument);
+}
+
+TEST(Tier2ScalarCompoundAssignmentTest, Pressure) {
+    auto pressure = Pressure::fromKpa(10.0);
+
+    pressure *= 3.0;
+    EXPECT_NEAR(pressure.toKpa(), 30.0, 1e-9);
+
+    pressure /= 2.0;
+    EXPECT_NEAR(pressure.toKpa(), 15.0, 1e-9);
+
+    EXPECT_THROW(pressure /= 0.0, std::invalid_argument);
+    EXPECT_THROW(pressure *= -1.0, std::invalid_argument);
+}
+
+TEST(Tier2ScalarCompoundAssignmentTest, Power) {
+    auto power = Power::fromKw(10.0);
+
+    power *= 3.0;
+    EXPECT_NEAR(power.toKw(), 30.0, 1e-9);
+
+    power /= 2.0;
+    EXPECT_NEAR(power.toKw(), 15.0, 1e-9);
+
+    EXPECT_THROW(power /= 0.0, std::invalid_argument);
+    EXPECT_THROW(power *= -1.0, std::invalid_argument);
+}
+
+TEST(Tier2ScalarCompoundAssignmentTest, Torque) {
+    auto torque = Torque::fromNm(10.0);
+
+    torque *= 3.0;
+    EXPECT_NEAR(torque.toNm(), 30.0, 1e-9);
+
+    torque /= 2.0;
+    EXPECT_NEAR(torque.toNm(), 15.0, 1e-9);
+
+    EXPECT_THROW(torque /= 0.0, std::invalid_argument);
+    EXPECT_THROW(torque *= -1.0, std::invalid_argument);
+}
+
+TEST(Tier2ScalarCompoundAssignmentTest, Angle) {
+    auto angle = Angle::fromDegrees(10.0);
+
+    angle *= 3.0;
+    EXPECT_NEAR(angle.toDegrees(), 30.0, 1e-9);
+
+    angle /= 2.0;
+    EXPECT_NEAR(angle.toDegrees(), 15.0, 1e-9);
+
+    EXPECT_THROW(angle /= 0.0, std::invalid_argument);
+}
+
+TEST(Tier2ScalarCompoundAssignmentTest, Volume) {
+    auto volume = Volume::fromLiters(10.0);
+
+    volume *= 3.0;
+    EXPECT_NEAR(volume.toLiters(), 30.0, 1e-9);
+
+    volume /= 2.0;
+    EXPECT_NEAR(volume.toLiters(), 15.0, 1e-9);
+
+    EXPECT_THROW(volume /= 0.0, std::invalid_argument);
+    EXPECT_THROW(volume *= -1.0, std::invalid_argument);
+}
+
+TEST(Tier2ScalarCompoundAssignmentTest, Efficiency) {
+    auto efficiency = Efficiency::fromKml(10.0);
+
+    efficiency *= 3.0;
+    EXPECT_NEAR(efficiency.toKml(), 30.0, 1e-9);
+
+    efficiency /= 2.0;
+    EXPECT_NEAR(efficiency.toKml(), 15.0, 1e-9);
+
+    EXPECT_THROW(efficiency /= 0.0, std::invalid_argument);
+    EXPECT_THROW(efficiency *= -1.0, std::invalid_argument);
+}
+
+TEST(Tier2ScalarCompoundAssignmentTest, EvEfficiency) {
+    auto efficiency = EvEfficiency::fromKmkWh(10.0);
+
+    efficiency *= 3.0;
+    EXPECT_NEAR(efficiency.toKmkWh(), 30.0, 1e-9);
+
+    efficiency /= 2.0;
+    EXPECT_NEAR(efficiency.toKmkWh(), 15.0, 1e-9);
+
+    EXPECT_THROW(efficiency /= 0.0, std::invalid_argument);
+    EXPECT_THROW(efficiency *= -1.0, std::invalid_argument);
+}
+
+
+// --- zero, identity, and signed-value boundaries
+
+TEST(BoundaryTest, AddSubIdentity) {
+    auto speed = Speed::fromMs(10.0);
+    auto distance = Distance::fromMeters(10.0);
+    auto time = Time::fromSeconds(10.0);
+    auto mass = Mass::fromKg(10.0);
+    auto acceleration = Acceleration::fromMs2(-10.0);
+
+    EXPECT_NEAR((speed + Speed::fromMs(0.0)).toMs(), 10.0, 1e-9);
+    EXPECT_NEAR((distance - Distance::fromMeters(0.0)).toMeters(), 10.0, 1e-9);
+    EXPECT_NEAR((time + Time::fromSeconds(0.0)).toSeconds(), 10.0, 1e-9);
+    EXPECT_NEAR((mass - Mass::fromKg(0.0)).toKg(), 10.0, 1e-9);
+    EXPECT_NEAR((acceleration + Acceleration::fromMs2(10.0)).toMs2(), 0.0, 1e-9);
+}
+
+TEST(BoundaryTest, ScalarIdentity) {
+    EXPECT_NEAR((Speed::fromMs(10.0) * 1.0).toMs(), 10.0, 1e-9);
+    EXPECT_NEAR((Distance::fromMeters(10.0) * 1.0).toMeters(), 10.0, 1e-9);
+    EXPECT_NEAR((Acceleration::fromMs2(10.0) * 1.0).toMs2(), 10.0, 1e-9);
+    EXPECT_NEAR((Time::fromSeconds(10.0) * 1.0).toSeconds(), 10.0, 1e-9);
+    EXPECT_NEAR((Mass::fromKg(10.0) * 1.0).toKg(), 10.0, 1e-9);
+    EXPECT_NEAR((Pressure::fromKpa(10.0) * 1.0).toKpa(), 10.0, 1e-9);
+    EXPECT_NEAR((Power::fromKw(10.0) * 1.0).toKw(), 10.0, 1e-9);
+    EXPECT_NEAR((Torque::fromNm(10.0) * 1.0).toNm(), 10.0, 1e-9);
+    EXPECT_NEAR((Angle::fromDegrees(10.0) * 1.0).toDegrees(), 10.0, 1e-9);
+    EXPECT_NEAR((Volume::fromLiters(10.0) * 1.0).toLiters(), 10.0, 1e-9);
+    EXPECT_NEAR((Efficiency::fromKml(10.0) * 1.0).toKml(), 10.0, 1e-9);
+    EXPECT_NEAR((EvEfficiency::fromKmkWh(10.0) * 1.0).toKmkWh(), 10.0, 1e-9);
+}

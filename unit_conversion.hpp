@@ -627,6 +627,66 @@ inline double operator/(const Volume& a, const Volume& b) {
     return a.toLiters() / b.toLiters();
 }
 
+// Acceleration - Acceleration
+inline Acceleration operator-(const Acceleration& a, const Acceleration& b) {
+    return Acceleration::fromMs2(a.toMs2() - b.toMs2());
+}
+
+// Acceleration + Acceleration
+inline Acceleration operator+(const Acceleration& a, const Acceleration& b) {
+    return Acceleration::fromMs2(a.toMs2() + b.toMs2());
+}
+
+// Pressure - Pressure
+inline Pressure operator-(const Pressure& a, const Pressure& b) {
+    return Pressure::fromKpa(a.toKpa() - b.toKpa());
+}
+
+// Pressure + Pressure
+inline Pressure operator+(const Pressure& a, const Pressure& b) {
+    return Pressure::fromKpa(a.toKpa() + b.toKpa());
+}
+
+// Power - Power
+inline Power operator-(const Power& a, const Power& b) {
+    return Power::fromKw(a.toKw() - b.toKw());
+}
+
+// Power + Power
+inline Power operator+(const Power& a, const Power& b) {
+    return Power::fromKw(a.toKw() + b.toKw());
+}
+
+// Torque - Torque
+inline Torque operator-(const Torque& a, const Torque& b) {
+    return Torque::fromNm(a.toNm() - b.toNm());
+}
+
+// Torque + Torque
+inline Torque operator+(const Torque& a, const Torque& b) {
+    return Torque::fromNm(a.toNm() + b.toNm());
+}
+
+// Angle - Angle
+inline Angle operator-(const Angle& a, const Angle& b) {
+    return Angle::fromRadians(a.toRadians() - b.toRadians());
+}
+
+// Angle + Angle
+inline Angle operator+(const Angle& a, const Angle& b) {
+    return Angle::fromRadians(a.toRadians() + b.toRadians());
+}
+
+// Volume - Volume
+inline Volume operator-(const Volume& a, const Volume& b) {
+    return Volume::fromLiters(a.toLiters() - b.toLiters());
+}
+
+// Volume + Volume
+inline Volume operator+(const Volume& a, const Volume& b) {
+    return Volume::fromLiters(a.toLiters() + b.toLiters());
+}
+
 // Speed - Speed
 inline Speed operator-(const Speed& a, const Speed& b) {
     return Speed::fromMs(a.toMs() - b.toMs());
@@ -665,6 +725,107 @@ inline Mass operator-(const Mass& a, const Mass& b) {
 // Mass + Mass
 inline Mass operator+(const Mass& a, const Mass& b) {
     return Mass::fromKg(a.toKg() + b.toKg());
+}
+
+// Compound assignment
+inline Speed& operator+=(Speed& a, const Speed& b) {
+    a = a + b;
+    return a;
+}
+
+inline Speed& operator-=(Speed& a, const Speed& b) {
+    a = a - b;
+    return a;
+}
+
+inline Distance& operator+=(Distance& a, const Distance& b) {
+    a = a + b;
+    return a;
+}
+
+inline Distance& operator-=(Distance& a, const Distance& b) {
+    a = a - b;
+    return a;
+}
+
+inline Time& operator+=(Time& a, const Time& b) {
+    a = a + b;
+    return a;
+}
+
+inline Time& operator-=(Time& a, const Time& b) {
+    a = a - b;
+    return a;
+}
+
+inline Mass& operator+=(Mass& a, const Mass& b) {
+    a = a + b;
+    return a;
+}
+
+inline Mass& operator-=(Mass& a, const Mass& b) {
+    a = a - b;
+    return a;
+}
+
+inline Acceleration& operator+=(Acceleration& a, const Acceleration& b) {
+    a = a + b;
+    return a;
+}
+
+inline Acceleration& operator-=(Acceleration& a, const Acceleration& b) {
+    a = a - b;
+    return a;
+}
+
+inline Pressure& operator+=(Pressure& a, const Pressure& b) {
+    a = a + b;
+    return a;
+}
+
+inline Pressure& operator-=(Pressure& a, const Pressure& b) {
+    a = a - b;
+    return a;
+}
+
+inline Power& operator+=(Power& a, const Power& b) {
+    a = a + b;
+    return a;
+}
+
+inline Power& operator-=(Power& a, const Power& b) {
+    a = a - b;
+    return a;
+}
+
+inline Torque& operator+=(Torque& a, const Torque& b) {
+    a = a + b;
+    return a;
+}
+
+inline Torque& operator-=(Torque& a, const Torque& b) {
+    a = a - b;
+    return a;
+}
+
+inline Angle& operator+=(Angle& a, const Angle& b) {
+    a = a + b;
+    return a;
+}
+
+inline Angle& operator-=(Angle& a, const Angle& b) {
+    a = a - b;
+    return a;
+}
+
+inline Volume& operator+=(Volume& a, const Volume& b) {
+    a = a + b;
+    return a;
+}
+
+inline Volume& operator-=(Volume& a, const Volume& b) {
+    a = a - b;
+    return a;
 }
 
 // Speed * scalar / scalar * Speed
@@ -740,6 +901,227 @@ inline Mass operator*(double scalar, const Mass& m) {
 inline Mass operator/(const Mass& m, double scalar) {
     if (scalar == 0.0) throw std::invalid_argument("Division by zero");
     return Mass::fromKg(m.toKg() / scalar);
+}
+
+
+// Pressure * scalar / scalar * Pressure
+inline Pressure operator*(const Pressure& p, double scalar) {
+    return Pressure::fromKpa(p.toKpa() * scalar);
+}
+
+inline Pressure operator*(double scalar, const Pressure& p) {
+    return p * scalar;
+}
+
+inline Pressure operator/(const Pressure& p, double scalar) {
+    if (scalar == 0.0) throw std::invalid_argument("Division by zero");
+    return Pressure::fromKpa(p.toKpa() / scalar);
+}
+
+// Power * scalar / scalar * Power
+inline Power operator*(const Power& p, double scalar) {
+    return Power::fromKw(p.toKw() * scalar);
+}
+
+inline Power operator*(double scalar, const Power& p) {
+    return p * scalar;
+}
+
+inline Power operator/(const Power& p, double scalar) {
+    if (scalar == 0.0) throw std::invalid_argument("Division by zero");
+    return Power::fromKw(p.toKw() / scalar);
+}
+
+// Torque * scalar / scalar * Torque
+inline Torque operator*(const Torque& t, double scalar) {
+    return Torque::fromNm(t.toNm() * scalar);
+}
+
+inline Torque operator*(double scalar, const Torque& t) {
+    return t * scalar;
+}
+
+inline Torque operator/(const Torque& t, double scalar) {
+    if (scalar == 0.0) throw std::invalid_argument("Division by zero");
+    return Torque::fromNm(t.toNm() / scalar);
+}
+
+// Angle * scalar / scalar * Angle
+inline Angle operator*(const Angle& a, double scalar) {
+    return Angle::fromRadians(a.toRadians() * scalar);
+}
+
+inline Angle operator*(double scalar, const Angle& a) {
+    return a * scalar;
+}
+
+inline Angle operator/(const Angle& a, double scalar) {
+    if (scalar == 0.0) throw std::invalid_argument("Division by zero");
+    return Angle::fromRadians(a.toRadians() / scalar);
+}
+
+// Volume * scalar / scalar * Volume
+inline Volume operator*(const Volume& v, double scalar) {
+    return Volume::fromLiters(v.toLiters() * scalar);
+}
+
+inline Volume operator*(double scalar, const Volume& v) {
+    return v * scalar;
+}
+
+inline Volume operator/(const Volume& v, double scalar) {
+    if (scalar == 0.0) throw std::invalid_argument("Division by zero");
+    return Volume::fromLiters(v.toLiters() / scalar);
+}
+
+// Efficiency * scalar / scalar * Efficiency
+inline Efficiency operator*(const Efficiency& e, double scalar) {
+    return Efficiency::fromKml(e.toKml() * scalar);
+}
+
+inline Efficiency operator*(double scalar, const Efficiency& e) {
+    return e * scalar;
+}
+
+inline Efficiency operator/(const Efficiency& e, double scalar) {
+    if (scalar == 0.0) throw std::invalid_argument("Division by zero");
+    return Efficiency::fromKml(e.toKml() / scalar);
+}
+
+// EV efficiency * scalar / scalar * EV efficiency
+inline EvEfficiency operator*(const EvEfficiency& e, double scalar) {
+    return EvEfficiency::fromKmkWh(e.toKmkWh() * scalar);
+}
+
+inline EvEfficiency operator*(double scalar, const EvEfficiency& e) {
+    return e * scalar;
+}
+
+inline EvEfficiency operator/(const EvEfficiency& e, double scalar) {
+    if (scalar == 0.0) throw std::invalid_argument("Division by zero");
+    return EvEfficiency::fromKmkWh(e.toKmkWh() / scalar);
+}
+
+
+// Scalar compound assignment
+inline Speed& operator*=(Speed& s, double scalar) {
+    s = s * scalar;
+    return s;
+}
+
+inline Speed& operator/=(Speed& s, double scalar) {
+    s = s / scalar;
+    return s;
+}
+
+inline Distance& operator*=(Distance& d, double scalar) {
+    d = d * scalar;
+    return d;
+}
+
+inline Distance& operator/=(Distance& d, double scalar) {
+    d = d / scalar;
+    return d;
+}
+
+inline Acceleration& operator*=(Acceleration& a, double scalar) {
+    a = a * scalar;
+    return a;
+}
+
+inline Acceleration& operator/=(Acceleration& a, double scalar) {
+    a = a / scalar;
+    return a;
+}
+
+inline Time& operator*=(Time& t, double scalar) {
+    t = t * scalar;
+    return t;
+}
+
+inline Time& operator/=(Time& t, double scalar) {
+    t = t / scalar;
+    return t;
+}
+
+inline Mass& operator*=(Mass& m, double scalar) {
+    m = m * scalar;
+    return m;
+}
+
+inline Mass& operator/=(Mass& m, double scalar) {
+    m = m / scalar;
+    return m;
+}
+
+inline Pressure& operator*=(Pressure& p, double scalar) {
+    p = p * scalar;
+    return p;
+}
+
+inline Pressure& operator/=(Pressure& p, double scalar) {
+    p = p / scalar;
+    return p;
+}
+
+inline Power& operator*=(Power& p, double scalar) {
+    p = p * scalar;
+    return p;
+}
+
+inline Power& operator/=(Power& p, double scalar) {
+    p = p / scalar;
+    return p;
+}
+
+inline Torque& operator*=(Torque& t, double scalar) {
+    t = t * scalar;
+    return t;
+}
+
+inline Torque& operator/=(Torque& t, double scalar) {
+    t = t / scalar;
+    return t;
+}
+
+inline Angle& operator*=(Angle& a, double scalar) {
+    a = a * scalar;
+    return a;
+}
+
+inline Angle& operator/=(Angle& a, double scalar) {
+    a = a / scalar;
+    return a;
+}
+
+inline Volume& operator*=(Volume& v, double scalar) {
+    v = v * scalar;
+    return v;
+}
+
+inline Volume& operator/=(Volume& v, double scalar) {
+    v = v / scalar;
+    return v;
+}
+
+inline Efficiency& operator*=(Efficiency& e, double scalar) {
+    e = e * scalar;
+    return e;
+}
+
+inline Efficiency& operator/=(Efficiency& e, double scalar) {
+    e = e / scalar;
+    return e;
+}
+
+inline EvEfficiency& operator*=(EvEfficiency& e, double scalar) {
+    e = e * scalar;
+    return e;
+}
+
+inline EvEfficiency& operator/=(EvEfficiency& e, double scalar) {
+    e = e / scalar;
+    return e;
 }
 
 #endif // UNIT_CONVERSION_HPP
