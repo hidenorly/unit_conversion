@@ -87,6 +87,47 @@ public class UnitConversionTests
         Assert.True(s2.CompareTo(s1) > 0);
     }
 
+    [Fact]
+    public void TestSpeedOperators()
+    {
+        var s1 = Speed.FromMs(10.0);
+        var s2 = Speed.FromMs(5.0);
+
+        var sum = s1 + s2;
+        Assert.Equal(15.0, sum.ToMs(), 1e-9);
+
+        var sub = s1 - s2;
+        Assert.Equal(5.0, sub.ToMs(), 1e-9);
+
+        var multiplied = s1 * 2.0;
+        Assert.Equal(20.0, multiplied.ToMs(), 1e-9);
+
+        var reverseMultiplied = 2.0 * s1;
+        Assert.Equal(20.0, reverseMultiplied.ToMs(), 1e-9);
+
+        var divided = s1 / 2.0;
+        Assert.Equal(5.0, divided.ToMs(), 1e-9);
+
+        var ratio = s1 / s2;
+        Assert.Equal(2.0, ratio, 1e-9);
+
+        Assert.Throws<ArgumentException>(() => s1 / 0.0);
+        Assert.Throws<ArgumentException>(() => s1 / Speed.FromMs(0.0));
+
+        var compound = Speed.FromMs(10.0);
+        compound += Speed.FromMs(5.0);
+        Assert.Equal(15.0, compound.ToMs(), 1e-9);
+
+        compound -= Speed.FromMs(3.0);
+        Assert.Equal(12.0, compound.ToMs(), 1e-9);
+
+        compound *= 2.0;
+        Assert.Equal(24.0, compound.ToMs(), 1e-9);
+
+        compound /= 2.0;
+        Assert.Equal(12.0, compound.ToMs(), 1e-9);
+    }
+
     // --- Temperature Tests ---
 
     [Fact]
@@ -202,6 +243,47 @@ public class UnitConversionTests
         Assert.True(m2.CompareTo(m1) > 0);
     }
 
+    [Fact]
+    public void TestMassOperators()
+    {
+        var m1 = Mass.FromKg(10.0);
+        var m2 = Mass.FromKg(5.0);
+
+        var sum = m1 + m2;
+        Assert.Equal(15.0, sum.ToKg(), 1e-9);
+
+        var sub = m1 - m2;
+        Assert.Equal(5.0, sub.ToKg(), 1e-9);
+
+        var multiplied = m1 * 2.0;
+        Assert.Equal(20.0, multiplied.ToKg(), 1e-9);
+
+        var reverseMultiplied = 2.0 * m1;
+        Assert.Equal(20.0, reverseMultiplied.ToKg(), 1e-9);
+
+        var divided = m1 / 2.0;
+        Assert.Equal(5.0, divided.ToKg(), 1e-9);
+
+        var ratio = m1 / m2;
+        Assert.Equal(2.0, ratio, 1e-9);
+
+        Assert.Throws<ArgumentException>(() => m1 / 0.0);
+        Assert.Throws<ArgumentException>(() => m1 / Mass.FromKg(0.0));
+
+        var compound = Mass.FromKg(10.0);
+        compound += Mass.FromKg(5.0);
+        Assert.Equal(15.0, compound.ToKg(), 1e-9);
+
+        compound -= Mass.FromKg(3.0);
+        Assert.Equal(12.0, compound.ToKg(), 1e-9);
+
+        compound *= 2.0;
+        Assert.Equal(24.0, compound.ToKg(), 1e-9);
+
+        compound /= 2.0;
+        Assert.Equal(12.0, compound.ToKg(), 1e-9);
+    }
+
     // --- Distance Tests ---
 
     [Fact]
@@ -260,6 +342,47 @@ public class UnitConversionTests
         Assert.True(d2.CompareTo(d1) > 0);
     }
 
+    [Fact]
+    public void TestDistanceOperators()
+    {
+        var d1 = Distance.FromMeters(10.0);
+        var d2 = Distance.FromMeters(5.0);
+
+        var sum = d1 + d2;
+        Assert.Equal(15.0, sum.ToMeters(), 1e-9);
+
+        var sub = d1 - d2;
+        Assert.Equal(5.0, sub.ToMeters(), 1e-9);
+
+        var multiplied = d1 * 2.0;
+        Assert.Equal(20.0, multiplied.ToMeters(), 1e-9);
+
+        var reverseMultiplied = 2.0 * d1;
+        Assert.Equal(20.0, reverseMultiplied.ToMeters(), 1e-9);
+
+        var divided = d1 / 2.0;
+        Assert.Equal(5.0, divided.ToMeters(), 1e-9);
+
+        var ratio = d1 / d2;
+        Assert.Equal(2.0, ratio, 1e-9);
+
+        Assert.Throws<ArgumentException>(() => d1 / 0.0);
+        Assert.Throws<ArgumentException>(() => d1 / Distance.FromMeters(0.0));
+
+        var compound = Distance.FromMeters(10.0);
+        compound += Distance.FromMeters(5.0);
+        Assert.Equal(15.0, compound.ToMeters(), 1e-9);
+
+        compound -= Distance.FromMeters(3.0);
+        Assert.Equal(12.0, compound.ToMeters(), 1e-9);
+
+        compound *= 2.0;
+        Assert.Equal(24.0, compound.ToMeters(), 1e-9);
+
+        compound /= 2.0;
+        Assert.Equal(12.0, compound.ToMeters(), 1e-9);
+    }
+
     // --- Pressure Tests ---
 
     [Fact]
@@ -310,6 +433,47 @@ public class UnitConversionTests
         Assert.Equal(0, p1.CompareTo(p3));
         Assert.True(p1.CompareTo(p2) < 0);
         Assert.True(p2.CompareTo(p1) > 0);
+    }
+
+    [Fact]
+    public void TestPressureOperators()
+    {
+        var p1 = Pressure.FromKpa(100.0);
+        var p2 = Pressure.FromKpa(50.0);
+
+        var sum = p1 + p2;
+        Assert.Equal(150.0, sum.ToKpa(), 1e-9);
+
+        var sub = p1 - p2;
+        Assert.Equal(50.0, sub.ToKpa(), 1e-9);
+
+        var multiplied = p1 * 2.0;
+        Assert.Equal(200.0, multiplied.ToKpa(), 1e-9);
+
+        var reverseMultiplied = 2.0 * p1;
+        Assert.Equal(200.0, reverseMultiplied.ToKpa(), 1e-9);
+
+        var divided = p1 / 2.0;
+        Assert.Equal(50.0, divided.ToKpa(), 1e-9);
+
+        var ratio = p1 / p2;
+        Assert.Equal(2.0, ratio, 1e-9);
+
+        Assert.Throws<ArgumentException>(() => p1 / 0.0);
+        Assert.Throws<ArgumentException>(() => p1 / Pressure.FromKpa(0.0));
+
+        var compound = Pressure.FromKpa(100.0);
+        compound += Pressure.FromKpa(50.0);
+        Assert.Equal(150.0, compound.ToKpa(), 1e-9);
+
+        compound -= Pressure.FromKpa(30.0);
+        Assert.Equal(120.0, compound.ToKpa(), 1e-9);
+
+        compound *= 2.0;
+        Assert.Equal(240.0, compound.ToKpa(), 1e-9);
+
+        compound /= 2.0;
+        Assert.Equal(120.0, compound.ToKpa(), 1e-9);
     }
 
     // --- Power Tests ---
@@ -366,6 +530,47 @@ public class UnitConversionTests
         Assert.True(p2.CompareTo(p1) > 0);
     }
 
+    [Fact]
+    public void TestPowerOperators()
+    {
+        var p1 = Power.FromKw(100.0);
+        var p2 = Power.FromKw(50.0);
+
+        var sum = p1 + p2;
+        Assert.Equal(150.0, sum.ToKw(), 1e-9);
+
+        var sub = p1 - p2;
+        Assert.Equal(50.0, sub.ToKw(), 1e-9);
+
+        var multiplied = p1 * 2.0;
+        Assert.Equal(200.0, multiplied.ToKw(), 1e-9);
+
+        var reverseMultiplied = 2.0 * p1;
+        Assert.Equal(200.0, reverseMultiplied.ToKw(), 1e-9);
+
+        var divided = p1 / 2.0;
+        Assert.Equal(50.0, divided.ToKw(), 1e-9);
+
+        var ratio = p1 / p2;
+        Assert.Equal(2.0, ratio, 1e-9);
+
+        Assert.Throws<ArgumentException>(() => p1 / 0.0);
+        Assert.Throws<ArgumentException>(() => p1 / Power.FromKw(0.0));
+
+        var compound = Power.FromKw(100.0);
+        compound += Power.FromKw(50.0);
+        Assert.Equal(150.0, compound.ToKw(), 1e-9);
+
+        compound -= Power.FromKw(30.0);
+        Assert.Equal(120.0, compound.ToKw(), 1e-9);
+
+        compound *= 2.0;
+        Assert.Equal(240.0, compound.ToKw(), 1e-9);
+
+        compound /= 2.0;
+        Assert.Equal(120.0, compound.ToKw(), 1e-9);
+    }
+
     // --- Torque Tests ---
 
     [Fact]
@@ -414,6 +619,47 @@ public class UnitConversionTests
         Assert.Equal(0, t1.CompareTo(t3));
         Assert.True(t1.CompareTo(t2) < 0);
         Assert.True(t2.CompareTo(t1) > 0);
+    }
+
+    [Fact]
+    public void TestTorqueOperators()
+    {
+        var t1 = Torque.FromNm(100.0);
+        var t2 = Torque.FromNm(50.0);
+
+        var sum = t1 + t2;
+        Assert.Equal(150.0, sum.ToNm(), 1e-9);
+
+        var sub = t1 - t2;
+        Assert.Equal(50.0, sub.ToNm(), 1e-9);
+
+        var multiplied = t1 * 2.0;
+        Assert.Equal(200.0, multiplied.ToNm(), 1e-9);
+
+        var reverseMultiplied = 2.0 * t1;
+        Assert.Equal(200.0, reverseMultiplied.ToNm(), 1e-9);
+
+        var divided = t1 / 2.0;
+        Assert.Equal(50.0, divided.ToNm(), 1e-9);
+
+        var ratio = t1 / t2;
+        Assert.Equal(2.0, ratio, 1e-9);
+
+        Assert.Throws<ArgumentException>(() => t1 / 0.0);
+        Assert.Throws<ArgumentException>(() => t1 / Torque.FromNm(0.0));
+
+        var compound = Torque.FromNm(100.0);
+        compound += Torque.FromNm(50.0);
+        Assert.Equal(150.0, compound.ToNm(), 1e-9);
+
+        compound -= Torque.FromNm(30.0);
+        Assert.Equal(120.0, compound.ToNm(), 1e-9);
+
+        compound *= 2.0;
+        Assert.Equal(240.0, compound.ToNm(), 1e-9);
+
+        compound /= 2.0;
+        Assert.Equal(120.0, compound.ToNm(), 1e-9);
     }
 
     // --- Angle Tests ---
@@ -494,6 +740,47 @@ public class UnitConversionTests
         Assert.True(a2.CompareTo(a1) > 0);
     }
 
+    [Fact]
+    public void TestAngleOperators()
+    {
+        var a1 = Angle.FromDegrees(90.0);
+        var a2 = Angle.FromDegrees(45.0);
+
+        var sum = a1 + a2;
+        Assert.Equal(135.0, sum.ToDegrees(), 1e-9);
+
+        var sub = a1 - a2;
+        Assert.Equal(45.0, sub.ToDegrees(), 1e-9);
+
+        var multiplied = a1 * 2.0;
+        Assert.Equal(180.0, multiplied.ToDegrees(), 1e-9);
+
+        var reverseMultiplied = 2.0 * a1;
+        Assert.Equal(180.0, reverseMultiplied.ToDegrees(), 1e-9);
+
+        var divided = a1 / 2.0;
+        Assert.Equal(45.0, divided.ToDegrees(), 1e-9);
+
+        var ratio = a1 / a2;
+        Assert.Equal(2.0, ratio, 1e-9);
+
+        Assert.Throws<ArgumentException>(() => a1 / 0.0);
+        Assert.Throws<ArgumentException>(() => a1 / Angle.FromDegrees(0.0));
+
+        var compound = Angle.FromDegrees(90.0);
+        compound += Angle.FromDegrees(45.0);
+        Assert.Equal(135.0, compound.ToDegrees(), 1e-9);
+
+        compound -= Angle.FromDegrees(30.0);
+        Assert.Equal(105.0, compound.ToDegrees(), 1e-9);
+
+        compound *= 2.0;
+        Assert.Equal(210.0, compound.ToDegrees(), 1e-9);
+
+        compound /= 2.0;
+        Assert.Equal(105.0, compound.ToDegrees(), 1e-9);
+    }
+
     // --- Efficiency Tests ---
 
     [Fact]
@@ -544,6 +831,34 @@ public class UnitConversionTests
         Assert.Equal(0, e1.CompareTo(e3));
         Assert.True(e1.CompareTo(e2) < 0);
         Assert.True(e2.CompareTo(e1) > 0);
+    }
+
+    [Fact]
+    public void TestEfficiencyOperators()
+    {
+        var e1 = Efficiency.FromKml(10.0);
+        var e2 = Efficiency.FromKml(5.0);
+
+        var multiplied = e1 * 2.0;
+        Assert.Equal(20.0, multiplied.ToKml(), 1e-9);
+
+        var reverseMultiplied = 2.0 * e1;
+        Assert.Equal(20.0, reverseMultiplied.ToKml(), 1e-9);
+
+        var divided = e1 / 2.0;
+        Assert.Equal(5.0, divided.ToKml(), 1e-9);
+
+        var ratio = e1 / e2;
+        Assert.Equal(2.0, ratio, 1e-9);
+
+        Assert.Throws<ArgumentException>(() => e1 / 0.0);
+
+        var compound = Efficiency.FromKml(10.0);
+        compound *= 2.0;
+        Assert.Equal(20.0, compound.ToKml(), 1e-9);
+
+        compound /= 2.0;
+        Assert.Equal(10.0, compound.ToKml(), 1e-9);
     }
 
     // --- EvEfficiency Tests ---
@@ -601,6 +916,34 @@ public class UnitConversionTests
         Assert.Equal(0, e1.CompareTo(e3));
         Assert.True(e1.CompareTo(e2) < 0);
         Assert.True(e2.CompareTo(e1) > 0);
+    }
+
+    [Fact]
+    public void TestEvEfficiencyOperators()
+    {
+        var e1 = EvEfficiency.FromKmkWh(10.0);
+        var e2 = EvEfficiency.FromKmkWh(5.0);
+
+        var multiplied = e1 * 2.0;
+        Assert.Equal(20.0, multiplied.ToKmkWh(), 1e-9);
+
+        var reverseMultiplied = 2.0 * e1;
+        Assert.Equal(20.0, reverseMultiplied.ToKmkWh(), 1e-9);
+
+        var divided = e1 / 2.0;
+        Assert.Equal(5.0, divided.ToKmkWh(), 1e-9);
+
+        var ratio = e1 / e2;
+        Assert.Equal(2.0, ratio, 1e-9);
+
+        Assert.Throws<ArgumentException>(() => e1 / 0.0);
+
+        var compound = EvEfficiency.FromKmkWh(10.0);
+        compound *= 2.0;
+        Assert.Equal(20.0, compound.ToKmkWh(), 1e-9);
+
+        compound /= 2.0;
+        Assert.Equal(10.0, compound.ToKmkWh(), 1e-9);
     }
 
     // --- Volume Tests ---
@@ -661,6 +1004,47 @@ public class UnitConversionTests
         Assert.True(v2.CompareTo(v1) > 0);
     }
 
+    [Fact]
+    public void TestVolumeOperators()
+    {
+        var v1 = Volume.FromLiters(10.0);
+        var v2 = Volume.FromLiters(5.0);
+
+        var sum = v1 + v2;
+        Assert.Equal(15.0, sum.ToLiters(), 1e-9);
+
+        var sub = v1 - v2;
+        Assert.Equal(5.0, sub.ToLiters(), 1e-9);
+
+        var multiplied = v1 * 2.0;
+        Assert.Equal(20.0, multiplied.ToLiters(), 1e-9);
+
+        var reverseMultiplied = 2.0 * v1;
+        Assert.Equal(20.0, reverseMultiplied.ToLiters(), 1e-9);
+
+        var divided = v1 / 2.0;
+        Assert.Equal(5.0, divided.ToLiters(), 1e-9);
+
+        var ratio = v1 / v2;
+        Assert.Equal(2.0, ratio, 1e-9);
+
+        Assert.Throws<ArgumentException>(() => v1 / 0.0);
+        Assert.Throws<ArgumentException>(() => v1 / Volume.FromLiters(0.0));
+
+        var compound = Volume.FromLiters(10.0);
+        compound += Volume.FromLiters(5.0);
+        Assert.Equal(15.0, compound.ToLiters(), 1e-9);
+
+        compound -= Volume.FromLiters(3.0);
+        Assert.Equal(12.0, compound.ToLiters(), 1e-9);
+
+        compound *= 2.0;
+        Assert.Equal(24.0, compound.ToLiters(), 1e-9);
+
+        compound /= 2.0;
+        Assert.Equal(12.0, compound.ToLiters(), 1e-9);
+    }
+
     // --- Time Tests ---
 
     [Fact]
@@ -713,6 +1097,47 @@ public class UnitConversionTests
         Assert.True(t2.CompareTo(t1) > 0);
     }
 
+    [Fact]
+    public void TestTimeOperators()
+    {
+        var t1 = Time.FromSeconds(10.0);
+        var t2 = Time.FromSeconds(5.0);
+
+        var sum = t1 + t2;
+        Assert.Equal(15.0, sum.ToSeconds(), 1e-9);
+
+        var sub = t1 - t2;
+        Assert.Equal(5.0, sub.ToSeconds(), 1e-9);
+
+        var multiplied = t1 * 2.0;
+        Assert.Equal(20.0, multiplied.ToSeconds(), 1e-9);
+
+        var reverseMultiplied = 2.0 * t1;
+        Assert.Equal(20.0, reverseMultiplied.ToSeconds(), 1e-9);
+
+        var divided = t1 / 2.0;
+        Assert.Equal(5.0, divided.ToSeconds(), 1e-9);
+
+        var ratio = t1 / t2;
+        Assert.Equal(2.0, ratio, 1e-9);
+
+        Assert.Throws<ArgumentException>(() => t1 / 0.0);
+        Assert.Throws<ArgumentException>(() => t1 / Time.FromSeconds(0.0));
+
+        var compound = Time.FromSeconds(10.0);
+        compound += Time.FromSeconds(5.0);
+        Assert.Equal(15.0, compound.ToSeconds(), 1e-9);
+
+        compound -= Time.FromSeconds(3.0);
+        Assert.Equal(12.0, compound.ToSeconds(), 1e-9);
+
+        compound *= 2.0;
+        Assert.Equal(24.0, compound.ToSeconds(), 1e-9);
+
+        compound /= 2.0;
+        Assert.Equal(12.0, compound.ToSeconds(), 1e-9);
+    }
+
     // --- Acceleration & Operators Tests ---
 
     [Fact]
@@ -726,6 +1151,50 @@ public class UnitConversionTests
         Record.Exception(() => Acceleration.FromMs2(0.0));
         Assert.Throws<ArgumentException>(() => Acceleration.FromMs2(double.NaN));
         Assert.Throws<ArgumentException>(() => a * Time.FromSeconds(-1.0));
+    }
+
+    [Fact]
+    public void TestAccelerationOperators()
+    {
+        var a1 = Acceleration.FromMs2(10.0);
+        var a2 = Acceleration.FromMs2(5.0);
+
+        var sum = a1 + a2;
+        Assert.Equal(15.0, sum.ToMs2(), 1e-9);
+
+        var sub = a1 - a2;
+        Assert.Equal(5.0, sub.ToMs2(), 1e-9);
+
+        var multiplied = a1 * 2.0;
+        Assert.Equal(20.0, multiplied.ToMs2(), 1e-9);
+
+        var reverseMultiplied = 2.0 * a1;
+        Assert.Equal(20.0, reverseMultiplied.ToMs2(), 1e-9);
+
+        var divided = a1 / 2.0;
+        Assert.Equal(5.0, divided.ToMs2(), 1e-9);
+
+        var ratio = a1 / a2;
+        Assert.Equal(2.0, ratio, 1e-9);
+
+        var accelDivTime = a1 / Time.FromSeconds(2.0);
+        Assert.Equal(5.0, accelDivTime.ToMs2(), 1e-9);
+
+        Assert.Throws<ArgumentException>(() => a1 / 0.0);
+        Assert.Throws<ArgumentException>(() => a1 / Acceleration.FromMs2(0.0));
+
+        var compound = Acceleration.FromMs2(10.0);
+        compound += Acceleration.FromMs2(5.0);
+        Assert.Equal(15.0, compound.ToMs2(), 1e-9);
+
+        compound -= Acceleration.FromMs2(3.0);
+        Assert.Equal(12.0, compound.ToMs2(), 1e-9);
+
+        compound *= 2.0;
+        Assert.Equal(24.0, compound.ToMs2(), 1e-9);
+
+        compound /= 2.0;
+        Assert.Equal(12.0, compound.ToMs2(), 1e-9);
     }
 
     [Fact]

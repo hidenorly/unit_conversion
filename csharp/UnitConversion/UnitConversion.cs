@@ -45,7 +45,15 @@ namespace UnitConversion
         public static Speed operator -(Speed a, Speed b) => FromMs(a.m_ms - b.m_ms);
         public static Speed operator *(Speed s, double scalar) => FromMs(s.m_ms * scalar);
         public static Speed operator *(double scalar, Speed s) => FromMs(s.m_ms * scalar);
-        public static Distance operator *(Speed s, Time t) => Distance.FromMeters(s.m_ms * t.ToSeconds());
+
+        public static Speed operator /(Speed s, double scalar)
+        {
+            if (scalar == 0.0) throw new ArgumentException("Scalar cannot be zero");
+            return FromMs(s.m_ms / scalar);
+        }
+
+        public static Distance operator *(Speed s, Time t) =>
+            Distance.FromMeters(s.m_ms * t.ToSeconds());
 
         public static double operator /(Speed a, Speed b)
         {
@@ -142,6 +150,24 @@ namespace UnitConversion
 
         public override string ToString() => $"{ToKg()} kg";
 
+        public static Mass operator +(Mass a, Mass b) =>
+            FromKg(a.mWeightKg + b.mWeightKg);
+
+        public static Mass operator -(Mass a, Mass b) =>
+            FromKg(a.mWeightKg - b.mWeightKg);
+
+        public static Mass operator *(Mass m, double scalar) =>
+            FromKg(m.mWeightKg * scalar);
+
+        public static Mass operator *(double scalar, Mass m) =>
+            FromKg(m.mWeightKg * scalar);
+
+        public static Mass operator /(Mass m, double scalar)
+        {
+            if (scalar == 0.0) throw new ArgumentException("Scalar cannot be zero");
+            return FromKg(m.mWeightKg / scalar);
+        }
+
         public static double operator /(Mass a, Mass b)
         {
             if (b.ToKg() == 0.0) throw new ArgumentException("Mass cannot be zero");
@@ -193,20 +219,36 @@ namespace UnitConversion
 
         public override string ToString() => $"{ToMeters()} m";
 
-        public static Distance operator +(Distance a, Distance b) => FromMeters(a.m_meters + b.m_meters);
-        public static Distance operator -(Distance a, Distance b) => FromMeters(a.m_meters - b.m_meters);
-        public static Distance operator *(Distance d, double scalar) => FromMeters(d.m_meters * scalar);
-        public static Distance operator *(double scalar, Distance d) => FromMeters(d.m_meters * scalar);
+        public static Distance operator +(Distance a, Distance b) =>
+            FromMeters(a.m_meters + b.m_meters);
+
+        public static Distance operator -(Distance a, Distance b) =>
+            FromMeters(a.m_meters - b.m_meters);
+
+        public static Distance operator *(Distance d, double scalar) =>
+            FromMeters(d.m_meters * scalar);
+
+        public static Distance operator *(double scalar, Distance d) =>
+            FromMeters(d.m_meters * scalar);
+
+        public static Distance operator /(Distance d, double scalar)
+        {
+            if (scalar == 0.0) throw new ArgumentException("Scalar cannot be zero");
+            return FromMeters(d.m_meters / scalar);
+        }
+
         public static Speed operator /(Distance d, Time t)
         {
             if (t.ToSeconds() == 0.0) throw new ArgumentException("Time cannot be zero");
             return Speed.FromMs(d.m_meters / t.ToSeconds());
         }
+
         public static Time operator /(Distance d, Speed s)
         {
             if (s.ToMs() == 0.0) throw new ArgumentException("Speed cannot be zero");
             return Time.FromSeconds(d.m_meters / s.ToMs());
         }
+
         public static double operator /(Distance a, Distance b)
         {
             if (b.ToMeters() == 0.0) throw new ArgumentException("Distance cannot be zero");
@@ -248,6 +290,24 @@ namespace UnitConversion
         public double ToPsi() => m_kpa / PsiToKpa;
 
         public override string ToString() => $"{ToKpa()} kPa";
+
+        public static Pressure operator +(Pressure a, Pressure b) =>
+            FromKpa(a.m_kpa + b.m_kpa);
+
+        public static Pressure operator -(Pressure a, Pressure b) =>
+            FromKpa(a.m_kpa - b.m_kpa);
+
+        public static Pressure operator *(Pressure p, double scalar) =>
+            FromKpa(p.m_kpa * scalar);
+
+        public static Pressure operator *(double scalar, Pressure p) =>
+            FromKpa(p.m_kpa * scalar);
+
+        public static Pressure operator /(Pressure p, double scalar)
+        {
+            if (scalar == 0.0) throw new ArgumentException("Scalar cannot be zero");
+            return FromKpa(p.m_kpa / scalar);
+        }
 
         public static double operator /(Pressure a, Pressure b)
         {
@@ -291,6 +351,24 @@ namespace UnitConversion
 
         public override string ToString() => $"{ToKw()} kW";
 
+        public static Power operator +(Power a, Power b) =>
+            FromKw(a.m_kw + b.m_kw);
+
+        public static Power operator -(Power a, Power b) =>
+            FromKw(a.m_kw - b.m_kw);
+
+        public static Power operator *(Power p, double scalar) =>
+            FromKw(p.m_kw * scalar);
+
+        public static Power operator *(double scalar, Power p) =>
+            FromKw(p.m_kw * scalar);
+
+        public static Power operator /(Power p, double scalar)
+        {
+            if (scalar == 0.0) throw new ArgumentException("Scalar cannot be zero");
+            return FromKw(p.m_kw / scalar);
+        }
+
         public static double operator /(Power a, Power b)
         {
             if (b.ToKw() == 0.0) throw new ArgumentException("Power cannot be zero");
@@ -332,6 +410,24 @@ namespace UnitConversion
         public double ToLbft() => m_nm / LbftToNm;
 
         public override string ToString() => $"{ToNm()} Nm";
+
+        public static Torque operator +(Torque a, Torque b) =>
+            FromNm(a.m_nm + b.m_nm);
+
+        public static Torque operator -(Torque a, Torque b) =>
+            FromNm(a.m_nm - b.m_nm);
+
+        public static Torque operator *(Torque t, double scalar) =>
+            FromNm(t.m_nm * scalar);
+
+        public static Torque operator *(double scalar, Torque t) =>
+            FromNm(t.m_nm * scalar);
+
+        public static Torque operator /(Torque t, double scalar)
+        {
+            if (scalar == 0.0) throw new ArgumentException("Scalar cannot be zero");
+            return FromNm(t.m_nm / scalar);
+        }
 
         public static double operator /(Torque a, Torque b)
         {
@@ -393,6 +489,24 @@ namespace UnitConversion
             return new Angle(r - Math.PI);
         }
 
+        public static Angle operator +(Angle a, Angle b) =>
+            FromRadians(a.m_rad + b.m_rad);
+
+        public static Angle operator -(Angle a, Angle b) =>
+            FromRadians(a.m_rad - b.m_rad);
+
+        public static Angle operator *(Angle a, double scalar) =>
+            FromRadians(a.m_rad * scalar);
+
+        public static Angle operator *(double scalar, Angle a) =>
+            FromRadians(a.m_rad * scalar);
+
+        public static Angle operator /(Angle a, double scalar)
+        {
+            if (scalar == 0.0) throw new ArgumentException("Scalar cannot be zero");
+            return FromRadians(a.m_rad / scalar);
+        }
+
         public static double operator /(Angle a, Angle b)
         {
             if (b.ToRadians() == 0.0) throw new ArgumentException("Angle cannot be zero");
@@ -434,6 +548,24 @@ namespace UnitConversion
 
         public override string ToString() => $"{ToKml()} km/L";
 
+        public static Efficiency operator *(Efficiency e, double scalar) =>
+            FromKml(e.m_kml * scalar);
+
+        public static Efficiency operator *(double scalar, Efficiency e) =>
+            FromKml(e.m_kml * scalar);
+
+        public static Efficiency operator /(Efficiency e, double scalar)
+        {
+            if (scalar == 0.0) throw new ArgumentException("Scalar cannot be zero");
+            return FromKml(e.m_kml / scalar);
+        }
+
+        public static double operator /(Efficiency a, Efficiency b)
+        {
+            if (b.ToKml() == 0.0) throw new ArgumentException("Efficiency cannot be zero");
+            return a.m_kml / b.m_kml;
+        }
+
         public bool Equals(Efficiency other) => m_kml.Equals(other.m_kml);
         public override bool Equals(object? obj) => obj is Efficiency other && Equals(other);
         public override int GetHashCode() => m_kml.GetHashCode();
@@ -470,6 +602,24 @@ namespace UnitConversion
         public double ToMpKwh() => m_km_per_kwh / MileToKm;
 
         public override string ToString() => $"{ToKmkWh()} km/kWh";
+
+        public static EvEfficiency operator *(EvEfficiency e, double scalar) =>
+            FromKmkWh(e.m_km_per_kwh * scalar);
+
+        public static EvEfficiency operator *(double scalar, EvEfficiency e) =>
+            FromKmkWh(e.m_km_per_kwh * scalar);
+
+        public static EvEfficiency operator /(EvEfficiency e, double scalar)
+        {
+            if (scalar == 0.0) throw new ArgumentException("Scalar cannot be zero");
+            return FromKmkWh(e.m_km_per_kwh / scalar);
+        }
+
+        public static double operator /(EvEfficiency a, EvEfficiency b)
+        {
+            if (b.ToKmkWh() == 0.0) throw new ArgumentException("EvEfficiency cannot be zero");
+            return a.m_km_per_kwh / b.m_km_per_kwh;
+        }
 
         public bool Equals(EvEfficiency other) => m_km_per_kwh.Equals(other.m_km_per_kwh);
         public override bool Equals(object? obj) => obj is EvEfficiency other && Equals(other);
@@ -509,6 +659,30 @@ namespace UnitConversion
 
         public override string ToString() => $"{ToLiters()} L";
 
+        public static Volume operator +(Volume a, Volume b) =>
+            FromLiters(a.m_liters + b.m_liters);
+
+        public static Volume operator -(Volume a, Volume b) =>
+            FromLiters(a.m_liters - b.m_liters);
+
+        public static Volume operator *(Volume v, double scalar) =>
+            FromLiters(v.m_liters * scalar);
+
+        public static Volume operator *(double scalar, Volume v) =>
+            FromLiters(v.m_liters * scalar);
+
+        public static Volume operator /(Volume v, double scalar)
+        {
+            if (scalar == 0.0) throw new ArgumentException("Scalar cannot be zero");
+            return FromLiters(v.m_liters / scalar);
+        }
+
+        public static double operator /(Volume a, Volume b)
+        {
+            if (b.ToLiters() == 0.0) throw new ArgumentException("Volume cannot be zero");
+            return a.m_liters / b.m_liters;
+        }
+
         public bool Equals(Volume other) => m_liters.Equals(other.m_liters);
         public override bool Equals(object? obj) => obj is Volume other && Equals(other);
         public override int GetHashCode() => m_liters.GetHashCode();
@@ -543,10 +717,23 @@ namespace UnitConversion
 
         public override string ToString() => $"{ToSeconds()} s";
 
-        public static Time operator +(Time a, Time b) => FromSeconds(a.m_sec + b.m_sec);
-        public static Time operator -(Time a, Time b) => FromSeconds(a.m_sec - b.m_sec);
-        public static Time operator *(Time t, double scalar) => FromSeconds(t.m_sec * scalar);
-        public static Time operator *(double scalar, Time t) => FromSeconds(t.m_sec * scalar);
+        public static Time operator +(Time a, Time b) =>
+            FromSeconds(a.m_sec + b.m_sec);
+
+        public static Time operator -(Time a, Time b) =>
+            FromSeconds(a.m_sec - b.m_sec);
+
+        public static Time operator *(Time t, double scalar) =>
+            FromSeconds(t.m_sec * scalar);
+
+        public static Time operator *(double scalar, Time t) =>
+            FromSeconds(t.m_sec * scalar);
+
+        public static Time operator /(Time t, double scalar)
+        {
+            if (scalar == 0.0) throw new ArgumentException("Scalar cannot be zero");
+            return FromSeconds(t.m_sec / scalar);
+        }
 
         public static double operator /(Time a, Time b)
         {
@@ -579,15 +766,33 @@ namespace UnitConversion
         }
 
         public static Acceleration FromMs2(double a) => new Acceleration(a);
-        public static Acceleration FromSpeedAndTime(Speed s, Time t) => new Acceleration(s.ToMs() / t.ToSeconds());
+        public static Acceleration FromSpeedAndTime(Speed s, Time t) =>
+            new Acceleration(s.ToMs() / t.ToSeconds());
 
         public double ToMs2() => m_a;
 
         public override string ToString() => $"{ToMs2()} m/s^2";
 
-        public static Speed operator *(Acceleration a, Time t) => Speed.FromMs(a.m_a * t.ToSeconds());
-        public static Acceleration operator *(Acceleration a, double scalar) => FromMs2(a.m_a * scalar);
-        public static Acceleration operator *(double scalar, Acceleration a) => FromMs2(a.m_a * scalar);
+        public static Acceleration operator +(Acceleration a, Acceleration b) =>
+            FromMs2(a.m_a + b.m_a);
+
+        public static Acceleration operator -(Acceleration a, Acceleration b) =>
+            FromMs2(a.m_a - b.m_a);
+
+        public static Acceleration operator *(Acceleration a, double scalar) =>
+            FromMs2(a.m_a * scalar);
+
+        public static Acceleration operator *(double scalar, Acceleration a) =>
+            FromMs2(a.m_a * scalar);
+
+        public static Acceleration operator /(Acceleration a, double scalar)
+        {
+            if (scalar == 0.0) throw new ArgumentException("Scalar cannot be zero");
+            return FromMs2(a.m_a / scalar);
+        }
+
+        public static Speed operator *(Acceleration a, Time t) =>
+            Speed.FromMs(a.m_a * t.ToSeconds());
 
         public static Speed operator /(Time t, Acceleration a)
         {
@@ -599,6 +804,12 @@ namespace UnitConversion
         {
             if (t.ToSeconds() == 0.0) throw new ArgumentException("Time cannot be zero");
             return FromMs2(acc.ToMs2() / t.ToSeconds());
+        }
+
+        public static double operator /(Acceleration a, Acceleration b)
+        {
+            if (b.ToMs2() == 0.0) throw new ArgumentException("Acceleration cannot be zero");
+            return a.m_a / b.m_a;
         }
 
         public bool Equals(Acceleration other) => m_a.Equals(other.m_a);
