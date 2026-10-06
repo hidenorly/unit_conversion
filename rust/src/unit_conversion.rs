@@ -605,6 +605,96 @@ impl std::ops::Add for Mass {
     }
 }
 
+// Acceleration Add / Sub
+impl std::ops::Sub for Acceleration {
+    type Output = Acceleration;
+    fn sub(self, rhs: Acceleration) -> Self::Output {
+        Acceleration::from_ms2(self.to_ms2() - rhs.to_ms2())
+    }
+}
+
+impl std::ops::Add for Acceleration {
+    type Output = Acceleration;
+    fn add(self, rhs: Acceleration) -> Self::Output {
+        Acceleration::from_ms2(self.to_ms2() + rhs.to_ms2())
+    }
+}
+
+// Pressure Add / Sub
+impl std::ops::Sub for Pressure {
+    type Output = Pressure;
+    fn sub(self, rhs: Pressure) -> Self::Output {
+        Pressure::from_kpa(self.to_kpa() - rhs.to_kpa())
+    }
+}
+
+impl std::ops::Add for Pressure {
+    type Output = Pressure;
+    fn add(self, rhs: Pressure) -> Self::Output {
+        Pressure::from_kpa(self.to_kpa() + rhs.to_kpa())
+    }
+}
+
+// Power Add / Sub
+impl std::ops::Sub for Power {
+    type Output = Power;
+    fn sub(self, rhs: Power) -> Self::Output {
+        Power::from_kw(self.to_kw() - rhs.to_kw())
+    }
+}
+
+impl std::ops::Add for Power {
+    type Output = Power;
+    fn add(self, rhs: Power) -> Self::Output {
+        Power::from_kw(self.to_kw() + rhs.to_kw())
+    }
+}
+
+// Torque Add / Sub
+impl std::ops::Sub for Torque {
+    type Output = Torque;
+    fn sub(self, rhs: Torque) -> Self::Output {
+        Torque::from_nm(self.to_nm() - rhs.to_nm())
+    }
+}
+
+impl std::ops::Add for Torque {
+    type Output = Torque;
+    fn add(self, rhs: Torque) -> Self::Output {
+        Torque::from_nm(self.to_nm() + rhs.to_nm())
+    }
+}
+
+// Angle Add / Sub
+impl std::ops::Sub for Angle {
+    type Output = Angle;
+    fn sub(self, rhs: Angle) -> Self::Output {
+        Angle::from_radians(self.to_radians() - rhs.to_radians())
+    }
+}
+
+impl std::ops::Add for Angle {
+    type Output = Angle;
+    fn add(self, rhs: Angle) -> Self::Output {
+        Angle::from_radians(self.to_radians() + rhs.to_radians())
+    }
+}
+
+// Volume Add / Sub
+impl std::ops::Sub for Volume {
+    type Output = Volume;
+    fn sub(self, rhs: Volume) -> Self::Output {
+        Volume::from_liters(self.to_liters() - rhs.to_liters())
+    }
+}
+
+impl std::ops::Add for Volume {
+    type Output = Volume;
+    fn add(self, rhs: Volume) -> Self::Output {
+        Volume::from_liters(self.to_liters() + rhs.to_liters())
+    }
+}
+
 // Speed Add / Sub
 impl std::ops::Sub for Speed {
     type Output = Speed;
@@ -719,6 +809,111 @@ impl std::ops::Mul<Acceleration> for f64 {
     }
 }
 
+// Pressure * Scalar
+impl std::ops::Mul<f64> for Pressure {
+    type Output = Pressure;
+    fn mul(self, rhs: f64) -> Self::Output {
+        Pressure::from_kpa(self.to_kpa() * rhs)
+    }
+}
+
+impl std::ops::Mul<Pressure> for f64 {
+    type Output = Pressure;
+    fn mul(self, rhs: Pressure) -> Self::Output {
+        rhs * self
+    }
+}
+
+// Power * Scalar
+impl std::ops::Mul<f64> for Power {
+    type Output = Power;
+    fn mul(self, rhs: f64) -> Self::Output {
+        Power::from_kw(self.to_kw() * rhs)
+    }
+}
+
+impl std::ops::Mul<Power> for f64 {
+    type Output = Power;
+    fn mul(self, rhs: Power) -> Self::Output {
+        rhs * self
+    }
+}
+
+// Torque * Scalar
+impl std::ops::Mul<f64> for Torque {
+    type Output = Torque;
+    fn mul(self, rhs: f64) -> Self::Output {
+        Torque::from_nm(self.to_nm() * rhs)
+    }
+}
+
+impl std::ops::Mul<Torque> for f64 {
+    type Output = Torque;
+    fn mul(self, rhs: Torque) -> Self::Output {
+        rhs * self
+    }
+}
+
+// Angle * Scalar
+impl std::ops::Mul<f64> for Angle {
+    type Output = Angle;
+    fn mul(self, rhs: f64) -> Self::Output {
+        Angle::from_radians(self.to_radians() * rhs)
+    }
+}
+
+impl std::ops::Mul<Angle> for f64 {
+    type Output = Angle;
+    fn mul(self, rhs: Angle) -> Self::Output {
+        rhs * self
+    }
+}
+
+// Efficiency * Scalar
+impl std::ops::Mul<f64> for Efficiency {
+    type Output = Efficiency;
+    fn mul(self, rhs: f64) -> Self::Output {
+        Efficiency::from_kml(self.to_kml() * rhs)
+    }
+}
+
+impl std::ops::Mul<Efficiency> for f64 {
+    type Output = Efficiency;
+    fn mul(self, rhs: Efficiency) -> Self::Output {
+        rhs * self
+    }
+}
+
+// EvEfficiency * Scalar
+impl std::ops::Mul<f64> for EvEfficiency {
+    type Output = EvEfficiency;
+    fn mul(self, rhs: f64) -> Self::Output {
+        EvEfficiency::from_km_per_kwh(self.to_km_per_kwh() * rhs)
+    }
+}
+
+impl std::ops::Mul<EvEfficiency> for f64 {
+    type Output = EvEfficiency;
+    fn mul(self, rhs: EvEfficiency) -> Self::Output {
+        rhs * self
+    }
+}
+
+// Volume * Scalar
+impl std::ops::Mul<f64> for Volume {
+    type Output = Volume;
+    fn mul(self, rhs: f64) -> Self::Output {
+        Volume::from_liters(self.to_liters() * rhs)
+    }
+}
+
+impl std::ops::Mul<Volume> for f64 {
+    type Output = Volume;
+    fn mul(self, rhs: Volume) -> Self::Output {
+        rhs * self
+    }
+}
+
 // Time * Scalar
 impl std::ops::Mul<f64> for Time {
     type Output = Time;
@@ -776,6 +971,69 @@ impl std::ops::Div<f64> for Mass {
     }
 }
 
+// Pressure / Scalar
+impl std::ops::Div<f64> for Pressure {
+    type Output = Pressure;
+    fn div(self, rhs: f64) -> Self::Output {
+        if rhs == 0.0 { panic!("Division by zero"); }
+        Pressure::from_kpa(self.to_kpa() / rhs)
+    }
+}
+
+// Power / Scalar
+impl std::ops::Div<f64> for Power {
+    type Output = Power;
+    fn div(self, rhs: f64) -> Self::Output {
+        if rhs == 0.0 { panic!("Division by zero"); }
+        Power::from_kw(self.to_kw() / rhs)
+    }
+}
+
+// Torque / Scalar
+impl std::ops::Div<f64> for Torque {
+    type Output = Torque;
+    fn div(self, rhs: f64) -> Self::Output {
+        if rhs == 0.0 { panic!("Division by zero"); }
+        Torque::from_nm(self.to_nm() / rhs)
+    }
+}
+
+// Angle / Scalar
+impl std::ops::Div<f64> for Angle {
+    type Output = Angle;
+    fn div(self, rhs: f64) -> Self::Output {
+        if rhs == 0.0 { panic!("Division by zero"); }
+        Angle::from_radians(self.to_radians() / rhs)
+    }
+}
+
+// Efficiency / Scalar
+impl std::ops::Div<f64> for Efficiency {
+    type Output = Efficiency;
+    fn div(self, rhs: f64) -> Self::Output {
+        if rhs == 0.0 { panic!("Division by zero"); }
+        Efficiency::from_kml(self.to_kml() / rhs)
+    }
+}
+
+// EvEfficiency / Scalar
+impl std::ops::Div<f64> for EvEfficiency {
+    type Output = EvEfficiency;
+    fn div(self, rhs: f64) -> Self::Output {
+        if rhs == 0.0 { panic!("Division by zero"); }
+        EvEfficiency::from_km_per_kwh(self.to_km_per_kwh() / rhs)
+    }
+}
+
+// Volume / Scalar
+impl std::ops::Div<f64> for Volume {
+    type Output = Volume;
+    fn div(self, rhs: f64) -> Self::Output {
+        if rhs == 0.0 { panic!("Division by zero"); }
+        Volume::from_liters(self.to_liters() / rhs)
+    }
+}
+
 // Speed / Acceleration = Time
 impl std::ops::Div<Acceleration> for Speed {
     type Output = Time;
@@ -784,6 +1042,274 @@ impl std::ops::Div<Acceleration> for Speed {
             panic!("Acceleration cannot be zero");
         }
         Time::new(self.to_ms() / rhs.to_ms2())
+    }
+}
+
+// --- Compound assignment for same-dimension arithmetic
+
+impl std::ops::AddAssign for Speed {
+    fn add_assign(&mut self, rhs: Speed) {
+        *self = *self + rhs;
+    }
+}
+
+impl std::ops::SubAssign for Speed {
+    fn sub_assign(&mut self, rhs: Speed) {
+        *self = *self - rhs;
+    }
+}
+
+impl std::ops::AddAssign for Distance {
+    fn add_assign(&mut self, rhs: Distance) {
+        *self = *self + rhs;
+    }
+}
+
+impl std::ops::SubAssign for Distance {
+    fn sub_assign(&mut self, rhs: Distance) {
+        *self = *self - rhs;
+    }
+}
+
+impl std::ops::AddAssign for Time {
+    fn add_assign(&mut self, rhs: Time) {
+        *self = *self + rhs;
+    }
+}
+
+impl std::ops::SubAssign for Time {
+    fn sub_assign(&mut self, rhs: Time) {
+        *self = *self - rhs;
+    }
+}
+
+impl std::ops::AddAssign for Mass {
+    fn add_assign(&mut self, rhs: Mass) {
+        *self = *self + rhs;
+    }
+}
+
+impl std::ops::SubAssign for Mass {
+    fn sub_assign(&mut self, rhs: Mass) {
+        *self = *self - rhs;
+    }
+}
+
+impl std::ops::AddAssign for Acceleration {
+    fn add_assign(&mut self, rhs: Acceleration) {
+        *self = *self + rhs;
+    }
+}
+
+impl std::ops::SubAssign for Acceleration {
+    fn sub_assign(&mut self, rhs: Acceleration) {
+        *self = *self - rhs;
+    }
+}
+
+impl std::ops::AddAssign for Pressure {
+    fn add_assign(&mut self, rhs: Pressure) {
+        *self = *self + rhs;
+    }
+}
+
+impl std::ops::SubAssign for Pressure {
+    fn sub_assign(&mut self, rhs: Pressure) {
+        *self = *self - rhs;
+    }
+}
+
+impl std::ops::AddAssign for Power {
+    fn add_assign(&mut self, rhs: Power) {
+        *self = *self + rhs;
+    }
+}
+
+impl std::ops::SubAssign for Power {
+    fn sub_assign(&mut self, rhs: Power) {
+        *self = *self - rhs;
+    }
+}
+
+impl std::ops::AddAssign for Torque {
+    fn add_assign(&mut self, rhs: Torque) {
+        *self = *self + rhs;
+    }
+}
+
+impl std::ops::SubAssign for Torque {
+    fn sub_assign(&mut self, rhs: Torque) {
+        *self = *self - rhs;
+    }
+}
+
+impl std::ops::AddAssign for Angle {
+    fn add_assign(&mut self, rhs: Angle) {
+        *self = *self + rhs;
+    }
+}
+
+impl std::ops::SubAssign for Angle {
+    fn sub_assign(&mut self, rhs: Angle) {
+        *self = *self - rhs;
+    }
+}
+
+impl std::ops::AddAssign for Volume {
+    fn add_assign(&mut self, rhs: Volume) {
+        *self = *self + rhs;
+    }
+}
+
+impl std::ops::SubAssign for Volume {
+    fn sub_assign(&mut self, rhs: Volume) {
+        *self = *self - rhs;
+    }
+}
+
+// --- Compound scalar assignment
+
+impl std::ops::MulAssign<f64> for Speed {
+    fn mul_assign(&mut self, rhs: f64) {
+        *self = *self * rhs;
+    }
+}
+
+impl std::ops::DivAssign<f64> for Speed {
+    fn div_assign(&mut self, rhs: f64) {
+        *self = *self / rhs;
+    }
+}
+
+impl std::ops::MulAssign<f64> for Distance {
+    fn mul_assign(&mut self, rhs: f64) {
+        *self = *self * rhs;
+    }
+}
+
+impl std::ops::DivAssign<f64> for Distance {
+    fn div_assign(&mut self, rhs: f64) {
+        *self = *self / rhs;
+    }
+}
+
+impl std::ops::MulAssign<f64> for Acceleration {
+    fn mul_assign(&mut self, rhs: f64) {
+        *self = *self * rhs;
+    }
+}
+
+impl std::ops::DivAssign<f64> for Acceleration {
+    fn div_assign(&mut self, rhs: f64) {
+        *self = *self / rhs;
+    }
+}
+
+impl std::ops::MulAssign<f64> for Time {
+    fn mul_assign(&mut self, rhs: f64) {
+        *self = *self * rhs;
+    }
+}
+
+impl std::ops::DivAssign<f64> for Time {
+    fn div_assign(&mut self, rhs: f64) {
+        *self = *self / rhs;
+    }
+}
+
+impl std::ops::MulAssign<f64> for Mass {
+    fn mul_assign(&mut self, rhs: f64) {
+        *self = *self * rhs;
+    }
+}
+
+impl std::ops::DivAssign<f64> for Mass {
+    fn div_assign(&mut self, rhs: f64) {
+        *self = *self / rhs;
+    }
+}
+
+impl std::ops::MulAssign<f64> for Pressure {
+    fn mul_assign(&mut self, rhs: f64) {
+        *self = *self * rhs;
+    }
+}
+
+impl std::ops::DivAssign<f64> for Pressure {
+    fn div_assign(&mut self, rhs: f64) {
+        *self = *self / rhs;
+    }
+}
+
+impl std::ops::MulAssign<f64> for Power {
+    fn mul_assign(&mut self, rhs: f64) {
+        *self = *self * rhs;
+    }
+}
+
+impl std::ops::DivAssign<f64> for Power {
+    fn div_assign(&mut self, rhs: f64) {
+        *self = *self / rhs;
+    }
+}
+
+impl std::ops::MulAssign<f64> for Torque {
+    fn mul_assign(&mut self, rhs: f64) {
+        *self = *self * rhs;
+    }
+}
+
+impl std::ops::DivAssign<f64> for Torque {
+    fn div_assign(&mut self, rhs: f64) {
+        *self = *self / rhs;
+    }
+}
+
+impl std::ops::MulAssign<f64> for Angle {
+    fn mul_assign(&mut self, rhs: f64) {
+        *self = *self * rhs;
+    }
+}
+
+impl std::ops::DivAssign<f64> for Angle {
+    fn div_assign(&mut self, rhs: f64) {
+        *self = *self / rhs;
+    }
+}
+
+impl std::ops::MulAssign<f64> for Volume {
+    fn mul_assign(&mut self, rhs: f64) {
+        *self = *self * rhs;
+    }
+}
+
+impl std::ops::DivAssign<f64> for Volume {
+    fn div_assign(&mut self, rhs: f64) {
+        *self = *self / rhs;
+    }
+}
+
+impl std::ops::MulAssign<f64> for Efficiency {
+    fn mul_assign(&mut self, rhs: f64) {
+        *self = *self * rhs;
+    }
+}
+
+impl std::ops::DivAssign<f64> for Efficiency {
+    fn div_assign(&mut self, rhs: f64) {
+        *self = *self / rhs;
+    }
+}
+
+impl std::ops::MulAssign<f64> for EvEfficiency {
+    fn mul_assign(&mut self, rhs: f64) {
+        *self = *self * rhs;
+    }
+}
+
+impl std::ops::DivAssign<f64> for EvEfficiency {
+    fn div_assign(&mut self, rhs: f64) {
+        *self = *self / rhs;
     }
 }
 

@@ -95,6 +95,38 @@ mod tests {
         Speed::from_ms(f64::NEG_INFINITY);
     }
 
+    #[test]
+    fn test_speed_compound_assignment() {
+        let mut s = Speed::from_ms(10.0);
+        s += Speed::from_ms(5.0);
+        assert!((s.to_ms() - 15.0).abs() < 1e-9);
+        s -= Speed::from_ms(3.0);
+        assert!((s.to_ms() - 12.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_speed_scalar_compound_assignment() {
+        let mut s = Speed::from_ms(10.0);
+        s *= 2.0;
+        assert!((s.to_ms() - 20.0).abs() < 1e-9);
+        s /= 4.0;
+        assert!((s.to_ms() - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_speed_compound_div_scalar_zero() {
+        let mut s = Speed::from_ms(10.0);
+        s /= 0.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_speed_compound_sub_negative() {
+        let mut s = Speed::from_ms(10.0);
+        s -= Speed::from_ms(20.0);
+    }
+
     use unit_conversion::Temperature;
 
     #[test]
@@ -257,6 +289,38 @@ mod tests {
         Mass::from_kg(f64::NEG_INFINITY);
     }
 
+    #[test]
+    fn test_mass_compound_assignment() {
+        let mut m = Mass::from_kg(10.0);
+        m += Mass::from_kg(5.0);
+        assert!((m.to_kg() - 15.0).abs() < 1e-9);
+        m -= Mass::from_kg(3.0);
+        assert!((m.to_kg() - 12.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_mass_scalar_compound_assignment() {
+        let mut m = Mass::from_kg(10.0);
+        m *= 2.0;
+        assert!((m.to_kg() - 20.0).abs() < 1e-9);
+        m /= 4.0;
+        assert!((m.to_kg() - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_mass_compound_div_scalar_zero() {
+        let mut m = Mass::from_kg(10.0);
+        m /= 0.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_mass_compound_mul_negative() {
+        let mut m = Mass::from_kg(10.0);
+        m *= -1.0;
+    }
+
     use unit_conversion::Distance;
 
     #[test]
@@ -343,6 +407,38 @@ mod tests {
         Distance::from_inch(f64::NAN);
     }
 
+    #[test]
+    fn test_distance_compound_assignment() {
+        let mut d = Distance::from_meters(100.0);
+        d += Distance::from_meters(50.0);
+        assert!((d.to_meters() - 150.0).abs() < 1e-9);
+        d -= Distance::from_meters(25.0);
+        assert!((d.to_meters() - 125.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_distance_scalar_compound_assignment() {
+        let mut d = Distance::from_meters(10.0);
+        d *= 3.0;
+        assert!((d.to_meters() - 30.0).abs() < 1e-9);
+        d /= 2.0;
+        assert!((d.to_meters() - 15.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_distance_compound_div_scalar_zero() {
+        let mut d = Distance::from_meters(10.0);
+        d /= 0.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_distance_compound_sub_negative() {
+        let mut d = Distance::from_meters(10.0);
+        d -= Distance::from_meters(20.0);
+    }
+
     use unit_conversion::Pressure;
 
     #[test]
@@ -403,6 +499,72 @@ mod tests {
     #[should_panic]
     fn test_pressure_neg_inf_guard() {
         Pressure::from_bar(f64::NEG_INFINITY);
+    }
+
+    #[test]
+    fn test_pressure_add_sub() {
+        let p1 = Pressure::from_kpa(200.0);
+        let p2 = Pressure::from_kpa(50.0);
+        assert!(((p1 + p2).to_kpa() - 250.0).abs() < 1e-9);
+        assert!(((p1 - p2).to_kpa() - 150.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_pressure_sub_negative() {
+        let _ = Pressure::from_kpa(50.0) - Pressure::from_kpa(100.0);
+    }
+
+    #[test]
+    fn test_pressure_compound_assignment() {
+        let mut p = Pressure::from_kpa(100.0);
+        p += Pressure::from_kpa(50.0);
+        assert!((p.to_kpa() - 150.0).abs() < 1e-9);
+        p -= Pressure::from_kpa(25.0);
+        assert!((p.to_kpa() - 125.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_pressure_scalar_operations() {
+        let p = Pressure::from_kpa(100.0);
+        assert!(((p * 2.0).to_kpa() - 200.0).abs() < 1e-9);
+        assert!(((2.0 * p).to_kpa() - 200.0).abs() < 1e-9);
+        assert!(((p / 4.0).to_kpa() - 25.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_pressure_scalar_compound_assignment() {
+        let mut p = Pressure::from_kpa(100.0);
+        p *= 2.0;
+        assert!((p.to_kpa() - 200.0).abs() < 1e-9);
+        p /= 4.0;
+        assert!((p.to_kpa() - 50.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_pressure_div_scalar_zero() {
+        let _ = Pressure::from_kpa(100.0) / 0.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_pressure_scalar_negative() {
+        let _ = Pressure::from_kpa(100.0) * -1.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_pressure_compound_scalar_negative() {
+        let mut p = Pressure::from_kpa(100.0);
+        p *= -1.0;
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_pressure_compound_div_scalar_zero() {
+        let mut p = Pressure::from_kpa(100.0);
+        p /= 0.0;
     }
 
     use unit_conversion::Power;
@@ -497,6 +659,72 @@ mod tests {
     #[should_panic]
     fn test_power_conversion_neg_guard_hp() {
         Power::from_hp(f64::NEG_INFINITY);
+    }
+
+    #[test]
+    fn test_power_add_sub() {
+        let p1 = Power::from_kw(100.0);
+        let p2 = Power::from_kw(25.0);
+        assert!(((p1 + p2).to_kw() - 125.0).abs() < 1e-9);
+        assert!(((p1 - p2).to_kw() - 75.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_power_sub_negative() {
+        let _ = Power::from_kw(25.0) - Power::from_kw(50.0);
+    }
+
+    #[test]
+    fn test_power_compound_assignment() {
+        let mut p = Power::from_kw(100.0);
+        p += Power::from_kw(50.0);
+        assert!((p.to_kw() - 150.0).abs() < 1e-9);
+        p -= Power::from_kw(25.0);
+        assert!((p.to_kw() - 125.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_power_scalar_operations() {
+        let p = Power::from_kw(100.0);
+        assert!(((p * 2.0).to_kw() - 200.0).abs() < 1e-9);
+        assert!(((2.0 * p).to_kw() - 200.0).abs() < 1e-9);
+        assert!(((p / 4.0).to_kw() - 25.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_power_scalar_compound_assignment() {
+        let mut p = Power::from_kw(100.0);
+        p *= 2.0;
+        assert!((p.to_kw() - 200.0).abs() < 1e-9);
+        p /= 4.0;
+        assert!((p.to_kw() - 50.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_power_div_scalar_zero() {
+        let _ = Power::from_kw(100.0) / 0.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_power_scalar_negative() {
+        let _ = Power::from_kw(100.0) * -1.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_power_compound_scalar_negative() {
+        let mut p = Power::from_kw(100.0);
+        p *= -1.0;
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_power_compound_div_scalar_zero() {
+        let mut p = Power::from_kw(100.0);
+        p /= 0.0;
     }
 
     use unit_conversion::Torque;
@@ -597,7 +825,74 @@ mod tests {
         Torque::from_nm(-1.0);
     }
 
+    #[test]
+    fn test_torque_add_sub() {
+        let t1 = Torque::from_nm(100.0);
+        let t2 = Torque::from_nm(25.0);
+        assert!(((t1 + t2).to_nm() - 125.0).abs() < 1e-9);
+        assert!(((t1 - t2).to_nm() - 75.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_torque_sub_negative() {
+        let _ = Torque::from_nm(25.0) - Torque::from_nm(50.0);
+    }
+
+    #[test]
+    fn test_torque_compound_assignment() {
+        let mut t = Torque::from_nm(100.0);
+        t += Torque::from_nm(50.0);
+        assert!((t.to_nm() - 150.0).abs() < 1e-9);
+        t -= Torque::from_nm(25.0);
+        assert!((t.to_nm() - 125.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_torque_scalar_operations() {
+        let t = Torque::from_nm(100.0);
+        assert!(((t * 2.0).to_nm() - 200.0).abs() < 1e-9);
+        assert!(((2.0 * t).to_nm() - 200.0).abs() < 1e-9);
+        assert!(((t / 4.0).to_nm() - 25.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_torque_scalar_compound_assignment() {
+        let mut t = Torque::from_nm(100.0);
+        t *= 2.0;
+        assert!((t.to_nm() - 200.0).abs() < 1e-9);
+        t /= 4.0;
+        assert!((t.to_nm() - 50.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_torque_div_scalar_zero() {
+        let _ = Torque::from_nm(100.0) / 0.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_torque_scalar_negative() {
+        let _ = Torque::from_nm(100.0) * -1.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_torque_compound_scalar_negative() {
+        let mut t = Torque::from_nm(100.0);
+        t *= -1.0;
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_torque_compound_div_scalar_zero() {
+        let mut t = Torque::from_nm(100.0);
+        t /= 0.0;
+    }
+
     use unit_conversion::Angle;
+
     use std::f64::consts::PI;
 
     #[test]
@@ -657,6 +952,57 @@ mod tests {
         Angle::from_degrees(f64::NEG_INFINITY);
     }
 
+    #[test]
+    fn test_angle_add_sub() {
+        let a1 = Angle::from_degrees(120.0);
+        let a2 = Angle::from_degrees(30.0);
+        assert!(((a1 + a2).to_degrees() - 150.0).abs() < 1e-9);
+        assert!(((a1 - a2).to_degrees() - 90.0).abs() < 1e-9);
+
+        let negative = a2 - a1;
+        assert!((negative.to_degrees() + 90.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_angle_compound_assignment() {
+        let mut a = Angle::from_degrees(120.0);
+        a += Angle::from_degrees(30.0);
+        assert!((a.to_degrees() - 150.0).abs() < 1e-9);
+        a -= Angle::from_degrees(200.0);
+        assert!((a.to_degrees() + 50.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_angle_scalar_operations() {
+        let a = Angle::from_degrees(30.0);
+        assert!(((a * 2.0).to_degrees() - 60.0).abs() < 1e-9);
+        assert!(((2.0 * a).to_degrees() - 60.0).abs() < 1e-9);
+        assert!(((a / 2.0).to_degrees() - 15.0).abs() < 1e-9);
+        assert!(((a * -2.0).to_degrees() + 60.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_angle_scalar_compound_assignment() {
+        let mut a = Angle::from_degrees(30.0);
+        a *= 2.0;
+        assert!((a.to_degrees() - 60.0).abs() < 1e-9);
+        a /= -2.0;
+        assert!((a.to_degrees() + 30.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_angle_div_scalar_zero() {
+        let _ = Angle::from_degrees(30.0) / 0.0;
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_angle_compound_div_scalar_zero() {
+        let mut a = Angle::from_degrees(30.0);
+        a /= 0.0;
+    }
+
     use unit_conversion::Efficiency;
 
     #[test]
@@ -712,6 +1058,49 @@ mod tests {
     #[should_panic(expected = "Must be positive")]
     fn test_efficiency_neg_inf_panic() {
         let _ = Efficiency::from_kml(f64::NEG_INFINITY);
+    }
+
+    #[test]
+    fn test_efficiency_scalar_operations() {
+        let e = Efficiency::from_kml(10.0);
+        assert!(((e * 2.0).to_kml() - 20.0).abs() < 1e-9);
+        assert!(((2.0 * e).to_kml() - 20.0).abs() < 1e-9);
+        assert!(((e / 2.0).to_kml() - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_efficiency_scalar_compound_assignment() {
+        let mut e = Efficiency::from_kml(10.0);
+        e *= 2.0;
+        assert!((e.to_kml() - 20.0).abs() < 1e-9);
+        e /= 4.0;
+        assert!((e.to_kml() - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_efficiency_div_scalar_zero() {
+        let _ = Efficiency::from_kml(10.0) / 0.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_efficiency_scalar_negative() {
+        let _ = Efficiency::from_kml(10.0) * -1.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_efficiency_compound_scalar_negative() {
+        let mut e = Efficiency::from_kml(10.0);
+        e *= -1.0;
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_efficiency_compound_div_scalar_zero() {
+        let mut e = Efficiency::from_kml(10.0);
+        e /= 0.0;
     }
 
     use unit_conversion::EvEfficiency;
@@ -787,6 +1176,49 @@ mod tests {
         let _ = EvEfficiency::from_km_per_kwh(f64::NEG_INFINITY);
     }
 
+    #[test]
+    fn test_ev_efficiency_scalar_operations() {
+        let e = EvEfficiency::from_km_per_kwh(10.0);
+        assert!(((e * 2.0).to_km_per_kwh() - 20.0).abs() < 1e-9);
+        assert!(((2.0 * e).to_km_per_kwh() - 20.0).abs() < 1e-9);
+        assert!(((e / 2.0).to_km_per_kwh() - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_ev_efficiency_scalar_compound_assignment() {
+        let mut e = EvEfficiency::from_km_per_kwh(10.0);
+        e *= 2.0;
+        assert!((e.to_km_per_kwh() - 20.0).abs() < 1e-9);
+        e /= 4.0;
+        assert!((e.to_km_per_kwh() - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_ev_efficiency_div_scalar_zero() {
+        let _ = EvEfficiency::from_km_per_kwh(10.0) / 0.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_ev_efficiency_scalar_negative() {
+        let _ = EvEfficiency::from_km_per_kwh(10.0) * -1.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_ev_efficiency_compound_scalar_negative() {
+        let mut e = EvEfficiency::from_km_per_kwh(10.0);
+        e *= -1.0;
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_ev_efficiency_compound_div_scalar_zero() {
+        let mut e = EvEfficiency::from_km_per_kwh(10.0);
+        e /= 0.0;
+    }
+
     use unit_conversion::Volume;
 
     #[test]
@@ -859,6 +1291,72 @@ mod tests {
         Volume::from_liters(f64::NEG_INFINITY);
     }
 
+    #[test]
+    fn test_volume_add_sub() {
+        let v1 = Volume::from_liters(10.0);
+        let v2 = Volume::from_liters(2.5);
+        assert!(((v1 + v2).to_liters() - 12.5).abs() < 1e-9);
+        assert!(((v1 - v2).to_liters() - 7.5).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_volume_sub_negative() {
+        let _ = Volume::from_liters(2.0) - Volume::from_liters(5.0);
+    }
+
+    #[test]
+    fn test_volume_compound_assignment() {
+        let mut v = Volume::from_liters(10.0);
+        v += Volume::from_liters(5.0);
+        assert!((v.to_liters() - 15.0).abs() < 1e-9);
+        v -= Volume::from_liters(2.0);
+        assert!((v.to_liters() - 13.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_volume_scalar_operations() {
+        let v = Volume::from_liters(10.0);
+        assert!(((v * 2.0).to_liters() - 20.0).abs() < 1e-9);
+        assert!(((2.0 * v).to_liters() - 20.0).abs() < 1e-9);
+        assert!(((v / 4.0).to_liters() - 2.5).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_volume_scalar_compound_assignment() {
+        let mut v = Volume::from_liters(10.0);
+        v *= 2.0;
+        assert!((v.to_liters() - 20.0).abs() < 1e-9);
+        v /= 4.0;
+        assert!((v.to_liters() - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_volume_div_scalar_zero() {
+        let _ = Volume::from_liters(10.0) / 0.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_volume_scalar_negative() {
+        let _ = Volume::from_liters(10.0) * -1.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_volume_compound_scalar_negative() {
+        let mut v = Volume::from_liters(10.0);
+        v *= -1.0;
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_volume_compound_div_scalar_zero() {
+        let mut v = Volume::from_liters(10.0);
+        v /= 0.0;
+    }
+
     use unit_conversion::Time;
 
     #[test]
@@ -913,6 +1411,38 @@ mod tests {
         let _ = Time::from_seconds(f64::NEG_INFINITY);
     }
 
+    #[test]
+    fn test_time_compound_assignment() {
+        let mut t = Time::from_seconds(60.0);
+        t += Time::from_seconds(30.0);
+        assert!((t.to_seconds() - 90.0).abs() < 1e-9);
+        t -= Time::from_seconds(10.0);
+        assert!((t.to_seconds() - 80.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_time_scalar_compound_assignment() {
+        let mut t = Time::from_seconds(10.0);
+        t *= 2.0;
+        assert!((t.to_seconds() - 20.0).abs() < 1e-9);
+        t /= 4.0;
+        assert!((t.to_seconds() - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_time_compound_div_scalar_zero() {
+        let mut t = Time::from_seconds(10.0);
+        t /= 0.0;
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_time_compound_sub_negative() {
+        let mut t = Time::from_seconds(10.0);
+        t -= Time::from_seconds(20.0);
+    }
+
     use unit_conversion::Acceleration;
 
     #[test]
@@ -962,6 +1492,40 @@ mod tests {
     #[should_panic]
     fn test_time_guard() {
         let _ = Acceleration::from_ms2(9.8) * Time::from_seconds(-1.0);
+    }
+
+    #[test]
+    fn test_acceleration_add_sub() {
+        let a1 = Acceleration::from_ms2(10.0);
+        let a2 = Acceleration::from_ms2(3.0);
+        assert!(((a1 + a2).to_ms2() - 13.0).abs() < 1e-9);
+        assert!(((a1 - a2).to_ms2() - 7.0).abs() < 1e-9);
+        assert!(((a2 - a1).to_ms2() + 7.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_acceleration_compound_assignment() {
+        let mut a = Acceleration::from_ms2(10.0);
+        a += Acceleration::from_ms2(5.0);
+        assert!((a.to_ms2() - 15.0).abs() < 1e-9);
+        a -= Acceleration::from_ms2(20.0);
+        assert!((a.to_ms2() + 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_acceleration_scalar_compound_assignment() {
+        let mut a = Acceleration::from_ms2(10.0);
+        a *= 2.0;
+        assert!((a.to_ms2() - 20.0).abs() < 1e-9);
+        a /= 4.0;
+        assert!((a.to_ms2() - 5.0).abs() < 1e-9);
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_acceleration_compound_div_scalar_zero() {
+        let mut a = Acceleration::from_ms2(10.0);
+        a /= 0.0;
     }
 
     // -- operator
@@ -1166,7 +1730,6 @@ mod tests {
     fn test_mass_div_zero_mass() {
         let _ = Mass::from_kg(50.0) / Mass::from_kg(0.0);
     }
-
 
     #[test]
     fn test_pressure_div_pressure() {
