@@ -22,3 +22,6 @@ test-lua:
 
 test-csharp:
 	cd csharp && dotnet build && dotnet test
+
+clean:
+	rm -rf build
