@@ -65,8 +65,8 @@ class Temperature implements Comparable<Temperature> {
   }
 
   Temperature.fromCelsius(double v) : this._(v);
-  Temperature.fromFahrenheit(double v) : this._( (v - _fOffset) / _fFactor );
-  Temperature.fromKelvin(double v) : this._( v - _kOffset );
+  Temperature.fromFahrenheit(double v) : this._((v - _fOffset) / _fFactor);
+  Temperature.fromKelvin(double v) : this._(v - _kOffset);
 
   double get toCelsius => _celsius;
   double get toFahrenheit => _celsius * _fFactor + _fOffset;
@@ -76,7 +76,8 @@ class Temperature implements Comparable<Temperature> {
   int compareTo(Temperature other) => _celsius.compareTo(other._celsius);
 
   @override
-  bool operator ==(Object other) => other is Temperature && _celsius == other._celsius;
+  bool operator ==(Object other) =>
+      other is Temperature && _celsius == other._celsius;
 
   @override
   int get hashCode => _celsius.hashCode;
@@ -134,8 +135,10 @@ class Distance implements Comparable<Distance> {
   static const double _inToM = 0.0254;
   static const double _mmToM = 0.001;
 
-  Distance._(this._meters){
-    if (_meters.isNaN || _meters < 0 || _meters.isInfinite) throw ArgumentError('Invalid distance');
+  Distance._(this._meters) {
+    if (_meters.isNaN || _meters < 0 || _meters.isInfinite) {
+      throw ArgumentError('Invalid distance');
+    }
   }
 
   Distance.fromMeters(double v) : this._(v);
@@ -156,7 +159,8 @@ class Distance implements Comparable<Distance> {
   int compareTo(Distance other) => _meters.compareTo(other._meters);
 
   @override
-  bool operator ==(Object other) => other is Distance && _meters == other._meters;
+  bool operator ==(Object other) =>
+      other is Distance && _meters == other._meters;
 
   @override
   int get hashCode => _meters.hashCode;
@@ -244,11 +248,14 @@ class Torque implements Comparable<Torque> {
   static const double _lbftToNm = 1.355817948;
 
   Torque._(this._nm) {
-    if (_nm.isNaN || _nm < 0 || _nm.isInfinite) throw ArgumentError("Invalid torque");
+    if (_nm.isNaN || _nm < 0 || _nm.isInfinite) {
+      throw ArgumentError("Invalid torque");
+    }
   }
-  Torque.fromNm(double v) : this._( v );
-  Torque.fromKgfm(double v) : this._( v * _kgfmToNm );
-  Torque.fromLbft(double v) : this._( v * _lbftToNm );
+
+  Torque.fromNm(double v) : this._(v);
+  Torque.fromKgfm(double v) : this._(v * _kgfmToNm);
+  Torque.fromLbft(double v) : this._(v * _lbftToNm);
 
   double get toNm => _nm;
   double get toKgfm => _nm / _kgfmToNm;
@@ -332,7 +339,9 @@ class Efficiency implements Comparable<Efficiency> {
   static const double _mpgToKml = 0.425143707;
 
   Efficiency._(this._kml) {
-    if (_kml <= 0 || _kml.isNaN || _kml.isInfinite) throw ArgumentError('Must be positive');
+    if (_kml <= 0 || _kml.isNaN || _kml.isInfinite) {
+      throw ArgumentError('Must be positive');
+    }
   }
 
   Efficiency.fromKml(double v) : this._(v);
@@ -347,7 +356,8 @@ class Efficiency implements Comparable<Efficiency> {
   int compareTo(Efficiency other) => _kml.compareTo(other._kml);
 
   @override
-  bool operator ==(Object other) => other is Efficiency && _kml == other._kml;
+  bool operator ==(Object other) =>
+      other is Efficiency && _kml == other._kml;
 
   @override
   int get hashCode => _kml.hashCode;
@@ -364,7 +374,9 @@ class EvEfficiency implements Comparable<EvEfficiency> {
   static const double _mileToKm = 1.609344;
 
   EvEfficiency._(this._kmPerKwh) {
-    if (_kmPerKwh <= 0 || _kmPerKwh.isNaN || _kmPerKwh.isInfinite) throw ArgumentError('Must be positive');
+    if (_kmPerKwh <= 0 || _kmPerKwh.isNaN || _kmPerKwh.isInfinite) {
+      throw ArgumentError('Must be positive');
+    }
   }
 
   EvEfficiency.fromKmkWh(double v) : this._(v);
@@ -378,10 +390,12 @@ class EvEfficiency implements Comparable<EvEfficiency> {
   double get toMpKwh => _kmPerKwh / _mileToKm;
 
   @override
-  int compareTo(EvEfficiency other) => _kmPerKwh.compareTo(other._kmPerKwh);
+  int compareTo(EvEfficiency other) =>
+      _kmPerKwh.compareTo(other._kmPerKwh);
 
   @override
-  bool operator ==(Object other) => other is EvEfficiency && _kmPerKwh == other._kmPerKwh;
+  bool operator ==(Object other) =>
+      other is EvEfficiency && _kmPerKwh == other._kmPerKwh;
 
   @override
   int get hashCode => _kmPerKwh.hashCode;
@@ -400,7 +414,8 @@ class Volume implements Comparable<Volume> {
 
   Volume._(this._l) {
     if (_l.isNaN || _l < 0 || _l.isInfinite) {
-      throw ArgumentError('Volume must be a non-negative finite number');
+      throw ArgumentError(
+          'Volume must be a non-negative finite number');
     }
   }
 
@@ -434,7 +449,7 @@ class Time implements Comparable<Time> {
   final double _s;
 
   Time._(this._s) {
-    if (_s.isNaN || _s < 0 || _s.isInfinite){
+    if (_s.isNaN || _s < 0 || _s.isInfinite) {
       throw ArgumentError('Invalid Time');
     }
   }
@@ -485,7 +500,8 @@ class Acceleration implements Comparable<Acceleration> {
   int compareTo(Acceleration other) => _ms2.compareTo(other._ms2);
 
   @override
-  bool operator ==(Object other) => other is Acceleration && _ms2 == other._ms2;
+  bool operator ==(Object other) =>
+      other is Acceleration && _ms2 == other._ms2;
 
   @override
   int get hashCode => _ms2.hashCode;
@@ -500,33 +516,65 @@ class Acceleration implements Comparable<Acceleration> {
 extension AccelMul on Acceleration {
   dynamic operator *(dynamic other) {
     if (other is Time) {
-      if (other.toSeconds < 0) throw ArgumentError('Time cannot be negative');
+      if (other.toSeconds < 0) {
+        throw ArgumentError('Time cannot be negative');
+      }
       return Speed.fromMs(this.toMs2 * other.toSeconds);
     } else if (other is num) {
-      return Acceleration.fromMs2(this.toMs2 * other.toDouble());
+      return Acceleration.fromMs2(
+          this.toMs2 * other.toDouble());
     }
     throw ArgumentError('Unsupported type for multiplication');
-  }
-
-  Acceleration operator /(num scalar) {
-    if (scalar == 0.0) throw ArgumentError('Division by zero');
-    return Acceleration.fromMs2(this.toMs2 / scalar.toDouble());
   }
 }
 
 extension NumToAccelerationMul on num {
   Acceleration operator *(Acceleration acc) {
-    return Acceleration.fromMs2(acc.toMs2 * this.toDouble());
+    return Acceleration.fromMs2(
+        acc.toMs2 * this.toDouble());
   }
 }
+
+extension AccelerationOps on Acceleration {
+  Acceleration operator +(Acceleration other) {
+    return Acceleration.fromMs2(
+        this.toMs2 + other.toMs2);
+  }
+
+  Acceleration operator -(Acceleration other) {
+    return Acceleration.fromMs2(
+        this.toMs2 - other.toMs2);
+  }
+
+  dynamic operator /(dynamic other) {
+    if (other is num) {
+      if (other.toDouble() == 0.0) {
+        throw ArgumentError('Division by zero');
+      }
+      return Acceleration.fromMs2(
+          this.toMs2 / other.toDouble());
+    } else if (other is Acceleration) {
+      if (other.toMs2 == 0.0) {
+        throw ArgumentError('Acceleration cannot be zero');
+      }
+      return this.toMs2 / other.toMs2;
+    }
+    throw ArgumentError('Unsupported type for division');
+  }
+}
+
 
 extension SpeedMul on Speed {
   dynamic operator *(dynamic other) {
     if (other is Time) {
-      if (other.toSeconds < 0) throw ArgumentError('Time cannot be negative');
-      return Distance.fromMeters(this.toMs * other.toSeconds);
-    } else if (other is num) { // scalar (double, int)
-      return Speed.fromMs(this.toMs * other.toDouble());
+      if (other.toSeconds < 0) {
+        throw ArgumentError('Time cannot be negative');
+      }
+      return Distance.fromMeters(
+          this.toMs * other.toSeconds);
+    } else if (other is num) {
+      return Speed.fromMs(
+          this.toMs * other.toDouble());
     }
     throw ArgumentError('Unsupported type for multiplication');
   }
@@ -534,58 +582,88 @@ extension SpeedMul on Speed {
 
 extension NumToSpeedMul on num {
   Speed operator *(Speed speed) {
-    return Speed.fromMs(speed.toMs * this.toDouble());
+    return Speed.fromMs(
+        speed.toMs * this.toDouble());
   }
 }
 
 extension SpeedSub on Speed {
-  Speed operator -(Speed other) => Speed.fromMs(this.toMs - other.toMs);
+  Speed operator -(Speed other) =>
+      Speed.fromMs(this.toMs - other.toMs);
 }
 
 extension SpeedAdd on Speed {
-  Speed operator +(Speed other) => Speed.fromMs(this.toMs + other.toMs);
+  Speed operator +(Speed other) =>
+      Speed.fromMs(this.toMs + other.toMs);
 }
 
 extension SpeedDiv on Speed {
   dynamic operator /(dynamic other) {
     if (other is Time) {
-      if (other.toSeconds == 0.0) throw ArgumentError('Time cannot be zero');
-      return Acceleration.fromMs2(this.toMs / other.toSeconds);
+      if (other.toSeconds == 0.0) {
+        throw ArgumentError('Time cannot be zero');
+      }
+      return Acceleration.fromMs2(
+          this.toMs / other.toSeconds);
     } else if (other is Acceleration) {
-      if (other.toMs2 == 0.0) throw ArgumentError('Acceleration cannot be zero');
-      return Time.fromSeconds(this.toMs / other.toMs2);
+      if (other.toMs2 == 0.0) {
+        throw ArgumentError('Acceleration cannot be zero');
+      }
+      return Time.fromSeconds(
+          this.toMs / other.toMs2);
     } else if (other is Speed) {
-      if (other.toMs == 0.0) throw ArgumentError('Speed cannot be zero');
+      if (other.toMs == 0.0) {
+        throw ArgumentError('Speed cannot be zero');
+      }
       return this.toMs / other.toMs;
     } else if (other is num) {
-      if (other.toDouble() == 0.0) throw ArgumentError('Division by zero');
-      return Speed.fromMs(this.toMs / other.toDouble());
+      if (other.toDouble() == 0.0) {
+        throw ArgumentError('Division by zero');
+      }
+      return Speed.fromMs(
+          this.toMs / other.toDouble());
     }
     throw ArgumentError('Unsupported type for division');
   }
 }
 
+
 extension DistanceOps on Distance {
-  Distance operator +(Distance other) => Distance.fromMeters(this.toMeters + other.toMeters);
-  Distance operator -(Distance other) => Distance.fromMeters(this.toMeters - other.toMeters);
+  Distance operator +(Distance other) =>
+      Distance.fromMeters(this.toMeters + other.toMeters);
+
+  Distance operator -(Distance other) =>
+      Distance.fromMeters(this.toMeters - other.toMeters);
 
   dynamic operator *(num scalar) {
-    return Distance.fromMeters(this.toMeters * scalar.toDouble());
+    return Distance.fromMeters(
+        this.toMeters * scalar.toDouble());
   }
 
   dynamic operator /(dynamic other) {
     if (other is Time) {
-      if (other.toSeconds == 0.0) throw ArgumentError('Time cannot be zero');
-      return Speed.fromMs(this.toMeters / other.toSeconds);
+      if (other.toSeconds == 0.0) {
+        throw ArgumentError('Time cannot be zero');
+      }
+      return Speed.fromMs(
+          this.toMeters / other.toSeconds);
     } else if (other is Speed) {
-      if (other.toMs == 0.0) throw ArgumentError('Speed cannot be zero');
-      return Time.fromSeconds(this.toMeters / other.toMs);
+      if (other.toMs == 0.0) {
+        throw ArgumentError('Speed cannot be zero');
+      }
+      return Time.fromSeconds(
+          this.toMeters / other.toMs);
     } else if (other is Distance) {
-      if (other.toMeters == 0.0) throw ArgumentError('Distance cannot be zero');
+      if (other.toMeters == 0.0) {
+        throw ArgumentError('Distance cannot be zero');
+      }
       return this.toMeters / other.toMeters;
     } else if (other is num) {
-      if (other.toDouble() == 0.0) throw ArgumentError('Division by zero');
-      return Distance.fromMeters(this.toMeters / other.toDouble());
+      if (other.toDouble() == 0.0) {
+        throw ArgumentError('Division by zero');
+      }
+      return Distance.fromMeters(
+          this.toMeters / other.toDouble());
     }
     throw ArgumentError('Unsupported type for division');
   }
@@ -593,28 +671,41 @@ extension DistanceOps on Distance {
 
 extension NumToDistanceMul on num {
   Distance operator *(Distance distance) {
-    return Distance.fromMeters(distance.toMeters * this.toDouble());
+    return Distance.fromMeters(
+        distance.toMeters * this.toDouble());
   }
 }
 
 
 extension TimeOps on Time {
-  Time operator +(Time other) => Time.fromSeconds(this.toSeconds + other.toSeconds);
-  Time operator -(Time other) => Time.fromSeconds(this.toSeconds - other.toSeconds);
+  Time operator +(Time other) =>
+      Time.fromSeconds(this.toSeconds + other.toSeconds);
+
+  Time operator -(Time other) =>
+      Time.fromSeconds(this.toSeconds - other.toSeconds);
 
   Time operator *(num scalar) {
-    return Time.fromSeconds(this.toSeconds * scalar.toDouble());
+    return Time.fromSeconds(
+        this.toSeconds * scalar.toDouble());
   }
 
   dynamic operator /(dynamic other) {
     if (other is num) {
-      if (other.toDouble() == 0.0) throw ArgumentError('Division by zero');
-      return Time.fromSeconds(this.toSeconds / other.toDouble());
+      if (other.toDouble() == 0.0) {
+        throw ArgumentError('Division by zero');
+      }
+      return Time.fromSeconds(
+          this.toSeconds / other.toDouble());
     } else if (other is Acceleration) {
-      if (other.toMs2 == 0.0) throw ArgumentError('Acceleration cannot be zero');
-      return Speed.fromMs(this.toSeconds / other.toMs2);
+      if (other.toMs2 == 0.0) {
+        throw ArgumentError('Acceleration cannot be zero');
+      }
+      return Speed.fromMs(
+          this.toSeconds / other.toMs2);
     } else if (other is Time) {
-      if (other.toSeconds == 0.0) throw ArgumentError('Time cannot be zero');
+      if (other.toSeconds == 0.0) {
+        throw ArgumentError('Time cannot be zero');
+      }
       return this.toSeconds / other.toSeconds;
     }
     throw ArgumentError('Unsupported type for division');
@@ -623,26 +714,36 @@ extension TimeOps on Time {
 
 extension NumToTimeMul on num {
   Time operator *(Time time) {
-    return Time.fromSeconds(time.toSeconds * this.toDouble());
+    return Time.fromSeconds(
+        time.toSeconds * this.toDouble());
   }
 }
 
 
 extension MassOps on Mass {
-  Mass operator +(Mass other) => Mass.fromKg(this.toKg + other.toKg);
-  Mass operator -(Mass other) => Mass.fromKg(this.toKg - other.toKg);
+  Mass operator +(Mass other) =>
+      Mass.fromKg(this.toKg + other.toKg);
+
+  Mass operator -(Mass other) =>
+      Mass.fromKg(this.toKg - other.toKg);
 
   dynamic operator *(num scalar) {
-    return Mass.fromKg(this.toKg * scalar.toDouble());
+    return Mass.fromKg(
+        this.toKg * scalar.toDouble());
   }
 
   dynamic operator /(dynamic other) {
     if (other is Mass) {
-      if (other.toKg == 0.0) throw ArgumentError('Mass cannot be zero');
+      if (other.toKg == 0.0) {
+        throw ArgumentError('Mass cannot be zero');
+      }
       return this.toKg / other.toKg;
     } else if (other is num) {
-      if (other.toDouble() == 0.0) throw ArgumentError('Division by zero');
-      return Mass.fromKg(this.toKg / other.toDouble());
+      if (other.toDouble() == 0.0) {
+        throw ArgumentError('Division by zero');
+      }
+      return Mass.fromKg(
+          this.toKg / other.toDouble());
     }
     throw ArgumentError('Unsupported type for division');
   }
@@ -650,50 +751,274 @@ extension MassOps on Mass {
 
 extension NumToMassMul on num {
   Mass operator *(Mass mass) {
-    return Mass.fromKg(mass.toKg * this.toDouble());
+    return Mass.fromKg(
+        mass.toKg * this.toDouble());
   }
 }
 
 
 extension PressureOps on Pressure {
+  Pressure operator +(Pressure other) {
+    return Pressure.fromKpa(
+        this.toKpa + other.toKpa);
+  }
+
+  Pressure operator -(Pressure other) {
+    return Pressure.fromKpa(
+        this.toKpa - other.toKpa);
+  }
+
+  dynamic operator *(num scalar) {
+    return Pressure.fromKpa(
+        this.toKpa * scalar.toDouble());
+  }
+
   dynamic operator /(dynamic other) {
     if (other is Pressure) {
-      if (other.toKpa == 0.0) throw ArgumentError('Pressure cannot be zero');
+      if (other.toKpa == 0.0) {
+        throw ArgumentError('Pressure cannot be zero');
+      }
       return this.toKpa / other.toKpa;
+    } else if (other is num) {
+      if (other.toDouble() == 0.0) {
+        throw ArgumentError('Division by zero');
+      }
+      return Pressure.fromKpa(
+          this.toKpa / other.toDouble());
     }
     throw ArgumentError('Unsupported type for division');
+  }
+}
+
+extension NumToPressureMul on num {
+  Pressure operator *(Pressure pressure) {
+    return Pressure.fromKpa(
+        pressure.toKpa * this.toDouble());
   }
 }
 
 
 extension PowerOps on Power {
+  Power operator +(Power other) {
+    return Power.fromKw(
+        this.toKw + other.toKw);
+  }
+
+  Power operator -(Power other) {
+    return Power.fromKw(
+        this.toKw - other.toKw);
+  }
+
+  dynamic operator *(num scalar) {
+    return Power.fromKw(
+        this.toKw * scalar.toDouble());
+  }
+
   dynamic operator /(dynamic other) {
     if (other is Power) {
-      if (other.toKw == 0.0) throw ArgumentError('Power cannot be zero');
+      if (other.toKw == 0.0) {
+        throw ArgumentError('Power cannot be zero');
+      }
       return this.toKw / other.toKw;
+    } else if (other is num) {
+      if (other.toDouble() == 0.0) {
+        throw ArgumentError('Division by zero');
+      }
+      return Power.fromKw(
+          this.toKw / other.toDouble());
     }
     throw ArgumentError('Unsupported type for division');
+  }
+}
+
+extension NumToPowerMul on num {
+  Power operator *(Power power) {
+    return Power.fromKw(
+        power.toKw * this.toDouble());
   }
 }
 
 
 extension TorqueOps on Torque {
+  Torque operator +(Torque other) {
+    return Torque.fromNm(
+        this.toNm + other.toNm);
+  }
+
+  Torque operator -(Torque other) {
+    return Torque.fromNm(
+        this.toNm - other.toNm);
+  }
+
+  dynamic operator *(num scalar) {
+    return Torque.fromNm(
+        this.toNm * scalar.toDouble());
+  }
+
   dynamic operator /(dynamic other) {
     if (other is Torque) {
-      if (other.toNm == 0.0) throw ArgumentError('Torque cannot be zero');
+      if (other.toNm == 0.0) {
+        throw ArgumentError('Torque cannot be zero');
+      }
       return this.toNm / other.toNm;
+    } else if (other is num) {
+      if (other.toDouble() == 0.0) {
+        throw ArgumentError('Division by zero');
+      }
+      return Torque.fromNm(
+          this.toNm / other.toDouble());
     }
     throw ArgumentError('Unsupported type for division');
   }
 }
 
+extension NumToTorqueMul on num {
+  Torque operator *(Torque torque) {
+    return Torque.fromNm(
+        torque.toNm * this.toDouble());
+  }
+}
+
 
 extension AngleOps on Angle {
+  Angle operator +(Angle other) {
+    return Angle.fromRadians(
+        this.toRadians + other.toRadians);
+  }
+
+  Angle operator -(Angle other) {
+    return Angle.fromRadians(
+        this.toRadians - other.toRadians);
+  }
+
+  dynamic operator *(num scalar) {
+    return Angle.fromRadians(
+        this.toRadians * scalar.toDouble());
+  }
+
   dynamic operator /(dynamic other) {
     if (other is Angle) {
-      if (other.toRadians == 0.0) throw ArgumentError('Angle cannot be zero');
+      if (other.toRadians == 0.0) {
+        throw ArgumentError('Angle cannot be zero');
+      }
       return this.toRadians / other.toRadians;
+    } else if (other is num) {
+      if (other.toDouble() == 0.0) {
+        throw ArgumentError('Division by zero');
+      }
+      return Angle.fromRadians(
+          this.toRadians / other.toDouble());
     }
     throw ArgumentError('Unsupported type for division');
+  }
+}
+
+extension NumToAngleMul on num {
+  Angle operator *(Angle angle) {
+    return Angle.fromRadians(
+        angle.toRadians * this.toDouble());
+  }
+}
+
+
+extension EfficiencyOps on Efficiency {
+  dynamic operator *(num scalar) {
+    return Efficiency.fromKml(
+        this.toKml * scalar.toDouble());
+  }
+
+  dynamic operator /(dynamic other) {
+    if (other is Efficiency) {
+      if (other.toKml == 0.0) {
+        throw ArgumentError('Efficiency cannot be zero');
+      }
+      return this.toKml / other.toKml;
+    } else if (other is num) {
+      if (other.toDouble() == 0.0) {
+        throw ArgumentError('Division by zero');
+      }
+      return Efficiency.fromKml(
+          this.toKml / other.toDouble());
+    }
+    throw ArgumentError('Unsupported type for division');
+  }
+}
+
+extension NumToEfficiencyMul on num {
+  Efficiency operator *(Efficiency efficiency) {
+    return Efficiency.fromKml(
+        efficiency.toKml * this.toDouble());
+  }
+}
+
+
+extension EvEfficiencyOps on EvEfficiency {
+  dynamic operator *(num scalar) {
+    return EvEfficiency.fromKmkWh(
+        this.toKmkWh * scalar.toDouble());
+  }
+
+  dynamic operator /(dynamic other) {
+    if (other is EvEfficiency) {
+      if (other.toKmkWh == 0.0) {
+        throw ArgumentError('EvEfficiency cannot be zero');
+      }
+      return this.toKmkWh / other.toKmkWh;
+    } else if (other is num) {
+      if (other.toDouble() == 0.0) {
+        throw ArgumentError('Division by zero');
+      }
+      return EvEfficiency.fromKmkWh(
+          this.toKmkWh / other.toDouble());
+    }
+    throw ArgumentError('Unsupported type for division');
+  }
+}
+
+extension NumToEvEfficiencyMul on num {
+  EvEfficiency operator *(EvEfficiency efficiency) {
+    return EvEfficiency.fromKmkWh(
+        efficiency.toKmkWh * this.toDouble());
+  }
+}
+
+
+extension VolumeOps on Volume {
+  Volume operator +(Volume other) {
+    return Volume.fromLiters(
+        this.toLiters + other.toLiters);
+  }
+
+  Volume operator -(Volume other) {
+    return Volume.fromLiters(
+        this.toLiters - other.toLiters);
+  }
+
+  dynamic operator *(num scalar) {
+    return Volume.fromLiters(
+        this.toLiters * scalar.toDouble());
+  }
+
+  dynamic operator /(dynamic other) {
+    if (other is Volume) {
+      if (other.toLiters == 0.0) {
+        throw ArgumentError('Volume cannot be zero');
+      }
+      return this.toLiters / other.toLiters;
+    } else if (other is num) {
+      if (other.toDouble() == 0.0) {
+        throw ArgumentError('Division by zero');
+      }
+      return Volume.fromLiters(
+          this.toLiters / other.toDouble());
+    }
+    throw ArgumentError('Unsupported type for division');
+  }
+}
+
+extension NumToVolumeMul on num {
+  Volume operator *(Volume volume) {
+    return Volume.fromLiters(
+        volume.toLiters * this.toDouble());
   }
 }

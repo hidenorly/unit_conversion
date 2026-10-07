@@ -93,6 +93,35 @@ void main() {
       expect(sub.toKmH, closeTo(60.0, epsilon));
       final add = Speed.fromKmH(40.0) + Speed.fromKmH(60.0);
       expect(add.toKmH, closeTo(100.0, epsilon));
+
+      // Speed compound assignment
+      var speed = Speed.fromMs(10.0);
+      speed += Speed.fromMs(5.0);
+      expect(speed.toMs, closeTo(15.0, 1e-9));
+
+      speed -= Speed.fromMs(3.0);
+      expect(speed.toMs, closeTo(12.0, 1e-9));
+
+      speed *= 2.0;
+      expect(speed.toMs, closeTo(24.0, 1e-9));
+
+      speed /= 2.0;
+      expect(speed.toMs, closeTo(12.0, 1e-9));
+    });
+
+    test('Speed Scalar Multiplication', () {
+      final v = Speed.fromMs(10.0) * 0.5;
+      expect(v.toMs, closeTo(5.0, 1e-9));
+
+      final zero = Speed.fromMs(10.0) * 0.0;
+      expect(zero.toMs, closeTo(0.0, 1e-9));
+    });
+
+    test('Speed Scalar Division', () {
+      final v = Speed.fromMs(10.0) / 2.0;
+      expect(v.toMs, closeTo(5.0, 1e-9));
+
+      expect(() => Speed.fromMs(10.0) / 0.0, throwsArgumentError);
     });
 
     test('Speed / Speed -> Ratio (double)', () {
@@ -234,6 +263,35 @@ void main() {
 
       final multiplied = Mass.fromKg(5.0) * 2.0;
       expect(multiplied.toKg, closeTo(10.0, 1e-9));
+
+      var mass = Mass.fromKg(10.0);
+      mass += Mass.fromKg(5.0);
+      expect(mass.toKg, closeTo(15.0, 1e-9));
+
+      mass -= Mass.fromKg(3.0);
+      expect(mass.toKg, closeTo(12.0, 1e-9));
+
+      mass *= 2.0;
+      expect(mass.toKg, closeTo(24.0, 1e-9));
+
+      mass /= 2.0;
+      expect(mass.toKg, closeTo(12.0, 1e-9));
+    });
+
+    test('Mass Scalar Division', () {
+      final m = Mass.fromKg(10.0) / 2.0;
+      expect(m.toKg, closeTo(5.0, 1e-9));
+
+      expect(() => Mass.fromKg(10.0) / 0.0, throwsArgumentError);
+    });
+
+    test('Mass / Mass -> Ratio (double)', () {
+      final m1 = Mass.fromKg(20.0);
+      final m2 = Mass.fromKg(4.0);
+      final ratio = m1 / m2;
+      expect(ratio, closeTo(5.0, 1e-9));
+
+      expect(() => Mass.fromKg(10.0) / Mass.fromKg(0.0), throwsArgumentError);
     });
   });
 
@@ -301,6 +359,53 @@ void main() {
 
       final multiplied = Distance.fromMeters(50.0) * 2.0;
       expect(multiplied.toMeters, closeTo(100.0, 1e-9));
+
+      var distance = Distance.fromMeters(100.0);
+      distance += Distance.fromMeters(50.0);
+      expect(distance.toMeters, closeTo(150.0, 1e-9));
+
+      distance -= Distance.fromMeters(25.0);
+      expect(distance.toMeters, closeTo(125.0, 1e-9));
+
+      distance *= 2.0;
+      expect(distance.toMeters, closeTo(250.0, 1e-9));
+
+      distance /= 2.0;
+      expect(distance.toMeters, closeTo(125.0, 1e-9));
+    });
+
+    test('Distance Scalar Division', () {
+      final d = Distance.fromMeters(100.0) / 2.0;
+      expect(d.toMeters, closeTo(50.0, 1e-9));
+
+      expect(() => Distance.fromMeters(100.0) / 0.0, throwsArgumentError);
+    });
+
+    test('Distance / Time -> Speed', () {
+      final d = Distance.fromMeters(100.0);
+      final t = Time.fromSeconds(10.0);
+      final s = d / t;
+      expect(s.toMs, closeTo(10.0, 1e-9));
+
+      expect(() => Distance.fromMeters(100.0) / Time.fromSeconds(0.0), throwsArgumentError);
+    });
+
+    test('Distance / Speed -> Time', () {
+      final d = Distance.fromMeters(100.0);
+      final s = Speed.fromMs(20.0);
+      final t = d / s;
+      expect(t.toSeconds, closeTo(5.0, 1e-9));
+
+      expect(() => Distance.fromMeters(100.0) / Speed.fromMs(0.0), throwsArgumentError);
+    });
+
+    test('Distance / Distance -> Ratio (double)', () {
+      final d1 = Distance.fromMeters(150.0);
+      final d2 = Distance.fromMeters(50.0);
+      final ratio = d1 / d2;
+      expect(ratio, closeTo(3.0, 1e-9));
+
+      expect(() => Distance.fromMeters(100.0) / Distance.fromMeters(0.0), throwsArgumentError);
     });
   });
 
@@ -355,6 +460,35 @@ void main() {
       expect(p3 <= p1, isFalse);
       expect(p1 > p3, isFalse);
       expect(p1 >= p3, isFalse);
+
+      final add = Pressure.fromKpa(100.0) + Pressure.fromKpa(50.0);
+      expect(add.toKpa, closeTo(150.0, 1e-9));
+
+      final sub = Pressure.fromKpa(100.0) - Pressure.fromKpa(40.0);
+      expect(sub.toKpa, closeTo(60.0, 1e-9));
+
+      final multiplied = Pressure.fromKpa(50.0) * 2.0;
+      expect(multiplied.toKpa, closeTo(100.0, 1e-9));
+
+      var pressure = Pressure.fromKpa(100.0);
+      pressure += Pressure.fromKpa(50.0);
+      expect(pressure.toKpa, closeTo(150.0, 1e-9));
+
+      pressure -= Pressure.fromKpa(25.0);
+      expect(pressure.toKpa, closeTo(125.0, 1e-9));
+
+      pressure *= 2.0;
+      expect(pressure.toKpa, closeTo(250.0, 1e-9));
+
+      pressure /= 2.0;
+      expect(pressure.toKpa, closeTo(125.0, 1e-9));
+    });
+
+    test('Pressure Scalar Division', () {
+      final p = Pressure.fromKpa(100.0) / 2.0;
+      expect(p.toKpa, closeTo(50.0, 1e-9));
+
+      expect(() => Pressure.fromKpa(100.0) / 0.0, throwsArgumentError);
     });
 
     test('Pressure / Pressure -> Ratio (double)', () {
@@ -409,6 +543,35 @@ void main() {
       expect(p3 <= p1, isFalse);
       expect(p1 > p3, isFalse);
       expect(p1 >= p3, isFalse);
+
+      final add = Power.fromKw(50.0) + Power.fromKw(25.0);
+      expect(add.toKw, closeTo(75.0, 1e-9));
+
+      final sub = Power.fromKw(100.0) - Power.fromKw(25.0);
+      expect(sub.toKw, closeTo(75.0, 1e-9));
+
+      final multiplied = Power.fromKw(50.0) * 2.0;
+      expect(multiplied.toKw, closeTo(100.0, 1e-9));
+
+      var power = Power.fromKw(50.0);
+      power += Power.fromKw(25.0);
+      expect(power.toKw, closeTo(75.0, 1e-9));
+
+      power -= Power.fromKw(15.0);
+      expect(power.toKw, closeTo(60.0, 1e-9));
+
+      power *= 2.0;
+      expect(power.toKw, closeTo(120.0, 1e-9));
+
+      power /= 2.0;
+      expect(power.toKw, closeTo(60.0, 1e-9));
+    });
+
+    test('Power Scalar Division', () {
+      final p = Power.fromKw(100.0) / 2.0;
+      expect(p.toKw, closeTo(50.0, 1e-9));
+
+      expect(() => Power.fromKw(100.0) / 0.0, throwsArgumentError);
     });
 
     test('Power / Power -> Ratio (double)', () {
@@ -448,7 +611,7 @@ void main() {
       expect(() => Torque.fromNm(double.nan), throwsArgumentError);
       expect(() => Torque.fromKgfm(double.infinity), throwsArgumentError);
       expect(() => Torque.fromLbft(-5.0), throwsArgumentError);
-   });
+    });
 
     test('Torque Comparison and Operators', () {
       final t1 = Torque.fromNm(100.0);
@@ -472,6 +635,35 @@ void main() {
       expect(t3 <= t1, isFalse);
       expect(t1 > t3, isFalse);
       expect(t1 >= t3, isFalse);
+
+      final add = Torque.fromNm(100.0) + Torque.fromNm(50.0);
+      expect(add.toNm, closeTo(150.0, 1e-9));
+
+      final sub = Torque.fromNm(100.0) - Torque.fromNm(40.0);
+      expect(sub.toNm, closeTo(60.0, 1e-9));
+
+      final multiplied = Torque.fromNm(50.0) * 2.0;
+      expect(multiplied.toNm, closeTo(100.0, 1e-9));
+
+      var torque = Torque.fromNm(100.0);
+      torque += Torque.fromNm(50.0);
+      expect(torque.toNm, closeTo(150.0, 1e-9));
+
+      torque -= Torque.fromNm(25.0);
+      expect(torque.toNm, closeTo(125.0, 1e-9));
+
+      torque *= 2.0;
+      expect(torque.toNm, closeTo(250.0, 1e-9));
+
+      torque /= 2.0;
+      expect(torque.toNm, closeTo(125.0, 1e-9));
+    });
+
+    test('Torque Scalar Division', () {
+      final t = Torque.fromNm(100.0) / 2.0;
+      expect(t.toNm, closeTo(50.0, 1e-9));
+
+      expect(() => Torque.fromNm(100.0) / 0.0, throwsArgumentError);
     });
 
     test('Torque / Torque -> Ratio (double)', () {
@@ -483,6 +675,7 @@ void main() {
       expect(() => Torque.fromNm(200.0) / Torque.fromNm(0.0), throwsArgumentError);
     });
   });
+
 
   group('Angle Conversion Tests', () {
     test('Angle Conversion test', () {
@@ -545,6 +738,35 @@ void main() {
       expect(a3 <= a1, isFalse);
       expect(a1 > a3, isFalse);
       expect(a1 >= a3, isFalse);
+
+      final add = Angle.fromDegrees(45.0) + Angle.fromDegrees(30.0);
+      expect(add.toDegrees, closeTo(75.0, 1e-9));
+
+      final sub = Angle.fromDegrees(90.0) - Angle.fromDegrees(30.0);
+      expect(sub.toDegrees, closeTo(60.0, 1e-9));
+
+      final multiplied = Angle.fromDegrees(45.0) * 2.0;
+      expect(multiplied.toDegrees, closeTo(90.0, 1e-9));
+
+      var angle = Angle.fromDegrees(45.0);
+      angle += Angle.fromDegrees(30.0);
+      expect(angle.toDegrees, closeTo(75.0, 1e-9));
+
+      angle -= Angle.fromDegrees(15.0);
+      expect(angle.toDegrees, closeTo(60.0, 1e-9));
+
+      angle *= 2.0;
+      expect(angle.toDegrees, closeTo(120.0, 1e-9));
+
+      angle /= 2.0;
+      expect(angle.toDegrees, closeTo(60.0, 1e-9));
+    });
+
+    test('Angle Scalar Division', () {
+      final a = Angle.fromDegrees(180.0) / 2.0;
+      expect(a.toDegrees, closeTo(90.0, 1e-9));
+
+      expect(() => Angle.fromDegrees(180.0) / 0.0, throwsArgumentError);
     });
 
     test('Angle / Angle -> Ratio (double)', () {
@@ -610,6 +832,25 @@ void main() {
       expect(e3 <= e1, isFalse);
       expect(e1 > e3, isFalse);
       expect(e1 >= e3, isFalse);
+
+      final multiplied = Efficiency.fromKml(10.0) * 2.0;
+      expect(multiplied.toKml, closeTo(20.0, 1e-9));
+    });
+
+    test('Efficiency Scalar Division', () {
+      final e = Efficiency.fromKml(10.0) / 2.0;
+      expect(e.toKml, closeTo(5.0, 1e-9));
+
+      expect(() => Efficiency.fromKml(10.0) / 0.0, throwsArgumentError);
+    });
+
+    test('Efficiency / Efficiency -> Ratio (double)', () {
+      final e1 = Efficiency.fromKml(20.0);
+      final e2 = Efficiency.fromKml(5.0);
+      final ratio = e1 / e2;
+      expect(ratio, closeTo(4.0, 1e-9));
+
+      expect(() => Efficiency.fromKml(20.0) / Efficiency.fromKml(0.0), throwsArgumentError);
     });
   });
 
@@ -679,8 +920,28 @@ void main() {
       expect(e3 <= e1, isFalse);
       expect(e1 > e3, isFalse);
       expect(e1 >= e3, isFalse);
+
+      final multiplied = EvEfficiency.fromKmkWh(5.0) * 2.0;
+      expect(multiplied.toKmkWh, closeTo(10.0, 1e-9));
+    });
+
+    test('EvEfficiency Scalar Division', () {
+      final e = EvEfficiency.fromKmkWh(10.0) / 2.0;
+      expect(e.toKmkWh, closeTo(5.0, 1e-9));
+
+      expect(() => EvEfficiency.fromKmkWh(10.0) / 0.0, throwsArgumentError);
+    });
+
+    test('EvEfficiency / EvEfficiency -> Ratio (double)', () {
+      final e1 = EvEfficiency.fromKmkWh(20.0);
+      final e2 = EvEfficiency.fromKmkWh(5.0);
+      final ratio = e1 / e2;
+      expect(ratio, closeTo(4.0, 1e-9));
+
+      expect(() => EvEfficiency.fromKmkWh(20.0) / EvEfficiency.fromKmkWh(0.0), throwsArgumentError);
     });
   });
+
 
   group('Volume conversion tests', () {
     test('Volume fromLiters', () {
@@ -743,6 +1004,44 @@ void main() {
       expect(v3 <= v1, isFalse);
       expect(v1 > v3, isFalse);
       expect(v1 >= v3, isFalse);
+
+      final add = Volume.fromLiters(10.0) + Volume.fromLiters(5.0);
+      expect(add.toLiters, closeTo(15.0, 1e-9));
+
+      final sub = Volume.fromLiters(10.0) - Volume.fromLiters(4.0);
+      expect(sub.toLiters, closeTo(6.0, 1e-9));
+
+      final multiplied = Volume.fromLiters(10.0) * 2.0;
+      expect(multiplied.toLiters, closeTo(20.0, 1e-9));
+
+      var volume = Volume.fromLiters(10.0);
+      volume += Volume.fromLiters(5.0);
+      expect(volume.toLiters, closeTo(15.0, 1e-9));
+
+      volume -= Volume.fromLiters(3.0);
+      expect(volume.toLiters, closeTo(12.0, 1e-9));
+
+      volume *= 2.0;
+      expect(volume.toLiters, closeTo(24.0, 1e-9));
+
+      volume /= 2.0;
+      expect(volume.toLiters, closeTo(12.0, 1e-9));
+    });
+
+    test('Volume Scalar Division', () {
+      final v = Volume.fromLiters(10.0) / 2.0;
+      expect(v.toLiters, closeTo(5.0, 1e-9));
+
+      expect(() => Volume.fromLiters(10.0) / 0.0, throwsArgumentError);
+    });
+
+    test('Volume / Volume -> Ratio (double)', () {
+      final v1 = Volume.fromLiters(20.0);
+      final v2 = Volume.fromLiters(5.0);
+      final ratio = v1 / v2;
+      expect(ratio, closeTo(4.0, 1e-9));
+
+      expect(() => Volume.fromLiters(20.0) / Volume.fromLiters(0.0), throwsArgumentError);
     });
   });
 
@@ -793,6 +1092,19 @@ void main() {
 
       final multiplied = Time.fromSeconds(15.0) * 2.0;
       expect(multiplied.toSeconds, closeTo(30.0, 1e-9));
+
+      var time = Time.fromSeconds(30.0);
+      time += Time.fromSeconds(15.0);
+      expect(time.toSeconds, closeTo(45.0, 1e-9));
+
+      time -= Time.fromSeconds(5.0);
+      expect(time.toSeconds, closeTo(40.0, 1e-9));
+
+      time *= 2.0;
+      expect(time.toSeconds, closeTo(80.0, 1e-9));
+
+      time /= 2.0;
+      expect(time.toSeconds, closeTo(40.0, 1e-9));
 
       // Time / Acceleration -> Speed test
       final s = Time.fromSeconds(10.0) / Acceleration.fromMs2(2.0);
@@ -864,8 +1176,37 @@ void main() {
       // AccelMul scalar multiplication / acceleration * num
       final scaled = Acceleration.fromMs2(4.0) * 2.0;
       expect(scaled.toMs2, closeTo(8.0, 1e-9));
+
+      final add = Acceleration.fromMs2(5.0) + Acceleration.fromMs2(3.0);
+      expect(add.toMs2, closeTo(8.0, 1e-9));
+
+      final sub = Acceleration.fromMs2(8.0) - Acceleration.fromMs2(3.0);
+      expect(sub.toMs2, closeTo(5.0, 1e-9));
+
+      final divided = Acceleration.fromMs2(10.0) / 2.0;
+      expect(divided.toMs2, closeTo(5.0, 1e-9));
+
+      final ratio = Acceleration.fromMs2(10.0) / Acceleration.fromMs2(2.0);
+      expect(ratio, closeTo(5.0, 1e-9));
+
+      expect(() => Acceleration.fromMs2(10.0) / 0.0, throwsArgumentError);
+      expect(() => Acceleration.fromMs2(10.0) / Acceleration.fromMs2(0.0), throwsArgumentError);
+
+      var acceleration = Acceleration.fromMs2(5.0);
+      acceleration += Acceleration.fromMs2(3.0);
+      expect(acceleration.toMs2, closeTo(8.0, 1e-9));
+
+      acceleration -= Acceleration.fromMs2(2.0);
+      expect(acceleration.toMs2, closeTo(6.0, 1e-9));
+
+      acceleration *= 2.0;
+      expect(acceleration.toMs2, closeTo(12.0, 1e-9));
+
+      acceleration /= 2.0;
+      expect(acceleration.toMs2, closeTo(6.0, 1e-9));
     });
   });
+
 
   test('Speed * Time', () {
     final d = Speed.fromMs(10.0) * Time.fromSeconds(5.0);
