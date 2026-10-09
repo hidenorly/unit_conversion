@@ -288,6 +288,17 @@ class TestPressure(unittest.TestCase):
         self.assertAlmostEqual(p3.to_kpa, p1.to_kpa, places=3)
         self.assertNotEqual(p1, p2)
 
+    def test_arithmetic(self):
+        p1 = Pressure.from_kpa(200.0)
+        p2 = Pressure.from_bar(1.0)
+
+        self.assertAlmostEqual((p1 + p2).to_kpa, 300.0, places=6)
+        self.assertAlmostEqual((p1 - p2).to_kpa, 100.0, places=6)
+
+        self.assertAlmostEqual((p1 * 2.0).to_kpa, 400.0, places=6)
+        self.assertAlmostEqual((2.0 * p1).to_kpa, 400.0, places=6)
+        self.assertAlmostEqual((p1 / 2.0).to_kpa, 100.0, places=6)
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Pressure.from_bar(-1.0)
@@ -324,6 +335,17 @@ class TestPower(unittest.TestCase):
         self.assertTrue(p2 >= p1)
         self.assertAlmostEqual(p3.to_kw, 74.569987, places=5)
         self.assertNotEqual(p1, p2)
+
+    def test_arithmetic(self):
+        p1 = Power.from_kw(200.0)
+        p2 = Power.from_kw(100.0)
+
+        self.assertAlmostEqual((p1 + p2).to_kw, 300.0, places=6)
+        self.assertAlmostEqual((p1 - p2).to_kw, 100.0, places=6)
+
+        self.assertAlmostEqual((p1 * 2.0).to_kw, 400.0, places=6)
+        self.assertAlmostEqual((2.0 * p1).to_kw, 400.0, places=6)
+        self.assertAlmostEqual((p1 / 2.0).to_kw, 100.0, places=6)
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -388,6 +410,17 @@ class TestTorque(unittest.TestCase):
         self.assertEqual(t1, t3)
         self.assertNotEqual(t1, t2)
 
+    def test_arithmetic(self):
+        t1 = Torque.from_nm(20.0)
+        t2 = Torque.from_kgfm(1.0)
+
+        self.assertAlmostEqual((t1 + t2).to_nm, 29.80665, places=6)
+        self.assertAlmostEqual((t1 - t2).to_nm, 10.19335, places=6)
+
+        self.assertAlmostEqual((t1 * 2.0).to_nm, 40.0, places=6)
+        self.assertAlmostEqual((2.0 * t1).to_nm, 40.0, places=6)
+        self.assertAlmostEqual((t1 / 2.0).to_nm, 10.0, places=6)
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Torque.from_nm(float('nan'))
@@ -441,6 +474,17 @@ class TestAngle(unittest.TestCase):
         self.assertTrue(a2 >= a1)
         self.assertEqual(a1, a3)
         self.assertNotEqual(a1, a2)
+
+    def test_arithmetic(self):
+        a1 = Angle.from_degrees(180.0)
+        a2 = Angle.from_degrees(90.0)
+
+        self.assertAlmostEqual((a1 + a2).to_degrees, 270.0, places=6)
+        self.assertAlmostEqual((a1 - a2).to_degrees, 90.0, places=6)
+
+        self.assertAlmostEqual((a1 * 2.0).to_degrees, 360.0, places=6)
+        self.assertAlmostEqual((2.0 * a1).to_degrees, 360.0, places=6)
+        self.assertAlmostEqual((a1 / 2.0).to_degrees, 90.0, places=6)
 
     def test_normalization(self):
         # Test normalize degrees (e.g. 450° -> 90°, -90° -> 270°)
@@ -513,6 +557,19 @@ class TestEfficiency(unittest.TestCase):
         self.assertEqual(e1, e3)
         self.assertNotEqual(e1, e2)
 
+    def test_arithmetic(self):
+        e1 = Efficiency.from_kml(20.0)
+        e2 = Efficiency.from_kml(10.0)
+
+        self.assertAlmostEqual((e1 + e2).to_kml, 30.0, places=6)
+        self.assertAlmostEqual((e1 - e2).to_kml, 10.0, places=6)
+
+        self.assertAlmostEqual((e1 * 2.0).to_kml, 40.0, places=6)
+        self.assertAlmostEqual((2.0 * e1).to_kml, 40.0, places=6)
+        self.assertAlmostEqual((e1 / 2.0).to_kml, 10.0, places=6)
+
+        self.assertAlmostEqual(e1 / e2, 2.0, places=6)
+
     def test_invalid_values(self):
         with self.assertRaises(ValueError):
             Efficiency.from_kml(0.0)
@@ -584,6 +641,19 @@ class TestEvEfficiency(unittest.TestCase):
         self.assertTrue(e2 >= e1)
         self.assertEqual(e1, e3)
         self.assertNotEqual(e1, e2)
+
+    def test_arithmetic(self):
+        e1 = EvEfficiency.from_km_per_kwh(10.0)
+        e2 = EvEfficiency.from_km_per_kwh(5.0)
+
+        self.assertAlmostEqual((e1 + e2).to_km_per_kwh, 15.0, places=6)
+        self.assertAlmostEqual((e1 - e2).to_km_per_kwh, 5.0, places=6)
+
+        self.assertAlmostEqual((e1 * 2.0).to_km_per_kwh, 20.0, places=6)
+        self.assertAlmostEqual((2.0 * e1).to_km_per_kwh, 20.0, places=6)
+        self.assertAlmostEqual((e1 / 2.0).to_km_per_kwh, 5.0, places=6)
+
+        self.assertAlmostEqual(e1 / e2, 2.0, places=6)
 
     def test_invalid_values(self):
         with self.assertRaises(ValueError):
@@ -660,6 +730,19 @@ class TestVolume(unittest.TestCase):
         self.assertTrue(v2 >= v1)
         self.assertEqual(v1, v3)
         self.assertNotEqual(v1, v2)
+
+    def test_arithmetic(self):
+        v1 = Volume.from_liters(2.0)
+        v2 = Volume.from_liters(1.0)
+
+        self.assertAlmostEqual((v1 + v2).to_liters, 3.0, places=6)
+        self.assertAlmostEqual((v1 - v2).to_liters, 1.0, places=6)
+
+        self.assertAlmostEqual((v1 * 2.0).to_liters, 4.0, places=6)
+        self.assertAlmostEqual((2.0 * v1).to_liters, 4.0, places=6)
+        self.assertAlmostEqual((v1 / 2.0).to_liters, 1.0, places=6)
+
+        self.assertAlmostEqual(v1 / v2, 2.0, places=6)
 
     def test_guards(self):
         with self.assertRaises(ValueError):
@@ -769,6 +852,23 @@ class TestAcceleration(unittest.TestCase):
         self.assertTrue(a2 >= a1)
         self.assertEqual(a1, a3)
         self.assertNotEqual(a1, a2)
+
+    def test_arithmetic(self):
+        a1 = Acceleration(10.0)
+        a2 = Acceleration(5.0)
+
+        self.assertEqual((a1 + a2).to_ms2, 15.0)
+        self.assertEqual((a1 - a2).to_ms2, 5.0)
+
+        self.assertEqual((a1 * 2.0).to_ms2, 20.0)
+        self.assertEqual((2.0 * a1).to_ms2, 20.0)
+        self.assertEqual((a1 / 2.0).to_ms2, 5.0)
+
+        # Acceleration / Time = Acceleration
+        self.assertEqual(
+            (Acceleration(10.0) / Time.from_seconds(2.0)).to_ms2,
+            5.0
+        )
 
     def test_guards(self):
         with self.assertRaises(ValueError):
