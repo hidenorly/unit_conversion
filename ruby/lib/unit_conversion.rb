@@ -1281,6 +1281,24 @@ class Acceleration
     return self.to_ms2 <=> other.to_ms2
   end
 
+  def +(other)
+    case other
+    when Acceleration
+      return Acceleration.from_ms2(self.to_ms2 + other.to_ms2)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
+  def -(other)
+    case other
+    when Acceleration
+      return Acceleration.from_ms2(self.to_ms2 - other.to_ms2)
+    else
+      raise ArgumentError, "Unsupported type: #{other.class}"
+    end
+  end
+
   def *(other)
     case other
     when Time
@@ -1294,6 +1312,12 @@ class Acceleration
 
   def /(other)
     case other
+    when Acceleration
+      raise ArgumentError, "Division by zero" if other.to_ms2 == 0
+      return self.to_ms2 / other.to_ms2
+    when Time
+      raise ArgumentError, "Division by zero" if other.to_seconds == 0
+      return Acceleration.from_ms2(self.to_ms2 / other.to_seconds)
     when Numeric
       raise ArgumentError, "Division by zero" if other == 0
       return Acceleration.from_ms2(self.to_ms2 / other)

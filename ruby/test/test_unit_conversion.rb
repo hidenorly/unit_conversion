@@ -818,6 +818,51 @@ class TestAcceleration < Minitest::Test
 
     assert_raises(ArgumentError) { Acceleration.from_ms2(Float::INFINITY) }
   end
+
+  def test_arithmetic
+    a1 = Acceleration.from_ms2(10.0)
+    a2 = Acceleration.from_ms2(4.0)
+
+    a3 = a1 + a2
+    assert_in_delta(14.0, a3.to_ms2)
+
+    a4 = a1 - a2
+    assert_in_delta(6.0, a4.to_ms2)
+
+    ratio = a1 / a2
+    assert_in_delta(2.5, ratio)
+
+    a5 = a1 / Time.from_seconds(2.0)
+    assert_in_delta(5.0, a5.to_ms2)
+
+    assert_raises(ArgumentError) { a1 + "invalid" }
+    assert_raises(ArgumentError) { a1 - "invalid" }
+  end
+
+  def test_scalar_operations
+    a = Acceleration.from_ms2(10.0)
+
+    a_mul = a * 2.0
+    assert_in_delta(20.0, a_mul.to_ms2)
+
+    a_div = a / 2.0
+    assert_in_delta(5.0, a_div.to_ms2)
+
+    a_coerced = 2.0 * a
+    assert_in_delta(20.0, a_coerced.to_ms2)
+
+    zero = a * 0.0
+    assert_in_delta(0.0, zero.to_ms2)
+  end
+
+  def test_signed_value
+    a = Acceleration.from_ms2(-9.8)
+    assert_in_delta(-9.8, a.to_ms2)
+
+    a2 = Acceleration.from_ms2(2.0)
+    result = a + a2
+    assert_in_delta(-7.8, result.to_ms2)
+  end
 end
 
 
@@ -944,6 +989,11 @@ class TestOperation < Minitest::Test
     distance_ratio = Distance.from_meters(20.0) / Distance.from_meters(5.0)
     assert_in_delta(4.0, distance_ratio)
 
+    # Acceleration / Acceleration = scalar
+    acceleration_ratio =
+      Acceleration.from_ms2(20.0) / Acceleration.from_ms2(5.0)
+    assert_in_delta(4.0, acceleration_ratio)
+
     # Efficiency / Efficiency = scalar
     efficiency_ratio = Efficiency.from_kml(20.0) / Efficiency.from_kml(5.0)
     assert_in_delta(4.0, efficiency_ratio)
@@ -1057,10 +1107,13 @@ class TestOperation < Minitest::Test
     speed3 = Time.from_seconds(5.0) * Acceleration.from_ms2(2.0)
     assert_in_delta(10.0, speed3.to_ms)
 
-    # Time / Acceleration = Time^2 / Speed
-    # This operation is intentionally not duplicated here because
-    # the library defines the result as a Time value according to
-    # its current API semantics.
+    # Time / Acceleration = Speed
+    speed4 = Time.from_seconds(10.0) / Acceleration.from_ms2(2.0)
+    assert_in_delta(5.0, speed4.to_ms)
+
+    # Acceleration / Time = Acceleration
+    acceleration2 = Acceleration.from_ms2(20.0) / Time.from_seconds(4.0)
+    assert_in_delta(5.0, acceleration2.to_ms2)
   end
 
   def test_div_guards
@@ -1086,6 +1139,13 @@ class TestOperation < Minitest::Test
       EvEfficiency.from_km_per_kwh(10.0) / EvEfficiency.from_km_per_kwh(0.0)
     }
     assert_raises(ArgumentError) { Volume.from_liters(10.0) / Volume.from_liters(0.0) }
+
+    assert_raises(ArgumentError) {
+      Acceleration.from_ms2(10.0) / Acceleration.from_ms2(0.0)
+    }
+    assert_raises(ArgumentError) {
+      Acceleration.from_ms2(10.0) / Time.from_seconds(0.0)
+    }
   end
 
   def test_cross_unit_comparison
