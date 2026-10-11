@@ -294,3 +294,54 @@ doc/api/
 *.o
 *.dll
 *.so
+
+## .NET
+[Bb]in/
+[Oo]bj/
+
+## Visual Studio
+/[Ll]og/
+/[Ll]ogs/
+/[Tt]emp/
+/[Tt]mp/
+/[Pp]ublish/
+/[Pp]ublished/
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+
+## JetBrains Rider
+.idea/
+
+## OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+## NuGet
+*.nupkg
+*.snupkg
+[Pp]ackages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Test Results
+[Tt]est[Rr]esults/
+*.trx
+*.coverage
+*.coveragexml
