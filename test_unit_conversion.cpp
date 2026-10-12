@@ -219,6 +219,30 @@ TEST(TemperatureTest, OstreamOperator) {
     EXPECT_EQ(oss.str(), "25 °C");
 }
 
+TEST(TemperatureTest, ArithmeticAddSub) {
+    auto temperature = Temperature::fromCelsius(20.0);
+    auto delta = Temperature::fromCelsius(0.5);
+
+    EXPECT_NEAR((temperature + delta).toCelsius(), 20.5, 1e-9);
+    EXPECT_NEAR((temperature - delta).toCelsius(), 19.5, 1e-9);
+
+    auto absoluteZero = Temperature::fromCelsius(-273.15);
+    auto belowAbsoluteZeroDelta = Temperature::fromCelsius(0.2);
+
+    EXPECT_THROW(absoluteZero - belowAbsoluteZeroDelta,
+                 std::invalid_argument);
+
+    EXPECT_THROW(
+        temperature + Temperature::fromCelsius(
+            std::numeric_limits<double>::infinity()),
+        std::invalid_argument);
+
+    EXPECT_THROW(
+        temperature - Temperature::fromCelsius(
+            std::numeric_limits<double>::quiet_NaN()),
+        std::invalid_argument);
+}
+
 
 // --- test case for Weight
 

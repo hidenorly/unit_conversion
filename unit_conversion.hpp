@@ -92,6 +92,8 @@ public:
     bool operator<=(const Temperature& other) const noexcept { return m_celsius <= other.m_celsius; }
     bool operator>(const Temperature& other) const noexcept { return m_celsius > other.m_celsius; }
     bool operator>=(const Temperature& other) const noexcept { return m_celsius >= other.m_celsius; }
+    Temperature operator+(const Temperature& deltaC) const { return Temperature(m_celsius + deltaC.toCelsius()); }
+    Temperature operator-(const Temperature& deltaC) const { return Temperature(m_celsius - deltaC.toCelsius()); }
 
     friend std::ostream& operator<<(std::ostream& os, const Temperature& t) {
         return os << t.m_celsius << " °C";
