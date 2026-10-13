@@ -13,8 +13,43 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+class ScalarLeftOperand
+  def initialize(value)
+    @value = value
+  end
+
+  def *(other)
+    return other * @value
+  end
+
+  def +(other)
+    raise ArgumentError, "Unsupported operation: Numeric + #{other.class}"
+  end
+
+  def -(other)
+    raise ArgumentError, "Unsupported operation: Numeric - #{other.class}"
+  end
+
+  def /(other)
+    raise ArgumentError, "Unsupported operation: Numeric / #{other.class}"
+  end
+end
+
+module ScalarLeftMultiplication
+  def coerce(other)
+    case other
+    when Numeric
+      return [ScalarLeftOperand.new(other), self]
+    else
+      super
+    end
+  end
+end
+
 class Speed
   include Comparable
+  include ScalarLeftMultiplication
+
   KMH_TO_MS = 3.6
   MPH_TO_MS = 0.44704
 
@@ -103,15 +138,6 @@ class Speed
     end
   end
 
-  def coerce(other)
-    case other
-    when Numeric
-      [self, other]
-    else
-      super
-    end
-  end
-
   def to_s
     return "#{@ms} m/s"
   end
@@ -120,6 +146,8 @@ end
 
 class Temperature
   include Comparable
+  include ScalarLeftMultiplication
+
   F_OFFSET = 32.0
   F_FACTOR = 1.8
   K_OFFSET = 273.15
@@ -165,8 +193,8 @@ class Temperature
 
   def +(other)
     case other
-    when Numeric
-      return Temperature.from_celsius(self.to_celsius + other)
+    when Temperature
+      return Temperature.from_celsius(self.to_celsius + other.to_celsius)
     else
       raise ArgumentError, "Unsupported type: #{other.class}"
     end
@@ -175,9 +203,7 @@ class Temperature
   def -(other)
     case other
     when Temperature
-      return self.to_celsius - other.to_celsius
-    when Numeric
-      return Temperature.from_celsius(self.to_celsius - other)
+      return Temperature.from_celsius(self.to_celsius - other.to_celsius)
     else
       raise ArgumentError, "Unsupported type: #{other.class}"
     end
@@ -205,15 +231,6 @@ class Temperature
     end
   end
 
-  def coerce(other)
-    case other
-    when Numeric
-      [self, other]
-    else
-      super
-    end
-  end
-
   def to_s
     return "#{@celsius} °C"
   end
@@ -222,11 +239,14 @@ end
 
 class Mass
   include Comparable
+  include ScalarLeftMultiplication
+
   G_TO_KG = 0.001
   LB_TO_KG = 0.45359237
   OZ_TO_KG = 0.0283495231
 
   private_class_method :new
+
   def initialize(kg)
     val = kg.to_f
     raise ArgumentError if val.nan? || val < 0 || val.infinite?
@@ -310,15 +330,6 @@ class Mass
     end
   end
 
-  def coerce(other)
-    case other
-    when Numeric
-      [self, other]
-    else
-      super
-    end
-  end
-
   def to_s
     return "#{@kg} kg"
   end
@@ -327,6 +338,8 @@ end
 
 class Distance
   include Comparable
+  include ScalarLeftMultiplication
+
   KM_TO_M  = 1000.0
   MILE_TO_M = 1609.344
   FT_TO_M   = 0.3048
@@ -440,15 +453,6 @@ class Distance
     end
   end
 
-  def coerce(other)
-    case other
-    when Numeric
-      [self, other]
-    else
-      super
-    end
-  end
-
   def to_s
     return "#{@meters} m"
   end
@@ -457,6 +461,8 @@ end
 
 class Pressure
   include Comparable
+  include ScalarLeftMultiplication
+
   BAR_TO_KPA = 100.0
   PSI_TO_KPA = 6.89476
 
@@ -537,15 +543,6 @@ class Pressure
     end
   end
 
-  def coerce(other)
-    case other
-    when Numeric
-      [self, other]
-    else
-      super
-    end
-  end
-
   def to_s
     return "#{@kpa} kPa"
   end
@@ -554,10 +551,13 @@ end
 
 class Power
   include Comparable
+  include ScalarLeftMultiplication
+
   PS_TO_KW = 0.73549875
   HP_TO_KW = 0.74569987
 
   private_class_method :new
+
   def initialize(kw)
     kw = kw.to_f
     raise ArgumentError if kw.nan? || kw < 0 || kw.infinite?
@@ -633,22 +633,16 @@ class Power
     end
   end
 
-  def coerce(other)
-    case other
-    when Numeric
-      [self, other]
-    else
-      super
-    end
-  end
-
   def to_s
     return "#{@kw} kW"
   end
 end
 
+
 class Torque
   include Comparable
+  include ScalarLeftMultiplication
+
   KGFM_TO_NM = 9.80665
   LBFT_TO_NM = 1.355817948
 
@@ -729,15 +723,6 @@ class Torque
     end
   end
 
-  def coerce(other)
-    case other
-    when Numeric
-      [self, other]
-    else
-      super
-    end
-  end
-
   def to_s
     return "#{@nm} Nm"
   end
@@ -746,6 +731,8 @@ end
 
 class Angle
   include Comparable
+  include ScalarLeftMultiplication
+
   DEG_TO_RAD = Math::PI / 180.0
 
   private_class_method :new
@@ -833,15 +820,6 @@ class Angle
     end
   end
 
-  def coerce(other)
-    case other
-    when Numeric
-      [self, other]
-    else
-      super
-    end
-  end
-
   def to_s
     return "#{@rad} rad"
   end
@@ -850,6 +828,8 @@ end
 
 class Efficiency
   include Comparable
+  include ScalarLeftMultiplication
+
   MPG_TO_KML = 0.425143707
 
   private_class_method :new
@@ -930,15 +910,6 @@ class Efficiency
     end
   end
 
-  def coerce(other)
-    case other
-    when Numeric
-      [self, other]
-    else
-      super
-    end
-  end
-
   def to_s
     return "#{@kml} km/L"
   end
@@ -947,9 +918,12 @@ end
 
 class EvEfficiency
   include Comparable
+  include ScalarLeftMultiplication
+
   MILE_TO_KM = 1.609344
 
   private_class_method :new
+
   def initialize(v)
     val = v.to_f
     raise ArgumentError, "Must be positive" if val <= 0 || val.nan? || val.infinite?
@@ -1035,15 +1009,6 @@ class EvEfficiency
     end
   end
 
-  def coerce(other)
-    case other
-    when Numeric
-      [self, other]
-    else
-      super
-    end
-  end
-
   def to_s
     return "#{@v} km/kWh"
   end
@@ -1052,10 +1017,13 @@ end
 
 class Volume
   include Comparable
+  include ScalarLeftMultiplication
+
   US_GAL = 3.785411784
   IMP_GAL = 4.54609
 
   private_class_method :new
+
   def initialize(l)
     val = l.to_f
     raise ArgumentError if val.nan? || val < 0 || val.infinite?
@@ -1139,15 +1107,6 @@ class Volume
     end
   end
 
-  def coerce(other)
-    case other
-    when Numeric
-      [self, other]
-    else
-      super
-    end
-  end
-
   def to_s
     return "#{@l} L"
   end
@@ -1156,7 +1115,10 @@ end
 
 class Time
   include Comparable
+  include ScalarLeftMultiplication
+
   private_class_method :new
+
   def initialize(s)
     val = s.to_f
     raise ArgumentError if val.nan? || val < 0 || val.infinite?
@@ -1228,23 +1190,11 @@ class Time
     when Time
       raise ArgumentError, "Division by zero" if other.to_seconds == 0
       return self.to_seconds / other.to_seconds
-    when Acceleration
-      raise ArgumentError, "Division by zero" if other.to_ms2 == 0
-      return Speed.from_ms(self.to_seconds / other.to_ms2)
     when Numeric
       raise ArgumentError, "Division by zero" if other == 0
       return Time.from_seconds(self.to_seconds / other)
     else
       raise ArgumentError, "Unsupported type: #{other.class}"
-    end
-  end
-
-  def coerce(other)
-    case other
-    when Numeric
-      [self, other]
-    else
-      super
     end
   end
 
@@ -1256,7 +1206,10 @@ end
 
 class Acceleration
   include Comparable
+  include ScalarLeftMultiplication
+
   private_class_method :new
+
   def initialize(a)
     val = a.to_f
     raise ArgumentError if val.nan? || val.infinite?
@@ -1315,23 +1268,11 @@ class Acceleration
     when Acceleration
       raise ArgumentError, "Division by zero" if other.to_ms2 == 0
       return self.to_ms2 / other.to_ms2
-    when Time
-      raise ArgumentError, "Division by zero" if other.to_seconds == 0
-      return Acceleration.from_ms2(self.to_ms2 / other.to_seconds)
     when Numeric
       raise ArgumentError, "Division by zero" if other == 0
       return Acceleration.from_ms2(self.to_ms2 / other)
     else
       raise ArgumentError, "Unsupported type: #{other.class}"
-    end
-  end
-
-  def coerce(other)
-    case other
-    when Numeric
-      [self, other]
-    else
-      super
     end
   end
 

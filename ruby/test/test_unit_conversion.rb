@@ -155,14 +155,17 @@ class TestTemperature < Minitest::Test
     t1 = Temperature.from_celsius(20.0)
     t2 = Temperature.from_celsius(10.0)
 
-    assert_in_delta(30.0, (t1 + 10.0).to_celsius)
-    assert_in_delta(10.0, (t1 - t2))
-    assert_in_delta(10.0, (t1 - 10.0).to_celsius)
+    # Temperature + Temperature and Temperature - Temperature
+    assert_in_delta(30.0, (t1 + t2).to_celsius)
+    assert_in_delta(10.0, (t1 - t2).to_celsius)
+
+    # Multiplication and division retain their existing behavior.
     assert_in_delta(40.0, (t1 * 2.0).to_celsius)
     assert_in_delta(2.0, (t1 / t2))
     assert_in_delta(10.0, (t1 / 2.0).to_celsius)
 
-    assert_raises(ArgumentError) { t1 + t2 }
+    # Unsupported operand types
+    assert_raises(ArgumentError) { t1 + 10.0 }
     assert_raises(ArgumentError) { t1 + "invalid" }
     assert_raises(ArgumentError) { t1 - "invalid" }
     assert_raises(ArgumentError) { t1 * "invalid" }
@@ -170,8 +173,18 @@ class TestTemperature < Minitest::Test
     assert_raises(ArgumentError) { t1 / 0.0 }
     assert_raises(ArgumentError) { t1 / Temperature.from_celsius(0.0) }
 
+    # Invalid values
     assert_raises(ArgumentError) { Temperature.from_fahrenheit(Float::INFINITY) }
     assert_raises(ArgumentError) { Temperature.from_kelvin(Float::INFINITY) }
+
+    # Arithmetic results must pass Temperature validation.
+    absolute_zero = Temperature.from_celsius(-273.15)
+    assert_raises(ArgumentError) {
+      absolute_zero - Temperature.from_celsius(0.5)
+    }
+
+    large = Temperature.from_celsius(1.0e308)
+    assert_raises(ArgumentError) { large + large }
   end
 end
 
@@ -767,9 +780,6 @@ class TestTime < Minitest::Test
     ratio = t2 / t1
     assert_in_delta(2.0, ratio)
 
-    spd_div = t1 / Acceleration.from_ms2(2.0)
-    assert_in_delta(5.0, spd_div.to_ms)
-
     t6 = t2 / 2.0
     assert_in_delta(10.0, t6.to_seconds)
 
@@ -831,9 +841,6 @@ class TestAcceleration < Minitest::Test
 
     ratio = a1 / a2
     assert_in_delta(2.5, ratio)
-
-    a5 = a1 / Time.from_seconds(2.0)
-    assert_in_delta(5.0, a5.to_ms2)
 
     assert_raises(ArgumentError) { a1 + "invalid" }
     assert_raises(ArgumentError) { a1 - "invalid" }
@@ -1106,14 +1113,6 @@ class TestOperation < Minitest::Test
     # Time * Acceleration = Speed
     speed3 = Time.from_seconds(5.0) * Acceleration.from_ms2(2.0)
     assert_in_delta(10.0, speed3.to_ms)
-
-    # Time / Acceleration = Speed
-    speed4 = Time.from_seconds(10.0) / Acceleration.from_ms2(2.0)
-    assert_in_delta(5.0, speed4.to_ms)
-
-    # Acceleration / Time = Acceleration
-    acceleration2 = Acceleration.from_ms2(20.0) / Time.from_seconds(4.0)
-    assert_in_delta(5.0, acceleration2.to_ms2)
   end
 
   def test_div_guards
