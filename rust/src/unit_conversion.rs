@@ -929,6 +929,25 @@ impl std::ops::Mul<Time> for f64 {
     }
 }
 
+
+// Temperature +/- Temperature
+impl std::ops::Add for Temperature {
+    type Output = Temperature;
+
+    fn add(self, delta_c: Temperature) -> Self::Output {
+        Temperature::from_celsius(self.to_celsius() + delta_c.to_celsius())
+    }
+}
+
+impl std::ops::Sub for Temperature {
+    type Output = Temperature;
+
+    fn sub(self, delta_c: Temperature) -> Self::Output {
+        Temperature::from_celsius(self.to_celsius() - delta_c.to_celsius())
+    }
+}
+
+
 // --- Scalar division for all types
 
 impl std::ops::Div<f64> for Speed {
@@ -1312,6 +1331,7 @@ impl std::ops::DivAssign<f64> for EvEfficiency {
         *self = *self / rhs;
     }
 }
+
 
 // Distance / Distance = Scalar (f64)
 impl std::ops::Div<Distance> for Distance {

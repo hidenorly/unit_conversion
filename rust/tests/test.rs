@@ -168,6 +168,19 @@ mod tests {
         let tk = Temperature::from_kelvin(0.0);
         assert!((tk.to_celsius() + 273.15).abs() < 1e-9);
         assert!((tk.to_fahrenheit() + 459.67).abs() < EPSILON);
+
+        // +/- operator
+        let temperature = Temperature::from_celsius(20.0);
+        let delta = Temperature::from_celsius(0.5);
+
+        assert!((temperature + delta).to_celsius() - 20.5 < 1e-9);
+        assert!((temperature - delta).to_celsius() - 19.5 < 1e-9);
+
+        let absolute_zero = Temperature::from_celsius(-273.15);
+        let delta = Temperature::from_celsius(0.2);
+
+        assert!(std::panic::catch_unwind(|| absolute_zero - delta).is_err());
+
     }
 
     #[test]
@@ -212,6 +225,7 @@ mod tests {
     fn test_temperature_neg_inf_guard() {
         Temperature::from_celsius(f64::NEG_INFINITY);
     }
+
 
     use unit_conversion::Mass;
 
