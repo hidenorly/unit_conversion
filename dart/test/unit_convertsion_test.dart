@@ -195,8 +195,55 @@ void main() {
       expect(t1 > t3, isFalse);
       expect(t1 >= t3, isFalse);
     });
+
+    test('Temperature addition', () {
+      final temperature = Temperature.fromCelsius(20.0);
+
+      expect(
+        (temperature + Temperature.fromCelsius(0.5)).toCelsius,
+        closeTo(20.5, 1e-9),
+      );
+
+      // Addition across different input units.
+      expect(
+        (temperature + Temperature.fromFahrenheit(32.0)).toCelsius,
+        closeTo(20.0, 1e-9),
+      );
+    });
+
+    test('Temperature subtraction', () {
+      final temperature = Temperature.fromCelsius(20.0);
+
+      expect(
+        (temperature - Temperature.fromCelsius(0.5)).toCelsius,
+        closeTo(19.5, 1e-9),
+      );
+
+      // Negative Celsius values are valid temperatures.
+      expect(
+        (temperature - Temperature.fromCelsius(30.0)).toCelsius,
+        closeTo(-10.0, 1e-9),
+      );
+    });
   });
 
+  test('Temperature arithmetic rejects values below absolute zero', () {
+    final absoluteZero = Temperature.fromCelsius(-273.15);
+
+    expect(
+      () => absoluteZero - Temperature.fromCelsius(0.5),
+      throwsArgumentError,
+    );
+  });
+
+  test('Temperature arithmetic rejects non-finite results', () {
+    final large = Temperature.fromCelsius(1.0e308);
+
+    expect(
+      () => large + large,
+      throwsArgumentError,
+    );
+  });
 
   group('Mass Conversion Tests', () {
     test('Gram to Kg', () {

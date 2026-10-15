@@ -1022,3 +1022,15 @@ extension NumToVolumeMul on num {
         volume.toLiters * this.toDouble());
   }
 }
+
+extension TemperatureOps on Temperature {
+  Temperature operator +(Temperature other) {
+    return Temperature.fromCelsius(
+        this.toCelsius + other.toCelsius);
+  }
+
+  Temperature operator -(Temperature other) {
+    return Temperature.fromCelsius(
+        this.toCelsius - other.toCelsius);
+  }
+}
