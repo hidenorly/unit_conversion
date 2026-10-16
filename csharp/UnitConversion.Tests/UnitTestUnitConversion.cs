@@ -184,6 +184,51 @@ public class UnitConversionTests
         Assert.True(t2.CompareTo(t1) > 0);
     }
 
+    [Fact]
+    public void TemperatureAddSub()
+    {
+        var temperature = Temperature.FromCelsius(20.0);
+
+        var result = temperature + Temperature.FromCelsius(0.5);
+        Assert.Equal(20.5, result.ToCelsius(), 1e-9);
+
+        // Addition with a value created using another unit.
+        var resultWithFahrenheit =
+            temperature + Temperature.FromFahrenheit(32.9);
+
+        Assert.Equal(
+            20.5,
+            resultWithFahrenheit.ToCelsius(),
+            1e-9);
+
+
+        result = temperature - Temperature.FromCelsius(0.5);
+        Assert.Equal(19.5, result.ToCelsius(), 1e-9);
+
+        // Negative Celsius values are valid temperatures.
+        var negative = temperature - Temperature.FromCelsius(30.0);
+        Assert.Equal(-10.0, negative.ToCelsius(), 1e-9);
+    }
+
+    [Fact]
+    public void TemperatureAddRejectsNonFiniteResult()
+    {
+        var large = Temperature.FromCelsius(1.0e308);
+
+        Assert.Throws<ArgumentException>(
+            () => _ = large + large);
+    }
+
+    [Fact]
+    public void TemperatureSubtractRejectsBelowAbsoluteZero()
+    {
+        var absoluteZero = Temperature.FromCelsius(-273.15);
+
+        Assert.Throws<ArgumentException>(
+            () => _ = absoluteZero - Temperature.FromCelsius(0.5));
+    }
+
+
     // --- Mass Tests ---
 
     [Fact]

@@ -111,6 +111,10 @@ namespace UnitConversion
 
         public override string ToString() => $"{ToCelsius()} °C";
 
+        public static Temperature operator +(Temperature a, Temperature b) =>
+            FromCelsius(a.m_celsius + b.m_celsius);
+        public static Temperature operator -(Temperature a, Temperature b) =>
+            FromCelsius(a.m_celsius - b.m_celsius);
         public bool Equals(Temperature other) => m_celsius.Equals(other.m_celsius);
         public override bool Equals(object? obj) => obj is Temperature other && Equals(other);
         public override int GetHashCode() => m_celsius.GetHashCode();
