@@ -67,6 +67,35 @@ assert_fail(function() M.Mass.fromKg(-1.0) end)
 assert_fail(function() M.Mass.fromKg(0/0) end)
 assert_fail(function() M.Mass.fromKg(math.huge) end)
 
+local temp1 = M.Temperature.fromCelsius(20.0)
+local temp2 = M.Temperature.fromCelsius(10.0)
+
+local temp3 = temp1 + temp2
+assert_eq(temp3:toCelsius(), 30.0, "Temperature + Temperature")
+
+local temp4 = temp1 - temp2
+assert_eq(temp4:toCelsius(), 10.0, "Temperature - Temperature")
+
+local temp5 = M.Temperature.fromFahrenheit(68.0)
+local temp6 = M.Temperature.fromKelvin(283.15)
+
+local temp7 = temp5 + temp6
+assert_eq(temp7:toCelsius(), 30.0, "Temperature addition with different units")
+
+local temp8 = temp5 - temp6
+assert_eq(temp8:toCelsius(), 10.0, "Temperature subtraction with different units")
+
+assert_fail(function() local _ = temp1 + 10.0 end)
+assert_fail(function() local _ = temp1 - 10.0 end)
+assert_fail(function() local _ = 10.0 + temp1 end)
+assert_fail(function() local _ = 10.0 - temp1 end)
+
+assert_fail(function()
+    local _ = M.Temperature.fromCelsius(-200.0) -
+              M.Temperature.fromCelsius(100.0)
+end)
+
+
 -- Distance
 local d = M.Distance.fromMeters(1000.0)
 assert_eq(d:toKm(), 1.0, "Distance toKm")
@@ -84,30 +113,31 @@ assert_fail(function() M.Distance.fromMeters(-1.0) end)
 assert_fail(function() M.Distance.fromMeters(0/0) end)
 assert_fail(function() M.Distance.fromMeters(math.huge) end)
 
--- Pressure & Power & Torque
+-- Pressure
 assert_eq(M.Pressure.fromKpa(100):toBar(), 1.0, "Pressure toBar")
 assert_eq(M.Pressure.fromBar(1.0):toKpa(), 100.0, "Pressure fromBar")
-assert_eq(M.Pressure.fromPsi(10.0):toKpa(), 68.9476, "Pressure fromPsi")
-assert_eq(M.Pressure.fromKpa(6.89476):toPsi(), 1.0, "Pressure toPsi")
+assert_eq(M.Pressure.fromPsi(10.0):toKpa(), 10.0 * 6.894757293168361, "Pressure fromPsi")
+assert_eq(M.Pressure.fromKpa(6.894757293168361):toPsi(), 1.0, "Pressure toPsi")
 assert(tostring(M.Pressure.fromKpa(100)) == "Pressure(100.000000)", "Pressure tostring format")
-
-assert_eq(M.Power.fromKw(0.74569987):toHp(), 1.0, "Power toHp")
-assert_eq(M.Power.fromPs(1.0):toKw(), 0.73549875, "Power fromPs")
-assert_eq(M.Power.fromHp(1.0):toKw(), 0.74569987, "Power fromHp")
-assert(tostring(M.Power.fromKw(1.0)) == "Power(1.000000)", "Power tostring format")
-
-assert_eq(M.Torque.fromNm(9.80665):toKgfm(), 1.0, "Torque toKgfm")
-assert_eq(M.Torque.fromKgfm(1.0):toNm(), 9.80665, "Torque fromKgfm")
-assert_eq(M.Torque.fromLbft(1.0):toNm(), 1.355817948, "Torque fromLbft")
-assert_eq(M.Torque.fromNm(1.355817948):toLbft(), 1.0, "Torque toLbft")
-assert(tostring(M.Torque.fromNm(10.0)) == "Torque(10.000000)", "Torque tostring format")
-
 assert_fail(function() M.Pressure.fromKpa(-1.0) end)
 assert_fail(function() M.Pressure.fromKpa(0/0) end)
 assert_fail(function() M.Pressure.fromKpa(math.huge) end)
+
+-- Power
+assert_eq(M.Power.fromKw(0.7456998715822702):toHp(), 1.0, "Power toHp")
+assert_eq(M.Power.fromPs(1.0):toKw(), 0.73549875, "Power fromPs")
+assert_eq(M.Power.fromHp(1.0):toKw(), 0.7456998715822702, "Power fromHp")
+assert(tostring(M.Power.fromKw(1.0)) == "Power(1.000000)", "Power tostring format")
 assert_fail(function() M.Power.fromKw(-1.0) end)
 assert_fail(function() M.Power.fromKw(math.huge) end)
 assert_fail(function() M.Power.fromKw(0/0) end)
+
+-- Torque
+assert_eq(M.Torque.fromNm(9.80665):toKgfm(), 1.0, "Torque toKgfm")
+assert_eq(M.Torque.fromKgfm(1.0):toNm(), 9.80665, "Torque fromKgfm")
+assert_eq(M.Torque.fromLbft(1.0):toNm(), 1.3558179483314003, "Torque fromLbft")
+assert_eq(M.Torque.fromNm(1.3558179483314003):toLbft(), 1.0, "Torque toLbft")
+assert(tostring(M.Torque.fromNm(10.0)) == "Torque(10.000000)", "Torque tostring format")
 assert_fail(function() M.Torque.fromNm(-1.0) end)
 assert_fail(function() M.Torque.fromNm(0/0) end)
 assert_fail(function() M.Torque.fromNm(math.huge) end)
@@ -127,9 +157,9 @@ assert_fail(function() M.Angle.fromRadians(0/0) end)
 -- Efficiency
 local eff = M.Efficiency.fromKml(10.0)
 assert_eq(eff:toL100km(), 10.0, "Efficiency toL100km")
-assert_eq(eff:toMpg(), 10.0 / 0.425143707, "Efficiency toMpg")
+assert_eq(eff:toMpg(), 10.0 / 0.425143707430272, "Efficiency toMpg")
 assert_eq(M.Efficiency.fromL100km(10.0):toKml(), 10.0, "Efficiency fromL100km")
-assert_eq(M.Efficiency.fromMpg(10.0):toKml(), 10.0 * 0.425143707, "Efficiency fromMpg")
+assert_eq(M.Efficiency.fromMpg(10.0):toKml(), 10.0 * 0.425143707430272, "Efficiency fromMpg")
 assert(tostring(eff) == "Efficiency(10.000000)", "Efficiency tostring format")
 assert_fail(function() M.Efficiency.fromKml(0) end)
 assert_fail(function() M.Efficiency.fromKml(-1.0) end)
@@ -264,14 +294,6 @@ local dist_div = M.Distance.fromMeters(10.0) / 2.0
 assert_eq(dist_div:toMeters(), 5.0, "Distance / Number")
 assert_fail(function() local _ = M.Distance.fromMeters(10.0) / 0.0 end)
 
-local time_div_acc = t / M.Acceleration.fromMs2(2.0)
-assert_eq(time_div_acc:toMs(), 10.0, "Time / Acceleration")
-assert_fail(function() local _ = t / M.Acceleration.fromMs2(0.0) end)
-
-local acc_div_time = acc / t
-assert_eq(acc_div_time:toMs2(), (10.0 / 60.0) / 5.0, "Acceleration / Time")
-assert_fail(function() local _ = acc / M.Time.fromSeconds(0.0) end)
-
 local acc_mul_time = acc * t
 assert_eq(acc_mul_time:toMs(), (10.0 / 60.0) * 5.0, "Acceleration * Time = Speed")
 
@@ -316,10 +338,7 @@ assert(comp_s2 >= comp_s1, "Speed greater than or equal")
 assert(comp_s1 ~= d1, "Different unit types should not be equal")
 assert_fail(function() local _ = comp_s1 < d1 end)
 
--- ============================================================
 -- Comparison coverage for all value types
--- ============================================================
-
 local function assert_comparable(lower, higher, equal_value, invalid, name)
     assert(lower < higher, name .. " less than")
     assert(lower <= higher, name .. " less than or equal")
@@ -452,5 +471,64 @@ assert_comparable(
     M.Speed.fromMs(1.0),
     "Acceleration"
 )
+
+-- Multiplication/division result validation
+
+local large_pressure = M.Pressure.fromKpa(1e308)
+assert_fail(function()
+    local _ = large_pressure + large_pressure
+end)
+
+assert_fail(function()
+    local _ = large_pressure - M.Pressure.fromKpa(-1e308)
+end)
+
+assert_fail(function()
+    local _ = large_pressure * 2.0
+end)
+
+assert_fail(function()
+    local _ = 2.0 * large_pressure
+end)
+
+assert_fail(function()
+    local _ = large_pressure / 1e-308
+end)
+
+
+local large_angle = M.Angle.fromRadians(1e308)
+
+assert_fail(function()
+    local _ = large_angle + large_angle
+end)
+
+assert_fail(function()
+    local _ = large_angle - M.Angle.fromRadians(-1e308)
+end)
+
+assert_fail(function()
+    local _ = large_angle * 2.0
+end)
+
+assert_fail(function()
+    local _ = 2.0 * large_angle
+end)
+
+assert_fail(function()
+    local _ = large_angle / 1e-308
+end)
+
+-- Type constraints must also be enforced after arithmetic.
+assert_fail(function()
+    local _ = M.Temperature.fromCelsius(20.0) * -20.0
+end)
+
+assert_fail(function()
+    local _ = M.Pressure.fromKpa(10.0) * -1.0
+end)
+
+assert_fail(function()
+    local _ = M.Efficiency.fromKml(10.0) / math.huge
+end)
 
 print("All tests passed: Logic, Operators, Comparisons, and Validation coverage 100%.")

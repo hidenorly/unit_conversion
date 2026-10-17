@@ -23,24 +23,26 @@ local function check(v, name)
     return v
 end
 
+local function create_arithmetic_value(cls, value)
+    check(value, "arithmetic result")
+    return setmetatable({val = value}, cls)
+end
+
 local function create_class(name)
     local cls = {__type = name}
     cls.__index = cls
     cls.__add = function(a, b)
-        local meta_a = getmetatable(a)
-        local meta_b = getmetatable(b)
-        if meta_a == meta_b then
-            return setmetatable({val = a.val + b.val}, cls)
+        if getmetatable(a) ~= cls or getmetatable(b) ~= cls then
+            error("Invalid addition")
         end
-        error("Invalid addition")
+        return create_arithmetic_value(cls, a.val + b.val)
     end
+
     cls.__sub = function(a, b)
-        local meta_a = getmetatable(a)
-        local meta_b = getmetatable(b)
-        if meta_a == meta_b then
-            return setmetatable({val = a.val - b.val}, cls)
+        if getmetatable(a) ~= cls or getmetatable(b) ~= cls then
+            error("Invalid subtraction")
         end
-        error("Invalid subtraction")
+        return create_arithmetic_value(cls, a.val - b.val)
     end
     cls.__eq = function(a, b)
         local meta_a = getmetatable(a)
@@ -72,26 +74,67 @@ local function create_class(name)
     return cls
 end
 
+local function create_value(cls, value)
+    if cls == M.Speed then
+        return M.Speed.fromMs(value)
+    elseif cls == M.Temperature then
+        return M.Temperature.fromCelsius(value)
+    elseif cls == M.Mass then
+        return M.Mass.fromKg(value)
+    elseif cls == M.Distance then
+        return M.Distance.fromMeters(value)
+    elseif cls == M.Pressure then
+        return M.Pressure.fromKpa(value)
+    elseif cls == M.Power then
+        return M.Power.fromKw(value)
+    elseif cls == M.Torque then
+        return M.Torque.fromNm(value)
+    elseif cls == M.Angle then
+        return M.Angle.fromRadians(value)
+    elseif cls == M.Efficiency then
+        return M.Efficiency.fromKml(value)
+    elseif cls == M.EvEfficiency then
+        return M.EvEfficiency.fromKmkWh(value)
+    elseif cls == M.Volume then
+        return M.Volume.fromLiters(value)
+    elseif cls == M.Time then
+        return M.Time.fromSeconds(value)
+    elseif cls == M.Acceleration then
+        return M.Acceleration.fromMs2(value)
+    end
+
+    error("Unsupported type")
+end
+
 local function setup_meta(cls)
     cls.__mul = function(a, b)
         local meta_a = getmetatable(a)
         local meta_b = getmetatable(b)
+
         if meta_a == cls and type(b) == "number" then
-            return setmetatable({val = a.val * b}, cls)
+            return create_value(cls, a.val * b)
         elseif type(a) == "number" and meta_b == cls then
-            return setmetatable({val = a * b.val}, cls)
+            return create_value(cls, a * b.val)
         end
+
         error("Invalid multiplication")
     end
+
     cls.__div = function(a, b)
         local meta_a = getmetatable(a)
         local meta_b = getmetatable(b)
+
         if meta_a == cls and type(b) == "number" then
-            if b == 0 then error("Division by zero") end
-            return setmetatable({val = a.val / b}, cls)
+            if b == 0 then
+                error("Division by zero")
+            end
+
+            return create_value(cls, a.val / b)
         end
+
         error("Invalid division")
     end
+
     return cls
 end
 
@@ -159,7 +202,27 @@ function M.Temperature.fromKelvin(v) return M.Temperature.fromCelsius(v - 273.15
 function M.Temperature:toCelsius() return self.val end
 function M.Temperature:toFahrenheit() return self.val * 1.8 + 32.0 end
 function M.Temperature:toKelvin() return self.val + 273.15 end
+M.Temperature.__add = function(a, b)
+    local meta_a = getmetatable(a)
+    local meta_b = getmetatable(b)
 
+    if meta_a == M.Temperature and meta_b == M.Temperature then
+        return M.Temperature.fromCelsius(a.val + b.val)
+    end
+
+    error("Invalid temperature addition")
+end
+
+M.Temperature.__sub = function(a, b)
+    local meta_a = getmetatable(a)
+    local meta_b = getmetatable(b)
+
+    if meta_a == M.Temperature and meta_b == M.Temperature then
+        return M.Temperature.fromCelsius(a.val - b.val)
+    end
+
+    error("Invalid temperature subtraction")
+end
 
 -- Mass
 M.Mass = setup_meta(create_class("Mass"))
@@ -170,11 +233,11 @@ function M.Mass.fromKg(v)
 end
 function M.Mass.fromGram(v) return M.Mass.fromKg(v * 0.001) end
 function M.Mass.fromLb(v) return M.Mass.fromKg(v * 0.45359237) end
-function M.Mass.fromOz(v) return M.Mass.fromKg(v * 0.0283495231) end
+function M.Mass.fromOz(v) return M.Mass.fromKg(v * 0.028349523125) end
 function M.Mass:toKg() return self.val end
 function M.Mass:toGram() return self.val / 0.001 end
 function M.Mass:toLb() return self.val / 0.45359237 end
-function M.Mass:toOz() return self.val / 0.0283495231 end
+function M.Mass:toOz() return self.val / 0.028349523125 end
 
 M.Mass.__div = function(a, b)
     local meta_a = getmetatable(a)
@@ -248,10 +311,10 @@ function M.Pressure.fromKpa(v)
     return setmetatable({val = v}, M.Pressure)
 end
 function M.Pressure.fromBar(v) return M.Pressure.fromKpa(v * 100.0) end
-function M.Pressure.fromPsi(v) return M.Pressure.fromKpa(v * 6.89476) end
+function M.Pressure.fromPsi(v) return M.Pressure.fromKpa(v * 6.894757293168361) end
 function M.Pressure:toKpa() return self.val end
 function M.Pressure:toBar() return self.val / 100.0 end
-function M.Pressure:toPsi() return self.val / 6.89476 end
+function M.Pressure:toPsi() return self.val / 6.894757293168361 end
 
 
 -- Power
@@ -262,10 +325,10 @@ function M.Power.fromKw(v)
     return setmetatable({val = v}, M.Power)
 end
 function M.Power.fromPs(v) return M.Power.fromKw(v * 0.73549875) end
-function M.Power.fromHp(v) return M.Power.fromKw(v * 0.74569987) end
+function M.Power.fromHp(v) return M.Power.fromKw(v * 0.7456998715822702) end
 function M.Power:toKw() return self.val end
 function M.Power:toPs() return self.val / 0.73549875 end
-function M.Power:toHp() return self.val / 0.74569987 end
+function M.Power:toHp() return self.val / 0.7456998715822702 end
 
 
 -- Torque
@@ -276,10 +339,10 @@ function M.Torque.fromNm(v)
     return setmetatable({val = v}, M.Torque)
 end
 function M.Torque.fromKgfm(v) return M.Torque.fromNm(v * 9.80665) end
-function M.Torque.fromLbft(v) return M.Torque.fromNm(v * 1.355817948) end
+function M.Torque.fromLbft(v) return M.Torque.fromNm(v * 1.3558179483314003) end
 function M.Torque:toNm() return self.val end
 function M.Torque:toKgfm() return self.val / 9.80665 end
-function M.Torque:toLbft() return self.val / 1.355817948 end
+function M.Torque:toLbft() return self.val / 1.3558179483314003 end
 
 
 -- Angle
@@ -316,10 +379,10 @@ function M.Efficiency.fromKml(v)
     return setmetatable({val = v}, M.Efficiency)
 end
 function M.Efficiency.fromL100km(v) return M.Efficiency.fromKml(100.0 / v) end
-function M.Efficiency.fromMpg(v) return M.Efficiency.fromKml(v * 0.425143707) end
+function M.Efficiency.fromMpg(v) return M.Efficiency.fromKml(v * 0.425143707430272) end
 function M.Efficiency:toKml() return self.val end
 function M.Efficiency:toL100km() return 100.0 / self.val end
-function M.Efficiency:toMpg() return self.val / 0.425143707 end
+function M.Efficiency:toMpg() return self.val / 0.425143707430272 end
 
 
 -- EvEfficiency
@@ -383,10 +446,7 @@ end
 M.Time.__div = function(a, b)
     local meta_a = getmetatable(a)
     local meta_b = getmetatable(b)
-    if meta_a == M.Time and meta_b == M.Acceleration then
-        if b.val == 0 then error("Acceleration cannot be zero") end
-        return M.Speed.fromMs(a.val * b.val)
-    elseif meta_a == M.Time and type(b) == "number" then
+    if meta_a == M.Time and type(b) == "number" then
         if b == 0 then error("Division by zero") end
         return M.Time.fromSeconds(a.val / b)
     end
@@ -428,10 +488,7 @@ end
 M.Acceleration.__div = function(a, b)
     local meta_a = getmetatable(a)
     local meta_b = getmetatable(b)
-    if meta_a == M.Acceleration and meta_b == M.Time then
-        if b.val == 0 then error("Time cannot be zero") end
-        return M.Acceleration.fromMs2(a.val / b.val)
-    elseif meta_a == M.Acceleration and type(b) == "number" then
+    if meta_a == M.Acceleration and type(b) == "number" then
         if b == 0 then error("Division by zero") end
         return M.Acceleration.fromMs2(a.val / b)
     end
