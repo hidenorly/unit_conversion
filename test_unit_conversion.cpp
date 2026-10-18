@@ -1316,6 +1316,9 @@ TEST(PhysicsOpsTest, AccelMulTime) {
     auto time = Time::fromSeconds(9.5);
     auto accel = Acceleration::fromSpeedAndTime(speed, time);
     EXPECT_NEAR(accel.toMs2(), 2.9239, 1e-4);
+
+    EXPECT_THROW(Acceleration::fromSpeedAndTime(speed, Time::fromSeconds(0.0)),
+                 std::invalid_argument);
 }
 
 TEST(PhysicsOpsTest, SpeedMulTime) {
@@ -1401,14 +1404,6 @@ TEST(PhysicsOpsTest, SpeedDivAccelerationEqualsTime) {
     EXPECT_THROW(s / Acceleration::fromMs2(0.0), std::invalid_argument);
 }
 
-TEST(PhysicsOpsTest, TimeDivAccelerationEqualsSpeed) {
-    auto t = Time::fromSeconds(10.0);
-    auto a = Acceleration::fromMs2(2.0);
-    auto s = t / a;
-    EXPECT_NEAR(s.toMs(), 5.0, 1e-9);
-
-    EXPECT_THROW(t / Acceleration::fromMs2(0.0), std::invalid_argument);
-}
 
 // --- Comprehensive Same-Dimension Division & Ratio Checks ---
 
@@ -1514,4 +1509,12 @@ TEST(BoundaryTest, ScalarIdentity) {
     EXPECT_NEAR((Volume::fromLiters(10.0) * 1.0).toLiters(), 10.0, 1e-9);
     EXPECT_NEAR((Efficiency::fromKml(10.0) * 1.0).toKml(), 10.0, 1e-9);
     EXPECT_NEAR((EvEfficiency::fromKmkWh(10.0) * 1.0).toKmkWh(), 10.0, 1e-9);
+}
+
+TEST(ConversionConstantTest, ImprovedPrecision) {
+    EXPECT_NEAR(Mass::fromOz(1.0).toKg(), 0.028349523125, 1e-15);
+    EXPECT_NEAR(Pressure::fromPsi(1.0).toKpa(), 6.894757293168361, 1e-14);
+    EXPECT_NEAR(Power::fromHp(1.0).toKw(), 0.7456998715822702, 1e-15);
+    EXPECT_NEAR(Torque::fromLbft(1.0).toNm(), 1.3558179483314003, 1e-14);
+    EXPECT_NEAR(Efficiency::fromMpg(1.0).toKml(), 0.425143707430272, 1e-15);
 }

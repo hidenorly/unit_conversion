@@ -86,14 +86,15 @@ public:
     constexpr double toFahrenheit() const noexcept { return m_celsius * F_FACTOR + F_OFFSET; }
     constexpr double toKelvin() const noexcept { return m_celsius + K_OFFSET; }
 
+    Temperature operator+(const Temperature& deltaC) const { return Temperature(m_celsius + deltaC.toCelsius()); }
+    Temperature operator-(const Temperature& deltaC) const { return Temperature(m_celsius - deltaC.toCelsius()); }
+
     bool operator==(const Temperature& other) const noexcept { return m_celsius == other.m_celsius; }
     bool operator!=(const Temperature& other) const noexcept { return m_celsius != other.m_celsius; }
     bool operator<(const Temperature& other) const noexcept { return m_celsius < other.m_celsius; }
     bool operator<=(const Temperature& other) const noexcept { return m_celsius <= other.m_celsius; }
     bool operator>(const Temperature& other) const noexcept { return m_celsius > other.m_celsius; }
     bool operator>=(const Temperature& other) const noexcept { return m_celsius >= other.m_celsius; }
-    Temperature operator+(const Temperature& deltaC) const { return Temperature(m_celsius + deltaC.toCelsius()); }
-    Temperature operator-(const Temperature& deltaC) const { return Temperature(m_celsius - deltaC.toCelsius()); }
 
     friend std::ostream& operator<<(std::ostream& os, const Temperature& t) {
         return os << t.m_celsius << " °C";
@@ -106,7 +107,7 @@ private:
     double mWeightKg;
     static constexpr double G_TO_KG = 0.001;
     static constexpr double LB_TO_KG = 0.45359237;
-    static constexpr double OZ_TO_KG = 0.0283495231;
+    static constexpr double OZ_TO_KG = 0.028349523125;
 
     explicit Mass(double kg) : mWeightKg(kg) {
         if (!std::isfinite(kg)) {
@@ -195,7 +196,7 @@ class Pressure {
 private:
     double m_kpa;
     static constexpr double BAR_TO_KPA = 100.0;
-    static constexpr double PSI_TO_KPA = 6.89476;
+    static constexpr double PSI_TO_KPA = 6.894757293168361;
 
     explicit Pressure(double kpa) : m_kpa(kpa) {
         if (!std::isfinite(kpa)) {
@@ -234,7 +235,7 @@ class Power {
 private:
     double m_kw;
     static constexpr double PS_TO_KW = 0.73549875;
-    static constexpr double HP_TO_KW = 0.74569987;
+    static constexpr double HP_TO_KW = 0.7456998715822702;
 
     explicit Power(double kw) : m_kw(kw) {
         if (!std::isfinite(kw)) {
@@ -273,7 +274,7 @@ class Torque {
 private:
     double m_nm;
     static constexpr double KGFM_TO_NM = 9.80665;
-    static constexpr double LBFT_TO_NM = 1.355817948;
+    static constexpr double LBFT_TO_NM = 1.3558179483314003;
 
     explicit Torque(double nm) : m_nm(nm) {
         if (!std::isfinite(nm)){
@@ -358,7 +359,7 @@ public:
 class Efficiency {
 private:
     double m_kml;
-    static constexpr double MPG_TO_KML = 0.425143707;
+    static constexpr double MPG_TO_KML = 0.425143707430272;
 
     explicit Efficiency(double kml) : m_kml(kml) {
         if( !std::isfinite(kml) || m_kml <= 0.0 ){
@@ -493,13 +494,19 @@ public:
 
 
 class Acceleration {
+private:
     double m_a;
-public:
+
     explicit Acceleration(double a) : m_a(a) {
         if (!std::isfinite(a)) throw std::invalid_argument("Acceleration must be finite");
     }
+
+public:
     static Acceleration fromMs2(double a) { return Acceleration(a); }
     static Acceleration fromSpeedAndTime(const Speed& s, const Time& t) {
+        if (t.toSeconds() == 0.0) {
+            throw std::invalid_argument("Time cannot be zero");
+        }
         return Acceleration(s.toMs() / t.toSeconds());
     }
     constexpr double toMs2() const noexcept { return m_a; }
@@ -526,12 +533,6 @@ inline Speed operator*(const Acceleration& a, const Time& t) {
 
 inline Speed operator*(const Time& t, const Acceleration& a) {
     return a * t;
-}
-
-// Time / Acceleration = Speed
-inline Speed operator/(const Time& t, const Acceleration& a) {
-    if (a.toMs2() == 0.0) throw std::invalid_argument("Acceleration cannot be zero");
-    return Speed::fromMs(t.toSeconds() / a.toMs2());
 }
 
 // Speed / Time = Acceleration
