@@ -1589,18 +1589,6 @@ mod tests {
     }
 
     #[test]
-    fn test_time_div_acceleration_branch() {
-        let t_res = Time::from_seconds(10.0) / Acceleration::from_ms2(2.0);
-        assert!((t_res.to_ms() - 5.0).abs() < 1e-9);
-    }
-
-    #[test]
-    #[should_panic]
-    fn test_time_div_zero_acceleration() {
-        let _ = Time::from_seconds(10.0) / Acceleration::from_ms2(0.0);
-    }
-
-    #[test]
     fn test_speed_div_acceleration_to_time() {
         let time_res = Speed::from_ms(10.0) / Acceleration::from_ms2(2.0);
         assert!((time_res.to_seconds() - 5.0).abs() < 1e-9);

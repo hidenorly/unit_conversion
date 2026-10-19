@@ -118,7 +118,7 @@ pub struct Mass {
 impl Mass {
     const G_TO_KG: f64 = 0.001;
     const LB_TO_KG: f64 = 0.45359237;
-    const OZ_TO_KG: f64 = 0.0283495231;
+    const OZ_TO_KG: f64 = 0.028349523125;
 
     fn new(kg: f64) -> Self {
         if kg.is_nan() || kg < 0.0 || kg.is_infinite() {
@@ -203,7 +203,7 @@ pub struct Pressure {
 
 impl Pressure {
     const BAR_TO_KPA: f64 = 100.0;
-    const PSI_TO_KPA: f64 = 6.89476;
+    const PSI_TO_KPA: f64 = 6.894757293168361;
 
     fn new(kpa: f64) -> Self {
         if kpa.is_nan() || kpa < 0.0 || kpa.is_infinite() {
@@ -239,7 +239,7 @@ pub struct Power { kw: f64 }
 
 impl Power {
     const PS_TO_KW: f64 = 0.73549875;
-    const HP_TO_KW: f64 = 0.74569987;
+    const HP_TO_KW: f64 = 0.7456998715822702;
 
     fn new(v: f64) -> Self {
         if v.is_nan() || v < 0.0 || v.is_infinite() {
@@ -275,7 +275,7 @@ pub struct Torque { nm: f64 }
 
 impl Torque {
     const KGFM_TO_NM: f64 = 9.80665;
-    const LBFT_TO_NM: f64 = 1.355817948;
+    const LBFT_TO_NM: f64 = 1.3558179483314003;
 
     fn new(nm: f64) -> Self {
         if nm.is_nan() || nm < 0.0 || nm.is_infinite() { panic!("Invalid torque"); }
@@ -360,7 +360,7 @@ impl std::fmt::Display for Angle {
 pub struct Efficiency { kml: f64 }
 
 impl Efficiency {
-    const MPG_TO_KML: f64 = 0.425143707;
+    const MPG_TO_KML: f64 = 0.425143707430272;
 
     fn new(v: f64) -> Self {
         if v <= 0.0 || v.is_nan() || v.is_infinite() {
@@ -499,8 +499,9 @@ impl std::fmt::Display for Time {
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Acceleration { a: f64 }
 
+
 impl Acceleration {
-    pub fn new(a: f64) -> Self {
+    fn new(a: f64) -> Self {
         if a.is_nan() || a.is_infinite() { panic!("Invalid Acceleration"); }
         Self { a }
     }
@@ -511,6 +512,7 @@ impl Acceleration {
     pub fn from_ms2(a: f64) -> Self {
         Self::new(a)
     }
+
     pub fn to_ms2(&self) -> f64 { self.a }
 
     pub fn compare_to(&self, other: &Acceleration) -> std::cmp::Ordering {
@@ -539,17 +541,6 @@ impl std::ops::Mul<Acceleration> for Time {
     type Output = Speed;
     fn mul(self, rhs: Acceleration) -> Self::Output {
         rhs * self
-    }
-}
-
-// Time / Acceleration = Speed
-impl std::ops::Div<Acceleration> for Time {
-    type Output = Speed;
-    fn div(self, rhs: Acceleration) -> Self::Output {
-        if rhs.to_ms2() == 0.0 {
-            panic!("Acceleration cannot be zero");
-        }
-        Speed::from_ms(self.to_seconds() / rhs.to_ms2())
     }
 }
 
