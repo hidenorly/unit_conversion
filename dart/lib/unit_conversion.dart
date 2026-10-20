@@ -93,7 +93,7 @@ class Mass implements Comparable<Mass> {
   final double _kg;
   static const double _gToKg = 0.001;
   static const double _lbToKg = 0.45359237;
-  static const double _ozToKg = 0.0283495231;
+  static const double _ozToKg = 0.028349523125;
 
   Mass._(this._kg) {
     if (_kg.isNaN || _kg < 0 || _kg.isInfinite) {
@@ -175,7 +175,7 @@ class Distance implements Comparable<Distance> {
 class Pressure implements Comparable<Pressure> {
   final double _kpa;
   static const double _barToKpa = 100.0;
-  static const double _psiToKpa = 6.89476;
+  static const double _psiToKpa = 6.894757293168361;
 
   Pressure._(this._kpa) {
     if (_kpa.isNaN || _kpa < 0 || _kpa.isInfinite) {
@@ -210,7 +210,7 @@ class Pressure implements Comparable<Pressure> {
 class Power implements Comparable<Power> {
   final double _kw;
   static const double _psToKw = 0.73549875;
-  static const double _hpToKw = 0.74569987;
+  static const double _hpToKw = 0.7456998715822702;
 
   Power._(this._kw) {
     if (_kw.isNaN || _kw < 0 || _kw.isInfinite) {
@@ -245,7 +245,7 @@ class Power implements Comparable<Power> {
 class Torque implements Comparable<Torque> {
   final double _nm;
   static const double _kgfmToNm = 9.80665;
-  static const double _lbftToNm = 1.355817948;
+  static const double _lbftToNm = 1.3558179483314003;
 
   Torque._(this._nm) {
     if (_nm.isNaN || _nm < 0 || _nm.isInfinite) {
@@ -336,7 +336,7 @@ class Angle implements Comparable<Angle> {
 
 class Efficiency implements Comparable<Efficiency> {
   final double _kml;
-  static const double _mpgToKml = 0.425143707;
+  static const double _mpgToKml = 0.42514370743027;
 
   Efficiency._(this._kml) {
     if (_kml <= 0 || _kml.isNaN || _kml.isInfinite) {
