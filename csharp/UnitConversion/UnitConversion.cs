@@ -133,7 +133,7 @@ namespace UnitConversion
         private readonly double mWeightKg;
         private const double GToKg = 0.001;
         private const double LbToKg = 0.45359237;
-        private const double OzToKg = 0.0283495231;
+        private const double OzToKg = 0.028349523125;
 
         private Mass(double kg)
         {
@@ -276,7 +276,7 @@ namespace UnitConversion
     {
         private readonly double m_kpa;
         private const double BarToKpa = 100.0;
-        private const double PsiToKpa = 6.89476;
+        private const double PsiToKpa = 6.894757293168361;
 
         private Pressure(double kpa)
         {
@@ -336,7 +336,7 @@ namespace UnitConversion
     {
         private readonly double m_kw;
         private const double PsToKw = 0.73549875;
-        private const double HpToKw = 0.74569987;
+        private const double HpToKw = 0.7456998715822702;
 
         private Power(double kw)
         {
@@ -396,7 +396,7 @@ namespace UnitConversion
     {
         private readonly double m_nm;
         private const double KgfmToNm = 9.80665;
-        private const double LbftToNm = 1.355817948;
+        private const double LbftToNm = 1.3558179483314003;
 
         private Torque(double nm)
         {
@@ -533,7 +533,7 @@ namespace UnitConversion
     public readonly struct Efficiency : IEquatable<Efficiency>, IComparable<Efficiency>
     {
         private readonly double m_kml;
-        private const double MpgToKml = 0.425143707;
+        private const double MpgToKml = 0.425143707430272;
 
         private Efficiency(double kml)
         {
