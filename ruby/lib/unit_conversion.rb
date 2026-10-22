@@ -243,7 +243,7 @@ class Mass
 
   G_TO_KG = 0.001
   LB_TO_KG = 0.45359237
-  OZ_TO_KG = 0.0283495231
+  OZ_TO_KG = 0.028349523125
 
   private_class_method :new
 
@@ -464,7 +464,7 @@ class Pressure
   include ScalarLeftMultiplication
 
   BAR_TO_KPA = 100.0
-  PSI_TO_KPA = 6.89476
+  PSI_TO_KPA = 6.894757293168361
 
   private_class_method :new
 
@@ -554,7 +554,7 @@ class Power
   include ScalarLeftMultiplication
 
   PS_TO_KW = 0.73549875
-  HP_TO_KW = 0.74569987
+  HP_TO_KW = 0.7456998715822702
 
   private_class_method :new
 
@@ -644,7 +644,7 @@ class Torque
   include ScalarLeftMultiplication
 
   KGFM_TO_NM = 9.80665
-  LBFT_TO_NM = 1.355817948
+  LBFT_TO_NM = 1.3558179483314003
 
   private_class_method :new
 
@@ -830,7 +830,7 @@ class Efficiency
   include Comparable
   include ScalarLeftMultiplication
 
-  MPG_TO_KML = 0.425143707
+  MPG_TO_KML = 0.425143707430272
 
   private_class_method :new
 
