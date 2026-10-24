@@ -369,7 +369,12 @@ private:
 
 public:
     static Efficiency fromKml(double v) { return Efficiency(v); }
-    static Efficiency fromL100km(double v) { return Efficiency(100.0 / v); }
+    static Efficiency fromL100km(double v) {
+        if (!std::isfinite(v) || v <= 0.0) {
+            throw std::invalid_argument("L/100km must be finite and positive");
+        }
+        return Efficiency(100.0 / v);
+    }
     static Efficiency fromMpg(double v) { return Efficiency(v * MPG_TO_KML); }
 
     constexpr double toKml() const noexcept { return m_kml; }
@@ -402,8 +407,18 @@ private:
 
 public:
     static EvEfficiency fromKmkWh(double v) { return EvEfficiency(v); }
-    static EvEfficiency fromWhkm(double v) { return EvEfficiency(1000.0 / v); }
-    static EvEfficiency fromKwh100km(double v) { return EvEfficiency(100.0 / v); }
+    static EvEfficiency fromWhkm(double v) {
+        if (!std::isfinite(v) || v <= 0.0) {
+            throw std::invalid_argument("Wh/km must be finite and positive");
+        }
+        return EvEfficiency(1000.0 / v);
+    }
+    static EvEfficiency fromKwh100km(double v) {
+        if (!std::isfinite(v) || v <= 0.0) {
+            throw std::invalid_argument("kWh/100km must be finite and positive");
+        }
+        return EvEfficiency(100.0 / v);
+    }
     static EvEfficiency fromMpKwh(double v) { return EvEfficiency(v * MILE_TO_KM); }
 
     constexpr double toKmkWh() const noexcept { return m_km_per_kwh; }
