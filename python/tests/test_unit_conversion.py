@@ -108,6 +108,39 @@ class TestTemperature(unittest.TestCase):
         self.assertEqual(t1, t3)
         self.assertNotEqual(t1, t2)
 
+    def test_temperature_add_sub(self):
+        temperature = Temperature.from_celsius(20.0)
+
+        result = temperature + Temperature.from_celsius(0.5)
+        self.assertAlmostEqual(result.to_celsius, 20.5, places=3)
+
+        # Addition using a value created in another unit.
+        result_with_fahrenheit = (
+            temperature + Temperature.from_fahrenheit(32.9)
+        )
+        self.assertAlmostEqual(
+            result_with_fahrenheit.to_celsius, 20.5, places=3
+        )
+
+        result = temperature - Temperature.from_celsius(0.5)
+        self.assertAlmostEqual(result.to_celsius, 19.5, places=3)
+
+        # Negative Celsius values are valid temperatures.
+        negative = temperature - Temperature.from_celsius(30.0)
+        self.assertAlmostEqual(negative.to_celsius, -10.0, places=3)
+
+    def test_temperature_add_rejects_non_finite_result(self):
+        large = Temperature.from_celsius(1.0e308)
+
+        with self.assertRaises((ValueError, ArithmeticError)):
+            _ = large + large
+
+    def test_temperature_subtract_rejects_below_absolute_zero(self):
+        absolute_zero = Temperature.from_celsius(-273.15)
+
+        with self.assertRaises((ValueError, ArithmeticError)):
+            _ = absolute_zero - Temperature.from_celsius(0.5)
+
     def test_guards(self):
         with self.assertRaises(ValueError):
             Temperature.from_kelvin(-1)
@@ -864,12 +897,6 @@ class TestAcceleration(unittest.TestCase):
         self.assertEqual((2.0 * a1).to_ms2, 20.0)
         self.assertEqual((a1 / 2.0).to_ms2, 5.0)
 
-        # Acceleration / Time = Acceleration
-        self.assertEqual(
-            (Acceleration(10.0) / Time.from_seconds(2.0)).to_ms2,
-            5.0
-        )
-
     def test_guards(self):
         with self.assertRaises(ValueError):
             Acceleration(float('nan'))
@@ -1031,10 +1058,6 @@ class TestOperation(unittest.TestCase):
         self.assertAlmostEqual(ratio, 2.0, places=6)
 
     def test_advanced_divisions(self):
-        # Time / Acceleration = Speed
-        s = Time.from_seconds(10.0) / Acceleration(2.0)
-        self.assertEqual(s.to_ms, 5.0)
-
         # Speed / Acceleration = Time
         t = Speed.from_ms(10.0) / Acceleration(2.0)
         self.assertEqual(t.to_seconds, 5.0)
@@ -1042,6 +1065,7 @@ class TestOperation(unittest.TestCase):
         # Speed / Time = Acceleration
         acc = Speed.from_ms(10.0) / Time.from_seconds(2.0)
         self.assertEqual(acc.to_ms2, 5.0)
+
 
     def test_rmul_operations(self):
         v = 2.0 * Speed.from_ms(10.0)
@@ -1086,8 +1110,6 @@ class TestOperation(unittest.TestCase):
             Torque.from_nm(10.0) / Torque.from_nm(0.0)
         with self.assertRaises(ValueError):
             Angle.from_degrees(10.0) / Angle.from_degrees(0.0)
-        with self.assertRaises(ValueError):
-            Time.from_seconds(10.0) / Acceleration(0.0)
         with self.assertRaises(ValueError):
             Speed.from_ms(10.0) / Acceleration(0.0)
         with self.assertRaises(ValueError):

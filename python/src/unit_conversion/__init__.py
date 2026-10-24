@@ -102,6 +102,7 @@ class Speed:
             if other == 0:
                 raise ValueError("Division by zero")
             return Speed.from_ms(self.to_ms / other)
+
         return NotImplemented
 
     def __mul__(self, other):
@@ -173,6 +174,20 @@ class Temperature:
             return NotImplemented
         return self._celsius < other._celsius
 
+    def __add__(self, other):
+        if not isinstance(other, Temperature):
+            return NotImplemented
+        return Temperature.from_celsius(
+            self.to_celsius + other.to_celsius
+        )
+
+    def __sub__(self, other):
+        if not isinstance(other, Temperature):
+            return NotImplemented
+        return Temperature.from_celsius(
+            self.to_celsius - other.to_celsius
+        )
+
     def __repr__(self):
         return f"{self._celsius} °C"
 
@@ -181,7 +196,7 @@ class Temperature:
 class Mass:
     _G_TO_KG = 0.001
     _LB_TO_KG = 0.45359237
-    _OZ_TO_KG = 0.0283495231
+    _OZ_TO_KG = 0.028349523125
 
     def __init__(self, kg: float):
         if math.isnan(kg) or kg < 0 or math.isinf(kg):
@@ -400,7 +415,7 @@ class Distance:
 @total_ordering
 class Pressure:
     _BAR_TO_KPA = 100.0
-    _PSI_TO_KPA = 6.89476
+    _PSI_TO_KPA = 6.894757293168361
 
     def __init__(self, kpa: float):
         if math.isnan(kpa) or kpa < 0 or math.isinf(kpa):
@@ -491,7 +506,7 @@ class Pressure:
 @total_ordering
 class Power:
     _PS_TO_KW = 0.73549875
-    _HP_TO_KW = 0.74569987
+    _HP_TO_KW = 0.7456998715822702
 
     def __init__(self, kw: float):
         if math.isnan(kw) or kw < 0 or math.isinf(kw):
@@ -581,7 +596,7 @@ class Power:
 @total_ordering
 class Torque:
     _KGFM_TO_NM = 9.80665
-    _LBFT_TO_NM = 1.355817948
+    _LBFT_TO_NM = 1.3558179483314003
 
     def __init__(self, nm: float):
         if math.isnan(nm) or nm < 0 or math.isinf(nm): 
@@ -788,7 +803,7 @@ class Angle:
 
 @total_ordering
 class Efficiency:
-    _MPG_TO_KML = 0.425143707
+    _MPG_TO_KML = 0.425143707430272
 
     def __init__(self, v: float):
         if v <= 0 or math.isnan(v) or math.isinf(v):
@@ -1153,10 +1168,6 @@ class Time:
             if other == 0:
                 raise ValueError("Division by zero")
             return Time.from_seconds(self.to_seconds / other)
-        elif isinstance(other, Acceleration):
-            if other.to_ms2 == 0:
-                raise ValueError("Division by zero acceleration")
-            return Speed.from_ms(self.to_seconds / other.to_ms2)
         elif isinstance(other, Time):
             if other.to_seconds == 0:
                 raise ValueError("Time cannot be zero")
