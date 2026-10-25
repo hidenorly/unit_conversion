@@ -370,7 +370,14 @@ impl Efficiency {
     }
 
     pub fn from_kml(v: f64) -> Self { Self::new(v) }
-    pub fn from_l100km(v: f64) -> Self { Self::new(100.0 / v ) }
+
+    pub fn from_l100km(v: f64) -> Self {
+        if !v.is_finite() || v <= 0.0 {
+            panic!("L/100km must be finite and positive");
+        }
+        Self::new(100.0 / v)
+    }
+
     pub fn from_mpg(v: f64) -> Self { Self::new(v * Self::MPG_TO_KML ) }
 
     pub fn to_kml(&self) -> f64 { self.kml }
@@ -405,8 +412,21 @@ impl EvEfficiency {
     }
 
     pub fn from_km_per_kwh(v: f64) -> Self { Self::new(v) }
-    pub fn from_wh_per_km(v: f64) -> Self { Self::new(1000.0 / v) }
-    pub fn from_kwh_per_100km(v: f64) -> Self { Self::new(100.0 / v) }
+
+    pub fn from_wh_per_km(v: f64) -> Self {
+        if !v.is_finite() || v <= 0.0 {
+            panic!("Wh/km must be finite and positive");
+        }
+        Self::new(1000.0 / v)
+    }
+
+    pub fn from_kwh_per_100km(v: f64) -> Self {
+        if !v.is_finite() || v <= 0.0 {
+            panic!("kWh/100km must be finite and positive");
+        }
+        Self::new(100.0 / v)
+    }
+
     pub fn from_miles_per_kwh(v: f64) -> Self { Self::new(v * Self::MILE_TO_KM) }
 
     pub fn to_km_per_kwh(&self) -> f64 { self.km_per_kwh }
