@@ -1,4 +1,4 @@
-﻿/*
+/*
   Copyright (C) 2026 hidenorly
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -543,7 +543,12 @@ namespace UnitConversion
         }
 
         public static Efficiency FromKml(double v) => new Efficiency(v);
-        public static Efficiency FromL100km(double v) => new Efficiency(100.0 / v);
+        public static Efficiency FromL100km(double v)
+        {
+            if (double.IsNaN(v) || double.IsInfinity(v) || v <= 0.0)
+                throw new ArgumentException("L/100km must be finite and positive");
+            return new Efficiency(100.0 / v);
+        }
         public static Efficiency FromMpg(double v) => new Efficiency(v * MpgToKml);
 
         public double ToKml() => m_kml;
@@ -596,8 +601,18 @@ namespace UnitConversion
         }
 
         public static EvEfficiency FromKmkWh(double v) => new EvEfficiency(v);
-        public static EvEfficiency FromWhkm(double v) => new EvEfficiency(1000.0 / v);
-        public static EvEfficiency FromKwh100km(double v) => new EvEfficiency(100.0 / v);
+        public static EvEfficiency FromWhkm(double v)
+        {
+            if (double.IsNaN(v) || double.IsInfinity(v) || v <= 0.0)
+                throw new ArgumentException("Wh/km must be finite and positive");
+            return new EvEfficiency(1000.0 / v);
+        }
+        public static EvEfficiency FromKwh100km(double v)
+        {
+            if (double.IsNaN(v) || double.IsInfinity(v) || v <= 0.0)
+                throw new ArgumentException("kWh/100km must be finite and positive");
+            return new EvEfficiency(100.0 / v);
+        }
         public static EvEfficiency FromMpKwh(double v) => new EvEfficiency(v * MileToKm);
 
         public double ToKmkWh() => m_km_per_kwh;
