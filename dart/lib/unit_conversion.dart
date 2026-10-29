@@ -345,7 +345,16 @@ class Efficiency implements Comparable<Efficiency> {
   }
 
   Efficiency.fromKml(double v) : this._(v);
-  Efficiency.fromL100km(double v) : this._(100.0 / v);
+  Efficiency.fromL100km(double v)
+      : this._(100.0 / _validateL100km(v));
+
+  static double _validateL100km(double v) {
+    if (v.isNaN || v.isInfinite || v <= 0.0) {
+      throw ArgumentError('L/100km must be finite and positive');
+    }
+    return v;
+  }
+
   Efficiency.fromMpg(double v) : this._(v * _mpgToKml);
 
   double get toKml => _kml;
@@ -380,8 +389,25 @@ class EvEfficiency implements Comparable<EvEfficiency> {
   }
 
   EvEfficiency.fromKmkWh(double v) : this._(v);
-  EvEfficiency.fromWhkm(double v) : this._(1000.0 / v);
-  EvEfficiency.fromKwh100km(double v) : this._(100.0 / v);
+  EvEfficiency.fromWhkm(double v)
+      : this._(1000.0 / _validateWhkm(v));
+
+  static double _validateWhkm(double v) {
+    if (v.isNaN || v.isInfinite || v <= 0.0) {
+      throw ArgumentError('Wh/km must be finite and positive');
+    }
+    return v;
+  }
+  EvEfficiency.fromKwh100km(double v)
+      : this._(100.0 / _validateKwh100km(v));
+
+  static double _validateKwh100km(double v) {
+    if (v.isNaN || v.isInfinite || v <= 0.0) {
+      throw ArgumentError('kWh/100km must be finite and positive');
+    }
+    return v;
+  }
+
   EvEfficiency.fromMpKwh(double v) : this._(v * _mileToKm);
 
   double get toKmkWh => _kmPerKwh;
