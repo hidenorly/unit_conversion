@@ -378,7 +378,14 @@ function M.Efficiency.fromKml(v)
     if v <= 0 then error("Must be positive") end
     return setmetatable({val = v}, M.Efficiency)
 end
-function M.Efficiency.fromL100km(v) return M.Efficiency.fromKml(100.0 / v) end
+function M.Efficiency.fromL100km(v)
+    check(v, "L/100km")
+    if v <= 0.0 then
+        error("L/100km must be positive")
+    end
+    return M.Efficiency.fromKml(100.0 / v)
+end
+
 function M.Efficiency.fromMpg(v) return M.Efficiency.fromKml(v * 0.425143707430272) end
 function M.Efficiency:toKml() return self.val end
 function M.Efficiency:toL100km() return 100.0 / self.val end
@@ -392,8 +399,20 @@ function M.EvEfficiency.fromKmkWh(v)
     if v <= 0 then error("Must be positive") end
     return setmetatable({val = v}, M.EvEfficiency)
 end
-function M.EvEfficiency.fromWhkm(v) return M.EvEfficiency.fromKmkWh(1000.0 / v) end
-function M.EvEfficiency.fromKwh100km(v) return M.EvEfficiency.fromKmkWh(100.0 / v) end
+function M.EvEfficiency.fromWhkm(v)
+    check(v, "Wh/km")
+    if v <= 0.0 then
+        error("Wh/km must be positive")
+    end
+    return M.EvEfficiency.fromKmkWh(1000.0 / v)
+end
+function M.EvEfficiency.fromKwh100km(v)
+    check(v, "kWh/100km")
+    if v <= 0.0 then
+        error("kWh/100km must be positive")
+    end
+    return M.EvEfficiency.fromKmkWh(100.0 / v)
+end
 function M.EvEfficiency.fromMpKwh(v) return M.EvEfficiency.fromKmkWh(v * 1.609344) end
 function M.EvEfficiency:toKmkWh() return self.val end
 function M.EvEfficiency:toWhkm() return 1000.0 / self.val end
