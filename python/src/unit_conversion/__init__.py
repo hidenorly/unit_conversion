@@ -816,8 +816,8 @@ class Efficiency:
 
     @classmethod
     def from_l100km(cls, v: float):
-        if v == 0:
-            raise ValueError("Must be positive")
+        if not math.isfinite(v) or v <= 0.0:
+            raise ValueError("L/100km must be finite and positive")
         return cls(100.0 / v)
 
     @classmethod
@@ -904,15 +904,15 @@ class EvEfficiency:
         return cls(v)
 
     @classmethod
-    def from_wh_per_km(cls, v):
-        if v == 0:
-            raise ValueError("Must be positive")
+    def from_wh_per_km(cls, v: float):
+        if not math.isfinite(v) or v <= 0.0:
+            raise ValueError("Wh/km must be finite and positive")
         return cls(1000.0 / v)
 
     @classmethod
-    def from_kwh_per_100km(cls, v):
-        if v == 0:
-            raise ValueError("Must be positive")
+    def from_kwh_per_100km(cls, v: float):
+        if not math.isfinite(v) or v <= 0.0:
+            raise ValueError("kWh/100km must be finite and positive")
         return cls(100.0 / v)
 
     @classmethod
