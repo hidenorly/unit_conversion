@@ -9,6 +9,12 @@ This library provides "unit" conversion in several languages as same mental mode
 * **Built-in Validation**: Automatically checks for `NaN`, `Inf`, and physical constraints (e.g., temperatures below absolute zero) and throws `std::invalid_argument` exceptions.
 * **Operator Overloading**: Supports intuitive mathematical operations between related physical quantities (e.g., `Speed * Time = Distance`).
 
+
+## Supported Physical Quantities
+ 
+ Each class provides specific static factory methods and conversion methods.
+
+
 ## Supported Physical Quantities
 
 Each class provides specific static factory methods and conversion methods.
@@ -28,6 +34,25 @@ Each class provides specific static factory methods and conversion methods.
 | **Volume** | Liters, mL, US Gallons, Imp Gallons |
 | **Time** | seconds, minutes, hours |
 | **Acceleration** | $m/s^2$ |
+
+
+## Sign policy
+
+Whether a negative value is allowed is part of each quantity's definition in this library. The rule is **identical in every language implementation and is not configurable**: there is no macro, flag or option to change it, because different behaviour per build or per language would break the "same mental model" guarantee.
+
+| Category | Quantities | Rule |
+| --- | --- | --- |
+| Non-negative | Speed, Mass, Distance, Pressure, Power, Torque, Volume, Time | finite and `>= 0` |
+| Strictly positive | Efficiency, EvEfficiency | finite and `> 0` (a reciprocal unit such as L/100km or Wh/km is undefined at 0) |
+| Lower-bounded | Temperature | finite and `>= -273.15 °C` (absolute zero) |
+| Signed | Acceleration, Angle | finite only; negative values are allowed (deceleration, direction) |
+
+Notes:
+
+* `Speed` is a magnitude and `Time` is a duration, so a negative value has no meaning for them. Directional quantities (e.g., velocity, signed torque for regeneration) are intentionally not represented by these types.
+* `-0.0` is accepted and equals `0.0` (per IEEE 754, `-0.0 < 0` is false), in every language.
+* Arithmetic results are validated by the same rules: e.g., subtracting a larger `Speed` from a smaller one is an error, not a negative `Speed`. This holds in every language, including for operator results.
+
 
 # Speed conversion
 

@@ -1518,3 +1518,43 @@ TEST(ConversionConstantTest, ImprovedPrecision) {
     EXPECT_NEAR(Torque::fromLbft(1.0).toNm(), 1.3558179483314003, 1e-14);
     EXPECT_NEAR(Efficiency::fromMpg(1.0).toKml(), 0.425143707430272, 1e-15);
 }
+
+// --- Sign policy (see README "Sign policy"): identical in all languages ---
+TEST(SignPolicyTest, NonNegativeQuantitiesRejectNegative) {
+    EXPECT_THROW(Speed::fromMs(-1.0), std::invalid_argument);
+    EXPECT_THROW(Mass::fromKg(-1.0), std::invalid_argument);
+    EXPECT_THROW(Distance::fromMeters(-1.0), std::invalid_argument);
+    EXPECT_THROW(Pressure::fromKpa(-1.0), std::invalid_argument);
+    EXPECT_THROW(Power::fromKw(-1.0), std::invalid_argument);
+    EXPECT_THROW(Torque::fromNm(-1.0), std::invalid_argument);
+    EXPECT_THROW(Volume::fromLiters(-1.0), std::invalid_argument);
+    EXPECT_THROW(Time::fromSeconds(-1.0), std::invalid_argument);
+    // Zero and -0.0 are allowed.
+    EXPECT_NO_THROW(Speed::fromMs(0.0));
+    EXPECT_NO_THROW(Speed::fromMs(-0.0));
+    EXPECT_EQ(Speed::fromMs(-0.0).toMs(), 0.0);
+}
+
+TEST(SignPolicyTest, StrictlyPositiveQuantities) {
+    EXPECT_THROW(Efficiency::fromKml(0.0), std::invalid_argument);
+    EXPECT_THROW(Efficiency::fromKml(-1.0), std::invalid_argument);
+    EXPECT_THROW(EvEfficiency::fromKmkWh(0.0), std::invalid_argument);
+    EXPECT_THROW(EvEfficiency::fromKmkWh(-1.0), std::invalid_argument);
+}
+
+TEST(SignPolicyTest, TemperatureLowerBound) {
+    EXPECT_NO_THROW(Temperature::fromCelsius(-273.15));
+    EXPECT_THROW(Temperature::fromCelsius(-273.16), std::invalid_argument);
+}
+
+TEST(SignPolicyTest, SignedQuantitiesAllowNegative) {
+    EXPECT_NEAR(Acceleration::fromMs2(-9.8).toMs2(), -9.8, 1e-9);
+    EXPECT_NEAR(Angle::fromDegrees(-90.0).toDegrees(), -90.0, 1e-9);
+}
+
+TEST(SignPolicyTest, ArithmeticResultsFollowSamePolicy) {
+    EXPECT_THROW(Speed::fromMs(10.0) - Speed::fromMs(20.0), std::invalid_argument);
+    EXPECT_NEAR((Acceleration::fromMs2(5.0) - Acceleration::fromMs2(10.0)).toMs2(), -5.0, 1e-9);
+    EXPECT_THROW(Temperature::fromCelsius(-270.0) - Temperature::fromCelsius(10.0),
+                 std::invalid_argument);
+}

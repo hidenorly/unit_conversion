@@ -22,7 +22,6 @@
 #include <limits>
 #include <ostream>
 
-#define NO_NEGATIVE_ALLOWED
 
 
 class Speed {
@@ -32,11 +31,9 @@ private:
         if (!std::isfinite(ms)) {
             throw std::invalid_argument("Speed must be finite");
         }        
-#ifdef NO_NEGATIVE_ALLOWED
         if (ms<0.0) {
             throw std::invalid_argument("Speed must be non-negative");
         }        
-#endif // NO_NEGATIVE_ALLOWED
     }
     static constexpr double convert_kmh_ms = 3.6;
     static constexpr double convert_mph_ms = 0.44704;
@@ -113,11 +110,9 @@ private:
         if (!std::isfinite(kg)) {
             throw std::invalid_argument("Mass must be finite");
         }
-#ifdef NO_NEGATIVE_ALLOWED
         if (kg < 0.0) {
             throw std::invalid_argument("Mass must be non-negative");
         }
-#endif // NO_NEGATIVE_ALLOWED
     }
 
 public:
@@ -157,11 +152,9 @@ private:
         if (!std::isfinite(meters)) {
             throw std::invalid_argument("Distance must be finite");
         }
-#ifdef NO_NEGATIVE_ALLOWED
         if (meters < 0.0) {
             throw std::invalid_argument("Distance must be non-negative");
         }        
-#endif // NO_NEGATIVE_ALLOWED
     }
 
 public:
@@ -202,11 +195,9 @@ private:
         if (!std::isfinite(kpa)) {
             throw std::invalid_argument("Pressure must be finite");
         }
-#ifdef NO_NEGATIVE_ALLOWED
         if (kpa < 0.0) {
             throw std::invalid_argument("Pressure must be non-negative");
         }
-#endif // NO_NEGATIVE_ALLOWED
     }
 
 public:
@@ -241,11 +232,9 @@ private:
         if (!std::isfinite(kw)) {
             throw std::invalid_argument("Power must be finite");
         }
-#ifdef NO_NEGATIVE_ALLOWED
         if (kw < 0.0) {
             throw std::invalid_argument("Power must be non-negative");
         }        
-#endif // NO_NEGATIVE_ALLOWED
     }
 
 public:
@@ -280,11 +269,9 @@ private:
         if (!std::isfinite(nm)){
             throw std::invalid_argument("Torque must be finite");
         }
-#ifdef NO_NEGATIVE_ALLOWED
         if (nm < 0.0) {
             throw std::invalid_argument("Torque must be non-negative");
         }        
-#endif // NO_NEGATIVE_ALLOWED
     }
 
 public:
@@ -448,11 +435,9 @@ private:
         if (!std::isfinite(l)) {
             throw std::invalid_argument("Volume must be finite");
         }
-#ifdef NO_NEGATIVE_ALLOWED
         if (l < 0.0) {
             throw std::invalid_argument("Volume must be non-negative");
         }
-#endif // NO_NEGATIVE_ALLOWED
     }
 
 public:
