@@ -1837,4 +1837,38 @@ mod tests {
     fn test_mass_div_scalar_zero() {
         let _ = Mass::from_kg(10.0) / 0.0;
     }
+
+    // --- Sign policy
+    #[test]
+    fn test_sign_policy() {
+        use std::panic::catch_unwind;
+        use unit_conversion::{Acceleration, Angle, Distance, Efficiency, EvEfficiency,
+                              Mass, Power, Pressure, Speed, Temperature, Time, Torque, Volume};
+        // Non-negative quantities reject -1.
+        assert!(catch_unwind(|| Speed::from_ms(-1.0)).is_err());
+        assert!(catch_unwind(|| Mass::from_kg(-1.0)).is_err());
+        assert!(catch_unwind(|| Distance::from_meters(-1.0)).is_err());
+        assert!(catch_unwind(|| Pressure::from_kpa(-1.0)).is_err());
+        assert!(catch_unwind(|| Power::from_kw(-1.0)).is_err());
+        assert!(catch_unwind(|| Torque::from_nm(-1.0)).is_err());
+        assert!(catch_unwind(|| Volume::from_liters(-1.0)).is_err());
+        assert!(catch_unwind(|| Time::from_seconds(-1.0)).is_err());
+        // Zero and -0.0 are allowed.
+        assert!(catch_unwind(|| Speed::from_ms(-0.0)).is_ok());
+        // Strictly positive quantities reject 0 and -1.
+        assert!(catch_unwind(|| Efficiency::from_kml(0.0)).is_err());
+        assert!(catch_unwind(|| Efficiency::from_kml(-1.0)).is_err());
+        assert!(catch_unwind(|| EvEfficiency::from_km_per_kwh(0.0)).is_err());
+        assert!(catch_unwind(|| EvEfficiency::from_km_per_kwh(-1.0)).is_err());
+        // Temperature lower bound is absolute zero.
+        assert!(catch_unwind(|| Temperature::from_celsius(-273.15)).is_ok());
+        assert!(catch_unwind(|| Temperature::from_celsius(-273.16)).is_err());
+        // Signed quantities allow negative values.
+        assert!((Acceleration::from_ms2(-9.8).to_ms2() - (-9.8)).abs() < 1e-9);
+        assert!((Angle::from_degrees(-90.0).to_degrees() - (-90.0)).abs() < 1e-9);
+        // Arithmetic results follow the same policy.
+        assert!(catch_unwind(|| Speed::from_ms(10.0) - Speed::from_ms(20.0)).is_err());
+        assert!(((Acceleration::from_ms2(5.0) - Acceleration::from_ms2(10.0)).to_ms2() - (-5.0)).abs() < 1e-9);
+    }
+
 }
