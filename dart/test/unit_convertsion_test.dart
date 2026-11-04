@@ -1452,4 +1452,43 @@ void main() {
       expect(() => time / Acceleration.fromMs2(0.0), throwsArgumentError);
     });
   });
+
+  group('Sign Policy', () {
+    // Sign policy
+    test('non-negative quantities reject negative', () {
+      expect(() => Speed.fromMs(-1.0), throwsArgumentError);
+      expect(() => Mass.fromKg(-1.0), throwsArgumentError);
+      expect(() => Distance.fromMeters(-1.0), throwsArgumentError);
+      expect(() => Pressure.fromKpa(-1.0), throwsArgumentError);
+      expect(() => Power.fromKw(-1.0), throwsArgumentError);
+      expect(() => Torque.fromNm(-1.0), throwsArgumentError);
+      expect(() => Volume.fromLiters(-1.0), throwsArgumentError);
+      expect(() => Time.fromSeconds(-1.0), throwsArgumentError);
+      expect(Speed.fromMs(-0.0).toMs, 0.0);
+    });
+
+    test('strictly positive quantities reject zero and negative', () {
+      expect(() => Efficiency.fromKml(0.0), throwsArgumentError);
+      expect(() => Efficiency.fromKml(-1.0), throwsArgumentError);
+      expect(() => EvEfficiency.fromKmkWh(0.0), throwsArgumentError);
+      expect(() => EvEfficiency.fromKmkWh(-1.0), throwsArgumentError);
+    });
+
+    test('temperature lower bound is absolute zero', () {
+      expect(Temperature.fromCelsius(-273.15).toCelsius, closeTo(-273.15, 1e-9));
+      expect(() => Temperature.fromCelsius(-273.16), throwsArgumentError);
+    });
+
+    test('signed quantities allow negative', () {
+      expect(Acceleration.fromMs2(-9.8).toMs2, closeTo(-9.8, 1e-9));
+      expect(Angle.fromDegrees(-90.0).toDegrees, closeTo(-90.0, 1e-9));
+    });
+
+    test('arithmetic results follow the same policy', () {
+      expect(() => Speed.fromMs(10.0) - Speed.fromMs(20.0), throwsArgumentError);
+      final a = Acceleration.fromMs2(5.0) - Acceleration.fromMs2(10.0);
+      expect(a.toMs2, closeTo(-5.0, 1e-9));
+    });
+  });
+
 }
