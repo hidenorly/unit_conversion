@@ -1456,4 +1456,36 @@ public class UnitConversionTests
         Assert.True(a1.CompareTo(a2) < 0);
         Assert.True(a2.CompareTo(a1) > 0);
     }
+
+    // --- Sign policy
+    [Fact]
+    public void TestSignPolicy()
+    {
+        // Non-negative quantities reject -1.
+        Assert.Throws<ArgumentException>(() => Speed.FromMs(-1.0));
+        Assert.Throws<ArgumentException>(() => Mass.FromKg(-1.0));
+        Assert.Throws<ArgumentException>(() => Distance.FromMeters(-1.0));
+        Assert.Throws<ArgumentException>(() => Pressure.FromKpa(-1.0));
+        Assert.Throws<ArgumentException>(() => Power.FromKw(-1.0));
+        Assert.Throws<ArgumentException>(() => Torque.FromNm(-1.0));
+        Assert.Throws<ArgumentException>(() => Volume.FromLiters(-1.0));
+        Assert.Throws<ArgumentException>(() => Time.FromSeconds(-1.0));
+        // Zero and -0.0 are allowed.
+        Assert.Equal(0.0, Speed.FromMs(-0.0).ToMs());
+        // Strictly positive quantities reject 0 and -1.
+        Assert.Throws<ArgumentException>(() => Efficiency.FromKml(0.0));
+        Assert.Throws<ArgumentException>(() => Efficiency.FromKml(-1.0));
+        Assert.Throws<ArgumentException>(() => EvEfficiency.FromKmkWh(0.0));
+        Assert.Throws<ArgumentException>(() => EvEfficiency.FromKmkWh(-1.0));
+        // Temperature lower bound is absolute zero.
+        Assert.Equal(-273.15, Temperature.FromCelsius(-273.15).ToCelsius(), 1e-9);
+        Assert.Throws<ArgumentException>(() => Temperature.FromCelsius(-273.16));
+        // Signed quantities allow negative values.
+        Assert.Equal(-9.8, Acceleration.FromMs2(-9.8).ToMs2(), 1e-9);
+        Assert.Equal(-90.0, Angle.FromDegrees(-90.0).ToDegrees(), 1e-9);
+        // Arithmetic results follow the same policy.
+        Assert.Throws<ArgumentException>(() => Speed.FromMs(10.0) - Speed.FromMs(20.0));
+        Assert.Equal(-5.0, (Acceleration.FromMs2(5.0) - Acceleration.FromMs2(10.0)).ToMs2(), 1e-9);
+    }
+
 }
