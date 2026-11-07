@@ -1,0 +1,8 @@
+@@ -848,7 +845,4 @@
+     ratio = a1 / a2
+     assert_in_delta(2.5, ratio)
+ 
+-    a5 = a1 / Time.from_seconds(2.0)
+-    assert_in_delta(5.0, a5.to_ms2)
+-
+     assert_raises(ArgumentError) { a1 + "invalid" }

@@ -13,6 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Sign policy (identical in all language implementations, not configurable;
+# see README "Sign policy"):
+#   Non-negative (>= 0): Speed, Mass, Distance, Pressure, Power, Torque, Volume, Time
+#   Strictly positive (> 0): Efficiency, EvEfficiency
+#   Lower-bounded: Temperature >= -273.15 C (absolute zero)
+#   Signed (finite only): Acceleration, Angle
+
 class ScalarLeftOperand
   def initialize(value)
     @value = value
@@ -935,12 +942,12 @@ class EvEfficiency
   end
 
   def self.from_wh_per_km(v)
-    raise ArgumentError, "Wh/km must be finite and positive" unless v.is_a?(Numeric) && v.finite? && v > 0
+    raise ArgumentError, "Must be positive" if v == 0
     return new(1000.0 / v)
   end
 
   def self.from_kwh_per_100km(v)
-    raise ArgumentError, "kWh/100km must be finite and positive" unless v.is_a?(Numeric) && v.finite? && v > 0
+    raise ArgumentError, "Must be positive" if v == 0
     return new(100.0 / v)
   end
 

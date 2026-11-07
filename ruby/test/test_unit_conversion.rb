@@ -1262,4 +1262,42 @@ class TestOperation < Minitest::Test
     assert(mass1 <= mass1)
     assert(mass1 >= mass1)
   end
+
+class TestSignPolicy < Minitest::Test
+  # Sign policy (see README "Sign policy"): identical in all languages.
+  def test_non_negative_quantities_reject_negative
+    assert_raises(ArgumentError) { Speed.from_ms(-1.0) }
+    assert_raises(ArgumentError) { Mass.from_kg(-1.0) }
+    assert_raises(ArgumentError) { Distance.from_meters(-1.0) }
+    assert_raises(ArgumentError) { Pressure.from_kpa(-1.0) }
+    assert_raises(ArgumentError) { Power.from_kw(-1.0) }
+    assert_raises(ArgumentError) { Torque.from_nm(-1.0) }
+    assert_raises(ArgumentError) { Volume.from_liters(-1.0) }
+    assert_raises(ArgumentError) { Time.from_seconds(-1.0) }
+    assert_equal(0.0, Speed.from_ms(-0.0).to_ms)
+  end
+
+  def test_strictly_positive_quantities
+    assert_raises(ArgumentError) { Efficiency.from_kml(0.0) }
+    assert_raises(ArgumentError) { Efficiency.from_kml(-1.0) }
+    assert_raises(ArgumentError) { EvEfficiency.from_km_per_kwh(0.0) }
+    assert_raises(ArgumentError) { EvEfficiency.from_km_per_kwh(-1.0) }
+  end
+
+  def test_temperature_lower_bound
+    assert_in_delta(-273.15, Temperature.from_celsius(-273.15).to_celsius, 1e-9)
+    assert_raises(ArgumentError) { Temperature.from_celsius(-273.16) }
+  end
+
+  def test_signed_quantities_allow_negative
+    assert_in_delta(-9.8, Acceleration.from_ms2(-9.8).to_ms2, 1e-9)
+    assert_in_delta(-90.0, Angle.from_degrees(-90.0).to_degrees, 1e-9)
+  end
+
+  def test_arithmetic_results_follow_same_policy
+    assert_raises(ArgumentError) { Speed.from_ms(10.0) - Speed.from_ms(20.0) }
+    assert_in_delta(-5.0, (Acceleration.from_ms2(5.0) - Acceleration.from_ms2(10.0)).to_ms2, 1e-9)
+  end
+end
+
 end
