@@ -14,6 +14,13 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+# Sign policy (identical in all language implementations, not configurable;
+# see README "Sign policy"):
+#   Non-negative (>= 0): Speed, Mass, Distance, Pressure, Power, Torque, Volume, Time
+#   Strictly positive (> 0): Efficiency, EvEfficiency
+#   Lower-bounded: Temperature >= -273.15 C (absolute zero)
+#   Signed (finite only): Acceleration, Angle
+
 import math
 from functools import total_ordering
 
@@ -24,8 +31,8 @@ class Speed:
     MPH_TO_MS = 0.44704
 
     def __init__(self, ms: float):
-        if math.isnan(ms) or math.isinf(ms):
-            raise ValueError("Speed must be a finite number")
+        if math.isnan(ms) or math.isinf(ms) or ms < 0:
+            raise ValueError("Speed must be a non-negative finite number")
         self._ms = ms
 
     @classmethod
@@ -816,8 +823,8 @@ class Efficiency:
 
     @classmethod
     def from_l100km(cls, v: float):
-        if not math.isfinite(v) or v <= 0.0:
-            raise ValueError("L/100km must be finite and positive")
+        if v == 0:
+            raise ValueError("Must be positive")
         return cls(100.0 / v)
 
     @classmethod
@@ -904,15 +911,15 @@ class EvEfficiency:
         return cls(v)
 
     @classmethod
-    def from_wh_per_km(cls, v: float):
-        if not math.isfinite(v) or v <= 0.0:
-            raise ValueError("Wh/km must be finite and positive")
+    def from_wh_per_km(cls, v):
+        if v == 0:
+            raise ValueError("Must be positive")
         return cls(1000.0 / v)
 
     @classmethod
-    def from_kwh_per_100km(cls, v: float):
-        if not math.isfinite(v) or v <= 0.0:
-            raise ValueError("kWh/100km must be finite and positive")
+    def from_kwh_per_100km(cls, v):
+        if v == 0:
+            raise ValueError("Must be positive")
         return cls(100.0 / v)
 
     @classmethod

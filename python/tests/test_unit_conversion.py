@@ -933,8 +933,11 @@ class TestOperation(unittest.TestCase):
         dv = v1 - v2
         self.assertEqual(dv.to_ms, 10.0)
 
-        dv_neg = v2 - v1
-        self.assertEqual(dv_neg.to_ms, -10.0)
+        # Sign policy: Speed is non-negative, so a subtraction whose
+        # result would be negative is an error (same as all other
+        # language implementations), not a negative Speed.
+        with self.assertRaises(ValueError):
+            v2 - v1
 
     def test_distance_arithmetic(self):
         d1 = Distance.from_meters(50.0)
@@ -1137,6 +1140,50 @@ class TestOperation(unittest.TestCase):
             1.0
         )
 
+
+
+class TestSignPolicy(unittest.TestCase):
+    """Sign policy (see README "Sign policy"): identical in all languages."""
+
+    def test_non_negative_quantities_reject_negative(self):
+        for make in (Speed.from_ms, Mass.from_kg, Distance.from_meters,
+                     Pressure.from_kpa, Power.from_kw, Torque.from_nm,
+                     Volume.from_liters, Time.from_seconds):
+            with self.assertRaises(ValueError):
+                make(-1.0)
+        # Zero and -0.0 are allowed.
+        self.assertEqual(Speed.from_ms(0.0).to_ms, 0.0)
+        self.assertEqual(Speed.from_ms(-0.0).to_ms, 0.0)
+
+    def test_speed_rejects_negative_in_all_units(self):
+        with self.assertRaises(ValueError):
+            Speed.from_kmh(-36.0)
+        with self.assertRaises(ValueError):
+            Speed.from_mph(-1.0)
+
+    def test_strictly_positive_quantities(self):
+        for make in (Efficiency.from_kml, EvEfficiency.from_km_per_kwh):
+            with self.assertRaises(ValueError):
+                make(0.0)
+            with self.assertRaises(ValueError):
+                make(-1.0)
+
+    def test_temperature_lower_bound(self):
+        self.assertAlmostEqual(
+            Temperature.from_celsius(-273.15).to_celsius, -273.15, places=9)
+        with self.assertRaises(ValueError):
+            Temperature.from_celsius(-273.16)
+
+    def test_signed_quantities_allow_negative(self):
+        self.assertAlmostEqual(Acceleration.from_ms2(-9.8).to_ms2, -9.8, places=9)
+        self.assertAlmostEqual(Angle.from_degrees(-90.0).to_degrees, -90.0, places=9)
+
+    def test_arithmetic_results_follow_same_policy(self):
+        with self.assertRaises(ValueError):
+            Speed.from_ms(10.0) - Speed.from_ms(20.0)
+        self.assertAlmostEqual(
+            (Acceleration.from_ms2(5.0) - Acceleration.from_ms2(10.0)).to_ms2,
+            -5.0, places=9)
 
 if __name__ == '__main__':
     unittest.main()
