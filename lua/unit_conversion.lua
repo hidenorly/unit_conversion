@@ -16,17 +16,20 @@
 
 local M = {}
 
-M.NO_NEGATIVE_ALLOWED = true
-
 local function check(v, name)
     if v ~= v or v == math.huge or v == -math.huge then error(name .. " must be finite") end
     return v
 end
 
+local create_value -- forward declaration; defined below
+
 local function create_arithmetic_value(cls, value)
-    check(value, "arithmetic result")
-    return setmetatable({val = value}, cls)
+    -- Arithmetic results must satisfy the same domain rules as factory
+    -- construction (the library sign policy), so route through
+    -- create_value instead of building the object directly.
+    return create_value(cls, value)
 end
+
 
 local function create_class(name)
     local cls = {__type = name}
@@ -74,7 +77,7 @@ local function create_class(name)
     return cls
 end
 
-local function create_value(cls, value)
+create_value = function(cls, value)
     if cls == M.Speed then
         return M.Speed.fromMs(value)
     elseif cls == M.Temperature then
@@ -142,7 +145,7 @@ end
 M.Speed = setup_meta(create_class("Speed"))
 function M.Speed.fromMs(v)
     check(v, "Speed")
-    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Speed must be non-negative") end
+    if v < 0 then error("Speed must be non-negative") end
     return setmetatable({val = v}, M.Speed)
 end
 function M.Speed.fromKmH(v) return M.Speed.fromMs(v / 3.6) end
@@ -228,7 +231,7 @@ end
 M.Mass = setup_meta(create_class("Mass"))
 function M.Mass.fromKg(v)
     check(v, "Mass")
-    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Mass must be non-negative") end
+    if v < 0 then error("Mass must be non-negative") end
     return setmetatable({val = v}, M.Mass)
 end
 function M.Mass.fromGram(v) return M.Mass.fromKg(v * 0.001) end
@@ -257,7 +260,7 @@ end
 M.Distance = setup_meta(create_class("Distance"))
 function M.Distance.fromMeters(v)
     check(v, "Distance")
-    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Distance must be non-negative") end
+    if v < 0 then error("Distance must be non-negative") end
     return setmetatable({val = v}, M.Distance)
 end
 function M.Distance.fromKm(v) return M.Distance.fromMeters(v * 1000.0) end
@@ -307,7 +310,7 @@ end
 M.Pressure = setup_meta(create_class("Pressure"))
 function M.Pressure.fromKpa(v)
     check(v, "Pressure")
-    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Pressure must be non-negative") end
+    if v < 0 then error("Pressure must be non-negative") end
     return setmetatable({val = v}, M.Pressure)
 end
 function M.Pressure.fromBar(v) return M.Pressure.fromKpa(v * 100.0) end
@@ -321,7 +324,7 @@ function M.Pressure:toPsi() return self.val / 6.894757293168361 end
 M.Power = setup_meta(create_class("Power"))
 function M.Power.fromKw(v)
     check(v, "Power")
-    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Power must be non-negative") end
+    if v < 0 then error("Power must be non-negative") end
     return setmetatable({val = v}, M.Power)
 end
 function M.Power.fromPs(v) return M.Power.fromKw(v * 0.73549875) end
@@ -335,7 +338,7 @@ function M.Power:toHp() return self.val / 0.7456998715822702 end
 M.Torque = setup_meta(create_class("Torque"))
 function M.Torque.fromNm(v)
     check(v, "Torque")
-    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Torque must be non-negative") end
+    if v < 0 then error("Torque must be non-negative") end
     return setmetatable({val = v}, M.Torque)
 end
 function M.Torque.fromKgfm(v) return M.Torque.fromNm(v * 9.80665) end
@@ -424,7 +427,7 @@ function M.EvEfficiency:toMpKwh() return self.val / 1.609344 end
 M.Volume = setup_meta(create_class("Volume"))
 function M.Volume.fromLiters(v)
     check(v, "Volume")
-    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Volume must be non-negative") end
+    if v < 0 then error("Volume must be non-negative") end
     return setmetatable({val = v}, M.Volume)
 end
 function M.Volume.fromMl(v) return M.Volume.fromLiters(v / 1000.0) end
@@ -440,7 +443,7 @@ function M.Volume:toImpGallons() return self.val / 4.54609 end
 M.Time = setup_meta(create_class("Time"))
 function M.Time.fromSeconds(v)
     check(v, "Time")
-    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Time must be non-negative") end
+    if v < 0 then error("Time must be non-negative") end
     return setmetatable({val = v}, M.Time)
 end
 function M.Time.fromMinutes(v) return M.Time.fromSeconds(v * 60.0) end
@@ -477,7 +480,6 @@ end
 M.Acceleration = setup_meta(create_class("Acceleration"))
 function M.Acceleration.fromMs2(v)
     check(v, "Acceleration")
-    if M.NO_NEGATIVE_ALLOWED and v < 0 then error("Acceleration must be non-negative") end
     return setmetatable({val = v}, M.Acceleration)
 end
 function M.Acceleration.fromSpeedAndTime(s, t)

@@ -531,4 +531,31 @@ assert_fail(function()
     local _ = M.Efficiency.fromKml(10.0) / math.huge
 end)
 
+-- Sign policy
+assert_fail(function() M.Speed.fromMs(-1.0) end)
+assert_fail(function() M.Mass.fromKg(-1.0) end)
+assert_fail(function() M.Distance.fromMeters(-1.0) end)
+assert_fail(function() M.Pressure.fromKpa(-1.0) end)
+assert_fail(function() M.Power.fromKw(-1.0) end)
+assert_fail(function() M.Torque.fromNm(-1.0) end)
+assert_fail(function() M.Volume.fromLiters(-1.0) end)
+assert_fail(function() M.Time.fromSeconds(-1.0) end)
+assert_eq(M.Speed.fromMs(-0.0):toMs(), 0.0, "Sign policy -0.0 accepted as 0")
+-- Strictly positive quantities reject 0 and -1.
+assert_fail(function() M.Efficiency.fromKml(0.0) end)
+assert_fail(function() M.Efficiency.fromKml(-1.0) end)
+assert_fail(function() M.EvEfficiency.fromKmkWh(0.0) end)
+assert_fail(function() M.EvEfficiency.fromKmkWh(-1.0) end)
+-- Temperature lower bound is absolute zero.
+assert_eq(M.Temperature.fromCelsius(-273.15):toCelsius(), -273.15, "Sign policy absolute zero")
+assert_fail(function() M.Temperature.fromCelsius(-273.16) end)
+-- Signed quantities allow negative values.
+assert_eq(M.Acceleration.fromMs2(-9.8):toMs2(), -9.8, "Sign policy negative acceleration")
+assert_eq(M.Angle.fromDegrees(-90.0):toDegrees(), -90.0, "Sign policy negative angle")
+-- Arithmetic results follow the same policy (no bypass via operators).
+assert_fail(function() local _ = M.Speed.fromMs(10.0) - M.Speed.fromMs(20.0) end)
+assert_eq((M.Acceleration.fromMs2(5.0) - M.Acceleration.fromMs2(10.0)):toMs2(), -5.0, "Sign policy signed arithmetic")
+assert_fail(function() local _ = M.Temperature.fromCelsius(-270.0) - M.Temperature.fromCelsius(10.0) end)
+assert_fail(function() local _ = M.Efficiency.fromKml(10.0) - M.Efficiency.fromKml(20.0) end)
+
 print("All tests passed: Logic, Operators, Comparisons, and Validation coverage 100%.")
