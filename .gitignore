@@ -345,3 +345,6 @@ artifacts/
 *.trx
 *.coverage
 *.coveragexml
+
+ruby/Oops.rej
+Cargo.lock
