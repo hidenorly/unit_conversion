@@ -22,12 +22,15 @@
 // Regenerate vectors with tools/generate_test_vectors.py.
 
 #include <cmath>
+#include <cctype>
 #include <cstdlib>
 #include <fstream>
+#include <numeric>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <variant>
+#include <vector>
 
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
@@ -283,51 +286,122 @@ static AnyQty applyOp(const json& c) {
     throw std::runtime_error("unknown op " + op);
 }
 
-TEST(ConformanceTest, GoldenVectors) {
-    std::ifstream in(findVectors());
-    ASSERT_TRUE(in.good()) << "cannot open test_vectors.json";
-    std::stringstream ss;
-    ss << in.rdbuf();
-    json doc = json::parse(ss.str());
+// ---------------------------------------------------------------------------
+// One GoogleTest test per vector case (parameterized), so a failure names
+// exactly the case that broke and each case can be re-run on its own with
+// --gtest_filter, e.g.:
+//   ./build/conformance_tests --gtest_filter='*convert_Speed_kmh*'
+// Test names look like:
+//   GoldenVectors/ConformanceParamTest.Case/convert_012_Speed_kmh_to_mph
+//   GoldenVectors/ConformanceParamTest.Case/error_253_Speed_ms_non_negative
+//   GoldenVectors/ConformanceParamTest.Case/op_262_mul_Speed_Time
+// ---------------------------------------------------------------------------
+
+static const json& vectorDoc() {
+    static const json doc = [] {
+        std::ifstream in(findVectors());
+        if (!in.good()) return json(nullptr);
+        std::stringstream ss;
+        ss << in.rdbuf();
+        return json::parse(ss.str());
+    }();
+    return doc;
+}
+
+static std::string sanitize(const std::string& s) {
+    std::string out = s;
+    for (char& ch : out) {
+        if (!std::isalnum(static_cast<unsigned char>(ch))) ch = '_';
+    }
+    return out;
+}
+
+static std::string caseName(int index) {
+    const json& c = vectorDoc()["cases"].at(index);
+    const std::string kind = c.value("kind", "");
+    std::string name = kind + "_" + std::to_string(index);
+    if (kind == "convert") {
+        name += "_" + sanitize(c.value("quantity", "")) + "_" +
+                sanitize(c.value("from", "")) + "_to_" + sanitize(c.value("to", ""));
+    } else if (kind == "error") {
+        name += "_" + sanitize(c.value("quantity", "")) + "_" +
+                sanitize(c.value("from", "")) + "_" + sanitize(c.value("error", ""));
+    } else if (kind == "op") {
+        name += "_" + sanitize(c.value("op", ""));
+        if (c["lhs"].is_object()) name += "_" + sanitize(c["lhs"].value("quantity", ""));
+        if (c["rhs"].is_object()) name += "_" + sanitize(c["rhs"].value("quantity", ""));
+    }
+    return name;
+}
+
+static std::vector<int> caseIndices() {
+    const json& doc = vectorDoc();
+    std::vector<int> idx;
+    if (doc.is_object() && doc.contains("cases")) {
+        idx.resize(doc["cases"].size());
+        std::iota(idx.begin(), idx.end(), 0);
+    }
+    return idx;
+}
+
+class ConformanceParamTest : public testing::TestWithParam<int> {};
+
+TEST_P(ConformanceParamTest, Case) {
+    const int index = GetParam();
+    const json& doc = vectorDoc();
+    ASSERT_TRUE(doc.is_object()) << "cannot open/parse test_vectors.json";
+    const json& c = doc["cases"].at(index);
     const double relTol = doc.value("rel_tol", 1e-9);
     const double absTol = doc.value("abs_tol", 1e-12);
-    int checked = 0;
-    for (const auto& c : doc["cases"]) {
-        const std::string kind = c["kind"].get<std::string>();
-        const std::string label = "case: " + c.dump();
-        if (kind == "convert") {
-            AnyQty obj = construct(c["quantity"].get<std::string>(),
-                                   c["from"].get<std::string>(),
-                                   parseValue(c["value"]));
-            const double actual = readValue(obj, c["to"].get<std::string>());
+    const std::string kind = c["kind"].get<std::string>();
+    const std::string label = "case " + std::to_string(index) + ": " + c.dump();
+    if (kind == "convert") {
+        AnyQty obj = construct(c["quantity"].get<std::string>(),
+                               c["from"].get<std::string>(),
+                               parseValue(c["value"]));
+        const double actual = readValue(obj, c["to"].get<std::string>());
+        const double expected = c["expected"].get<double>();
+        const double tol = absTol + relTol * std::abs(expected);
+        EXPECT_TRUE(std::isfinite(actual) && std::abs(actual - expected) <= tol)
+            << label << " got " << actual << " expected " << expected;
+    } else if (kind == "error") {
+        EXPECT_THROW(
+            construct(c["quantity"].get<std::string>(),
+                      c["from"].get<std::string>(), parseValue(c["value"])),
+            std::exception)
+            << label;
+    } else if (kind == "op") {
+        if (c.contains("error")) {
+            EXPECT_THROW(applyOp(c), std::exception) << label;
+        } else {
+            AnyQty result = applyOp(c);
+            const double actual =
+                c["expected_quantity"].get<std::string>() == "scalar"
+                    ? readValue(result, "")
+                    : readValue(result, c["expected_unit"].get<std::string>());
             const double expected = c["expected"].get<double>();
             const double tol = absTol + relTol * std::abs(expected);
             EXPECT_TRUE(std::isfinite(actual) && std::abs(actual - expected) <= tol)
                 << label << " got " << actual << " expected " << expected;
-        } else if (kind == "error") {
-            EXPECT_THROW(
-                construct(c["quantity"].get<std::string>(),
-                          c["from"].get<std::string>(), parseValue(c["value"])),
-                std::exception)
-                << label;
-        } else if (kind == "op") {
-            if (c.contains("error")) {
-                EXPECT_THROW(applyOp(c), std::exception) << label;
-            } else {
-                AnyQty result = applyOp(c);
-                const double actual =
-                    c["expected_quantity"].get<std::string>() == "scalar"
-                        ? readValue(result, "")
-                        : readValue(result, c["expected_unit"].get<std::string>());
-                const double expected = c["expected"].get<double>();
-                const double tol = absTol + relTol * std::abs(expected);
-                EXPECT_TRUE(std::isfinite(actual) && std::abs(actual - expected) <= tol)
-                    << label << " got " << actual << " expected " << expected;
-            }
-        } else {
-            FAIL() << "unknown kind " << kind;
         }
-        ++checked;
+    } else {
+        FAIL() << "unknown kind " << kind;
     }
-    EXPECT_EQ(checked, static_cast<int>(doc["cases"].size()));
+}
+
+INSTANTIATE_TEST_SUITE_P(GoldenVectors, ConformanceParamTest,
+                         testing::ValuesIn(caseIndices()),
+                         [](const testing::TestParamInfo<int>& info) {
+                             return caseName(info.param);
+                         });
+
+// Guard: the vector file itself must be present and parseable. Without
+// this, a missing file would silently instantiate zero parameterized
+// tests above and the run would look green.
+TEST(ConformanceFile, LoadsAndIsNotEmpty) {
+    const json& doc = vectorDoc();
+    ASSERT_TRUE(doc.is_object()) << "cannot open/parse test_vectors.json";
+    ASSERT_TRUE(doc.contains("cases"));
+    EXPECT_GT(static_cast<int>(doc["cases"].size()), 0)
+        << "test_vectors.json contains no cases";
 }
