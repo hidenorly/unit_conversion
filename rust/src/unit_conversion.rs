@@ -14,6 +14,13 @@
    limitations under the License.
 */
 
+// Sign policy (identical in all language implementations, not configurable;
+// see README "Sign policy"):
+//   Non-negative (>= 0): Speed, Mass, Distance, Pressure, Power, Torque, Volume, Time
+//   Strictly positive (> 0): Efficiency, EvEfficiency
+//   Lower-bounded: Temperature >= -273.15 C (absolute zero)
+//   Signed (finite only): Acceleration, Angle
+
 // --- Speed
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
@@ -1407,5 +1414,71 @@ impl std::ops::Div<Angle> for Angle {
             panic!("Angle cannot be zero");
         }
         self.to_radians() / rhs.to_radians()
+    }
+}
+
+// Speed / Speed = Scalar (f64)
+impl std::ops::Div<Speed> for Speed {
+    type Output = f64;
+    fn div(self, rhs: Speed) -> Self::Output {
+        if rhs.to_ms() == 0.0 {
+            panic!("Speed cannot be zero");
+        }
+        self.to_ms() / rhs.to_ms()
+    }
+}
+
+// Time / Time = Scalar (f64)
+impl std::ops::Div<Time> for Time {
+    type Output = f64;
+    fn div(self, rhs: Time) -> Self::Output {
+        if rhs.to_seconds() == 0.0 {
+            panic!("Time cannot be zero");
+        }
+        self.to_seconds() / rhs.to_seconds()
+    }
+}
+
+// Volume / Volume = Scalar (f64)
+impl std::ops::Div<Volume> for Volume {
+    type Output = f64;
+    fn div(self, rhs: Volume) -> Self::Output {
+        if rhs.to_liters() == 0.0 {
+            panic!("Volume cannot be zero");
+        }
+        self.to_liters() / rhs.to_liters()
+    }
+}
+
+// Acceleration / Acceleration = Scalar (f64)
+impl std::ops::Div<Acceleration> for Acceleration {
+    type Output = f64;
+    fn div(self, rhs: Acceleration) -> Self::Output {
+        if rhs.to_ms2() == 0.0 {
+            panic!("Acceleration cannot be zero");
+        }
+        self.to_ms2() / rhs.to_ms2()
+    }
+}
+
+// Efficiency / Efficiency = Scalar (f64)
+impl std::ops::Div<Efficiency> for Efficiency {
+    type Output = f64;
+    fn div(self, rhs: Efficiency) -> Self::Output {
+        if rhs.to_kml() == 0.0 {
+            panic!("Efficiency cannot be zero");
+        }
+        self.to_kml() / rhs.to_kml()
+    }
+}
+
+// EvEfficiency / EvEfficiency = Scalar (f64)
+impl std::ops::Div<EvEfficiency> for EvEfficiency {
+    type Output = f64;
+    fn div(self, rhs: EvEfficiency) -> Self::Output {
+        if rhs.to_km_per_kwh() == 0.0 {
+            panic!("EvEfficiency cannot be zero");
+        }
+        self.to_km_per_kwh() / rhs.to_km_per_kwh()
     }
 }
