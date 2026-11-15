@@ -9,3 +9,6 @@ mockall = "0.13.1"
 [lib]
 name = "unit_conversion"
 path = "src/unit_conversion.rs"
+
+[dev-dependencies]
+serde_json = "1.0"
