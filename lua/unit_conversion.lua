@@ -14,6 +14,13 @@
    limitations under the License.
 ]]
 
+-- Sign policy (identical in all language implementations, not configurable;
+-- see README "Sign policy"):
+--   Non-negative (>= 0): Speed, Mass, Distance, Pressure, Power, Torque, Volume, Time
+--   Strictly positive (> 0): Efficiency, EvEfficiency
+--   Lower-bounded: Temperature >= -273.15 C (absolute zero)
+--   Signed (finite only): Acceleration, Angle
+
 local M = {}
 
 local function check(v, name)
@@ -29,7 +36,6 @@ local function create_arithmetic_value(cls, value)
     -- create_value instead of building the object directly.
     return create_value(cls, value)
 end
-
 
 local function create_class(name)
     local cls = {__type = name}
@@ -393,6 +399,18 @@ function M.Efficiency.fromMpg(v) return M.Efficiency.fromKml(v * 0.4251437074302
 function M.Efficiency:toKml() return self.val end
 function M.Efficiency:toL100km() return 100.0 / self.val end
 function M.Efficiency:toMpg() return self.val / 0.425143707430272 end
+M.Efficiency.__div = function(a, b)
+    local meta_a = getmetatable(a)
+    local meta_b = getmetatable(b)
+    if meta_a == M.Efficiency and meta_b == M.Efficiency then
+        if b.val == 0 then error("Efficiency cannot be zero") end
+        return a.val / b.val
+    elseif meta_a == M.Efficiency and type(b) == "number" then
+        if b == 0 then error("Division by zero") end
+        return M.Efficiency.fromKml(a.val / b)
+    end
+    error("Invalid division")
+end
 
 
 -- EvEfficiency
@@ -421,6 +439,18 @@ function M.EvEfficiency:toKmkWh() return self.val end
 function M.EvEfficiency:toWhkm() return 1000.0 / self.val end
 function M.EvEfficiency:toKwh100km() return 100.0 / self.val end
 function M.EvEfficiency:toMpKwh() return self.val / 1.609344 end
+M.EvEfficiency.__div = function(a, b)
+    local meta_a = getmetatable(a)
+    local meta_b = getmetatable(b)
+    if meta_a == M.EvEfficiency and meta_b == M.EvEfficiency then
+        if b.val == 0 then error("EvEfficiency cannot be zero") end
+        return a.val / b.val
+    elseif meta_a == M.EvEfficiency and type(b) == "number" then
+        if b == 0 then error("Division by zero") end
+        return M.EvEfficiency.fromKmkWh(a.val / b)
+    end
+    error("Invalid division")
+end
 
 
 -- Volume
@@ -437,6 +467,19 @@ function M.Volume:toLiters() return self.val end
 function M.Volume:toMl() return self.val * 1000.0 end
 function M.Volume:toUsGallons() return self.val / 3.785411784 end
 function M.Volume:toImpGallons() return self.val / 4.54609 end
+
+M.Volume.__div = function(a, b)
+    local meta_a = getmetatable(a)
+    local meta_b = getmetatable(b)
+    if meta_a == M.Volume and meta_b == M.Volume then
+        if b.val == 0 then error("Volume cannot be zero") end
+        return a.val / b.val
+    elseif meta_a == M.Volume and type(b) == "number" then
+        if b == 0 then error("Division by zero") end
+        return M.Volume.fromLiters(a.val / b)
+    end
+    error("Invalid division")
+end
 
 
 -- Time
@@ -468,7 +511,10 @@ end
 M.Time.__div = function(a, b)
     local meta_a = getmetatable(a)
     local meta_b = getmetatable(b)
-    if meta_a == M.Time and type(b) == "number" then
+    if meta_a == M.Time and meta_b == M.Time then
+        if b.val == 0 then error("Time cannot be zero") end
+        return a.val / b.val
+    elseif meta_a == M.Time and type(b) == "number" then
         if b == 0 then error("Division by zero") end
         return M.Time.fromSeconds(a.val / b)
     end
@@ -509,7 +555,10 @@ end
 M.Acceleration.__div = function(a, b)
     local meta_a = getmetatable(a)
     local meta_b = getmetatable(b)
-    if meta_a == M.Acceleration and type(b) == "number" then
+    if meta_a == M.Acceleration and meta_b == M.Acceleration then
+        if b.val == 0 then error("Acceleration cannot be zero") end
+        return a.val / b.val
+    elseif meta_a == M.Acceleration and type(b) == "number" then
         if b == 0 then error("Division by zero") end
         return M.Acceleration.fromMs2(a.val / b)
     end
