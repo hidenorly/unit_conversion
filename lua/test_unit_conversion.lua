@@ -259,6 +259,20 @@ local ratio = d1 / d2
 assert_eq(ratio, 5.0, "Distance / Distance")
 assert_fail(function() local _ = d1 / M.Distance.fromMeters(0.0) end)
 
+local acc_ratio = M.Acceleration.fromMs2(9.8) / M.Acceleration.fromMs2(2.0)
+assert_eq(acc_ratio, 4.9, "Acceleration / Acceleration")
+assert_fail(function() local _ = M.Acceleration.fromMs2(1.0) / M.Acceleration.fromMs2(0.0) end)
+
+local eff_ratio = M.Efficiency.fromKml(20.0) / M.Efficiency.fromL100km(10.0)
+assert_eq(eff_ratio, 2.0, "Efficiency / Efficiency")
+local eff_half = M.Efficiency.fromKml(20.0) / 2.0
+assert_eq(eff_half:toKml(), 10.0, "Efficiency / scalar")
+
+local ev_ratio = M.EvEfficiency.fromKmkWh(6.5) / M.EvEfficiency.fromWhkm(200.0)
+assert_eq(ev_ratio, 1.3, "EvEfficiency / EvEfficiency")
+local ev_half = M.EvEfficiency.fromKmkWh(6.5) / 2.0
+assert_eq(ev_half:toKmkWh(), 3.25, "EvEfficiency / scalar")
+
 local time_res2 = d1 / M.Speed.fromMs(10.0)
 assert_eq(time_res2:toSeconds(), 10.0, "Distance / Speed = Time")
 assert_fail(function() local _ = d1 / M.Speed.fromMs(0.0) end)
@@ -531,7 +545,8 @@ assert_fail(function()
     local _ = M.Efficiency.fromKml(10.0) / math.huge
 end)
 
--- Sign policy
+-- Sign policy (see README "Sign policy"): identical in all languages.
+-- Non-negative quantities reject -1 (each type is covered above as well).
 assert_fail(function() M.Speed.fromMs(-1.0) end)
 assert_fail(function() M.Mass.fromKg(-1.0) end)
 assert_fail(function() M.Distance.fromMeters(-1.0) end)
