@@ -281,6 +281,15 @@ static AnyQty applyOp(const json& c) {
         if (auto a = std::get_if<Volume>(&lhs)) {
             if (auto b = std::get_if<Volume>(&rhs)) return *a / *b;
         }
+        if (auto a = std::get_if<Acceleration>(&lhs)) {
+            if (auto b = std::get_if<Acceleration>(&rhs)) return *a / *b;
+        }
+        if (auto a = std::get_if<Efficiency>(&lhs)) {
+            if (auto b = std::get_if<Efficiency>(&rhs)) return *a / *b;
+        }
+        if (auto a = std::get_if<EvEfficiency>(&lhs)) {
+            if (auto b = std::get_if<EvEfficiency>(&rhs)) return *a / *b;
+        }
         throw std::runtime_error("unsupported div combination");
     }
     throw std::runtime_error("unknown op " + op);

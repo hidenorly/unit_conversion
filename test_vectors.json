@@ -2417,6 +2417,54 @@
    },
    "expected_quantity": "scalar",
    "expected": 100.0
+  },
+  {
+   "kind": "op",
+   "op": "div",
+   "lhs": {
+    "quantity": "Acceleration",
+    "unit": "ms2",
+    "value": 9.8
+   },
+   "rhs": {
+    "quantity": "Acceleration",
+    "unit": "ms2",
+    "value": 2.0
+   },
+   "expected_quantity": "scalar",
+   "expected": 4.9
+  },
+  {
+   "kind": "op",
+   "op": "div",
+   "lhs": {
+    "quantity": "Efficiency",
+    "unit": "kml",
+    "value": 20.0
+   },
+   "rhs": {
+    "quantity": "Efficiency",
+    "unit": "l100km",
+    "value": 10.0
+   },
+   "expected_quantity": "scalar",
+   "expected": 2.0
+  },
+  {
+   "kind": "op",
+   "op": "div",
+   "lhs": {
+    "quantity": "EvEfficiency",
+    "unit": "km_per_kwh",
+    "value": 6.5
+   },
+   "rhs": {
+    "quantity": "EvEfficiency",
+    "unit": "wh_per_km",
+    "value": 200.0
+   },
+   "expected_quantity": "scalar",
+   "expected": 1.3
   }
  ]
 }
