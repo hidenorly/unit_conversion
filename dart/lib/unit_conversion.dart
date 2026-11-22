@@ -14,6 +14,13 @@
    limitations under the License.
 */
 
+// Sign policy (identical in all language implementations, not configurable;
+// see README "Sign policy"):
+//   Non-negative (>= 0): Speed, Mass, Distance, Pressure, Power, Torque, Volume, Time
+//   Strictly positive (> 0): Efficiency, EvEfficiency
+//   Lower-bounded: Temperature >= -273.15 C (absolute zero)
+//   Signed (finite only): Acceleration, Angle
+
 import 'dart:math' as math;
 
 class Speed implements Comparable<Speed> {
@@ -710,9 +717,15 @@ extension TimeOps on Time {
   Time operator -(Time other) =>
       Time.fromSeconds(this.toSeconds - other.toSeconds);
 
-  Time operator *(num scalar) {
-    return Time.fromSeconds(
-        this.toSeconds * scalar.toDouble());
+  dynamic operator *(dynamic other) {
+    if (other is num) {
+      return Time.fromSeconds(
+          this.toSeconds * other.toDouble());
+    } else if (other is Speed) {
+      return Distance.fromMeters(
+          this.toSeconds * other.toMs);
+    }
+    throw ArgumentError('Unsupported type for multiplication');
   }
 
   dynamic operator /(dynamic other) {
