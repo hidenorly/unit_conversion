@@ -14,6 +14,13 @@
    limitations under the License.
 */
 
+// Sign policy (identical in all language implementations, not configurable;
+// see README "Sign policy"):
+//   Non-negative (>= 0): Speed, Mass, Distance, Pressure, Power, Torque, Volume, Time
+//   Strictly positive (> 0): Efficiency, EvEfficiency
+//   Lower-bounded: Temperature >= -273.15 C (absolute zero)
+//   Signed (finite only): Acceleration, Angle
+
 using System;
 
 namespace UnitConversion
@@ -747,6 +754,9 @@ namespace UnitConversion
 
         public static Time operator *(double scalar, Time t) =>
             FromSeconds(t.m_sec * scalar);
+
+        public static Distance operator *(Time t, Speed s) =>
+            Distance.FromMeters(t.m_sec * s.ToMs());
 
         public static Time operator /(Time t, double scalar)
         {
